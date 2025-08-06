@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -21,21 +22,33 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function getUserProperties() {
-  // In a real app, you'd fetch this based on the logged-in user
-  // For now, we'll create some sample data if it doesn't exist
-  let properties = await prisma.properties.findMany();
-  if (properties.length === 0) {
-    await prisma.properties.createMany({
-        data: [
-            { property: "Username", value: "bomberox" },
-            { property: "Role", value: "Administrator" },
-            { property: "Status", value: "Active" },
-            { property: "Last Login", value: new Date().toLocaleString() },
-        ]
-    })
-    properties = await prisma.properties.findMany();
+  const user = await prisma.user.findUnique({
+    where: {
+        username: "bomberox"
+    },
+    include: {
+        propiedades: true,
+    }
+  })
+
+  if (!user) {
+    // Handle case where user is not found, maybe return empty array or throw error
+    return [];
   }
-  return properties;
+  
+  // Flatten properties for easy display
+  return user.propiedades.map(p => ({
+    id: p.id,
+    nombre: p.nombre,
+    ciudad: p.ciudad,
+    barrio: p.barrio,
+    edificio: p.edificio,
+    armas: String(p.armas),
+    municion: String(p.municion),
+    alcohol: String(p.alcohol),
+    dolares: String(p.dolares),
+    username: user.username,
+  }));
 }
 
 export default async function OverviewPage() {
@@ -134,10 +147,44 @@ export default async function OverviewPage() {
                             </TableHeader>
                             <TableBody>
                                 {userProperties.map((item) => (
-                                    <TableRow key={item.id}>
-                                        <TableCell className="font-medium">{item.property}</TableCell>
-                                        <TableCell>{item.value}</TableCell>
-                                    </TableRow>
+                                    <React.Fragment key={item.id}>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Username</TableCell>
+                                            <TableCell>{item.username}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Propiedad</TableCell>
+                                            <TableCell>{item.nombre}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Ciudad</TableCell>
+                                            <TableCell>{item.ciudad}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Barrio</TableCell>
+                                            <TableCell>{item.barrio}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Edificio</TableCell>
+                                            <TableCell>{item.edificio}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Armas</TableCell>
+                                            <TableCell>{item.armas}</TableCell>
+                                        </TableRow>
+                                         <TableRow>
+                                            <TableCell className="font-medium">Municion</TableCell>
+                                            <TableCell>{item.municion}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Alcohol</TableCell>
+                                            <TableCell>{item.alcohol}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-medium">Dolares</TableCell>
+                                            <TableCell>{item.dolares}</TableCell>
+                                        </TableRow>
+                                    </React.Fragment>
                                 ))}
                             </TableBody>
                         </Table>
@@ -149,3 +196,5 @@ export default async function OverviewPage() {
     </div>
   );
 }
+
+    
