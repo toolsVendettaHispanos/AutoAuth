@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Shield } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BattleReport as BattleReportType } from "@/lib/types/simulation.types";
 
 type FeedItem = (FullMessage & { type: 'message' }) 
@@ -16,7 +16,7 @@ type FeedItem = (FullMessage & { type: 'message' })
                 | (FullEspionageReport & { type: 'espionage' });
 
 interface MessageDetailProps {
-    item: FeedItem;
+    item: FeedItem | null;
     onBack: () => void;
 }
 

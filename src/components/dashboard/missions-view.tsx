@@ -7,9 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { getPropertyOwner } from '@/lib/data';
-import type { UserWithProgress, MissionInput, FullConfiguracionTropa, FullTropaUsuario } from '@/lib/types';
+import type { UserWithProgress, FullConfiguracionTropa, FullTropaUsuario } from '@/lib/types';
 import { debounce } from 'lodash';
-import { Loader2, User, UserX, Clock, Send, Users, Shield, Package, Wind, PlaneTakeoff, Minus, Plus, DollarSign } from 'lucide-react';
+import { Loader2, User, UserX, Clock, Send, Users, Package, PlaneTakeoff, Minus, Plus, DollarSign } from 'lucide-react';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { enviarMision } from '@/lib/actions/mission.actions';
@@ -190,11 +190,6 @@ export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, t
         })
     }
 
-    const setMaxTroops = (troopId: string) => {
-        const available = selectedProperty?.TropaUsuario.find((tropa: FullTropaUsuario) => tropa.configuracionTropa.id === troopId)?.cantidad || 0;
-        handleTroopChange(troopId, available);
-    };
-
     const setAllMaxTroops = () => {
         if (!selectedProperty) return;
         const newTroopInputs = selectedProperty.TropaUsuario
@@ -206,15 +201,14 @@ export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, t
         setTropas(newTroopInputs);
     };
     
-     const { totalCapacity, totalSalary } = useMemo(() => {
+     const { totalCapacity } = useMemo(() => {
         return tropas.reduce((acc, t: TroopInput) => {
             const config = troopConfigsMap.get(t.id);
             if (config) {
                 acc.totalCapacity += config.capacidad * t.cantidad;
-                acc.totalSalary += config.salario * t.cantidad;
             }
             return acc;
-        }, { totalCapacity: 0, totalSalary: 0 });
+        }, { totalCapacity: 0 });
     }, [tropas, troopConfigsMap]);
 
     const handleSubmit = async () => {

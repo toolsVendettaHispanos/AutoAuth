@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Inbox, Trash2, Shield, User, Swords, Eye, CheckCircle, XCircle } from "lucide-react";
+import { Inbox, Trash2, Shield, Swords, Eye, CheckCircle, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { deleteMessage, markMessageAsRead } from "@/lib/actions/message.actions";
 import { useTransition } from "react";
@@ -19,7 +19,7 @@ type FeedItem = (FullMessage & { type: 'message' })
 interface MessageListProps {
     items: FeedItem[];
     selectedItemId: string | null;
-    onSelectItem: (item: FeedItem) => void;
+    onSelectItem: (item: FeedItem | null) => void;
     currentUserId: string;
 }
 
@@ -43,7 +43,7 @@ export function MessageList({ items, selectedItemId, onSelectItem, currentUserId
             } else {
                 toast({ title: 'Mensaje eliminado' });
                 if (selectedItemId === messageId) {
-                    onSelectItem(null as any); 
+                    onSelectItem(null); 
                 }
             }
         });
