@@ -7,7 +7,7 @@ import prisma from "../prisma/prisma";
 import { getSessionUser } from "../auth";
 import { calcularCostosNivel, calcularTiempoConstruccion } from "../formulas/room-formulas";
 import { ID_OFICINA_JEFE, MAX_CONSTRUCTION_QUEUE_SIZE } from "../constants";
-import type { ColaConstruccion, FullConfiguracionHabitacion, FullHabitacionUsuario, FullPropiedad, UserWithProgress } from "../types";
+import type { ColaConstruccion, FullConfiguracionHabitacion, FullHabitacionUsuario, FullPropiedad } from "../types";
 
 export async function iniciarAmpliacion(propiedadId: string, habitacionId: string) {
     const user = await getSessionUser();
@@ -103,8 +103,8 @@ export async function iniciarAmpliacion(propiedadId: string, habitacionId: strin
   
       return { success: `¡${config.nombre} añadido a la cola de construcción!` };
     } catch (error) {
-      console.error('Error durante la transacci\u00f3n de ampliaci\u00f3n:', error);
-      return { error: 'Ocurri\u00f3 un error en el servidor al intentar ampliar.' };
+      console.error('Error durante la transacci\\u00f3n de ampliaci\\u00f3n:', error);
+      return { error: 'Ocurri\\u00f3 un error en el servidor al intentar ampliar.' };
     }
 }
 
@@ -139,7 +139,6 @@ export async function cancelarConstruccion(colaId: string) {
          return { error: 'Configuración de habitación no encontrada para el reembolso.' };
     }
 
-    const nivelOficinaJefe = (itemCola.propiedad.habitaciones as FullHabitacionUsuario[]).find(h => h.configuracionHabitacionId === ID_OFICINA_JEFE)?.nivel || 1;
     const costos = calcularCostosNivel(itemCola.nivelDestino, configHabitacion as FullConfiguracionHabitacion);
 
     try {
@@ -164,7 +163,7 @@ export async function cancelarConstruccion(colaId: string) {
         revalidatePath('/overview');
         revalidatePath('/(dashboard)/layout', 'layout');
 
-        return { success: `La construcción de ${configHabitacion.nombre} ha sido cancelada.` };
+        return { success: `La construcci\u00f3n de ${configHabitacion.nombre} ha sido cancelada.` };
     } catch (error) {
         console.error('Error al cancelar la construcción:', error);
         return { error: 'No se pudo cancelar la construcción.' };
