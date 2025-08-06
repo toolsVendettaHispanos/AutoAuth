@@ -11,9 +11,8 @@ import Link from "next/link";
 import { ArrowLeft, Crown, Shield, User as UserIcon } from "lucide-react";
 import { FamilyRole } from "@prisma/client";
 import { calcularProduccionTotalPorSegundo } from "@/lib/formulas/room-formulas";
-import { ROOM_ORDER, TRAINING_ORDER, RECRUITMENT_TROOP_ORDER, SECURITY_TROOP_ORDER } from "@/lib/constants";
+import { TRAINING_ORDER, RECRUITMENT_TROOP_ORDER, SECURITY_TROOP_ORDER } from "@/lib/constants";
 import { useMemo, useState } from "react";
-import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
@@ -36,12 +35,6 @@ function formatNumber(num: number | bigint): string {
 export function FamilyGlobalView({ family }: FamilyGlobalViewProps) {
     const isMobile = useIsMobile();
     const [openAccordions, setOpenAccordions] = useState<string[]>(['puntos']);
-
-    const toggleAccordion = (value: string) => {
-        setOpenAccordions(prev => 
-            prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
-        );
-    }
     
     const membersData = useMemo(() => {
         return family.members.map(member => {
@@ -94,6 +87,9 @@ export function FamilyGlobalView({ family }: FamilyGlobalViewProps) {
             }
         });
     }, [family.members]);
+    
+    type MemberData = (typeof membersData)[0];
+
 
     const familyTotals = useMemo(() => {
         return membersData.reduce((acc, member) => {
@@ -120,16 +116,15 @@ export function FamilyGlobalView({ family }: FamilyGlobalViewProps) {
         });
     }, [membersData]);
     
-    const { roomNames, trainingNames, troopNames } = useMemo(() => {
-        const roomNames = new Map<string, string>();
+    const { trainingNames, troopNames } = useMemo(() => {
         const trainingNames = new Map<string, string>();
         const troopNames = new Map<string, string>();
     
         family.members.forEach(member => {
             member.user.propiedades.forEach(p => {
                 p.habitaciones.forEach(h => {
-                    if (!roomNames.has(h.configuracionHabitacionId)) {
-                        roomNames.set(h.configuracionHabitacionId, h.configuracionHabitacion.nombre);
+                    if (!troopNames.has(h.configuracionHabitacionId)) {
+                        troopNames.set(h.configuracionHabitacionId, h.configuracionHabitacion.nombre);
                     }
                 });
                 [...p.TropaUsuario, ...p.TropaSeguridadUsuario].forEach(t => {
@@ -145,20 +140,20 @@ export function FamilyGlobalView({ family }: FamilyGlobalViewProps) {
             });
         });
     
-        return { roomNames, trainingNames, troopNames };
+        return { trainingNames, troopNames };
     }, [family.members]);
 
     const resourceRows = [
-        { label: "Puntos", getValue: (m: any) => formatNumber(m.user.puntuacion?.puntosTotales ?? 0), getTotal: () => formatNumber(familyTotals.puntos), positive: false },
-        { label: "Edificios", getValue: (m: any) => formatNumber(m.user.propiedades.length), getTotal: () => formatNumber(familyTotals.edificios), positive: false },
-        { label: "Armas", getValue: (m: any) => formatNumber(m.totalResources.armas), getTotal: () => formatNumber(familyTotals.armas), positive: false },
-        { label: "Municion", getValue: (m: any) => formatNumber(m.totalResources.municion), getTotal: () => formatNumber(familyTotals.municion), positive: false },
-        { label: "Alcohol", getValue: (m: any) => formatNumber(m.totalResources.alcohol), getTotal: () => formatNumber(familyTotals.alcohol), positive: false },
-        { label: "Dolares", getValue: (m: any) => formatNumber(m.totalResources.dolares), getTotal: () => formatNumber(familyTotals.dolares), positive: false },
-        { label: "Armas/Hora", getValue: (m: any) => `+${formatNumber(m.production.armas)}`, getTotal: () => `+${formatNumber(familyTotals.produccionArmas)}`, positive: true },
-        { label: "Municion/Hora", getValue: (m: any) => `+${formatNumber(m.production.municion)}`, getTotal: () => `+${formatNumber(familyTotals.produccionMunicion)}`, positive: true },
-        { label: "Alcohol/Hora", getValue: (m: any) => `${m.production.alcohol >= 0 ? '+' : ''}${formatNumber(m.production.alcohol)}`, getTotal: () => `${familyTotals.produccionAlcohol >= 0 ? '+' : ''}${formatNumber(familyTotals.produccionAlcohol)}`, positive: true },
-        { label: "Dolares/Hora", getValue: (m: any) => `+${formatNumber(m.production.dolares)}`, getTotal: () => `+${formatNumber(familyTotals.produccionDolares)}`, positive: true },
+        { label: "Puntos", getValue: (m: MemberData) => formatNumber(m.user.puntuacion?.puntosTotales ?? 0), getTotal: () => formatNumber(familyTotals.puntos), positive: false },
+        { label: "Edificios", getValue: (m: MemberData) => formatNumber(m.user.propiedades.length), getTotal: () => formatNumber(familyTotals.edificios), positive: false },
+        { label: "Armas", getValue: (m: MemberData) => formatNumber(m.totalResources.armas), getTotal: () => formatNumber(familyTotals.armas), positive: false },
+        { label: "Municion", getValue: (m: MemberData) => formatNumber(m.totalResources.municion), getTotal: () => formatNumber(familyTotals.municion), positive: false },
+        { label: "Alcohol", getValue: (m: MemberData) => formatNumber(m.totalResources.alcohol), getTotal: () => formatNumber(familyTotals.alcohol), positive: false },
+        { label: "Dolares", getValue: (m: MemberData) => formatNumber(m.totalResources.dolares), getTotal: () => formatNumber(familyTotals.dolares), positive: false },
+        { label: "Armas/Hora", getValue: (m: MemberData) => `+${formatNumber(m.production.armas)}`, getTotal: () => `+${formatNumber(familyTotals.produccionArmas)}`, positive: true },
+        { label: "Municion/Hora", getValue: (m: MemberData) => `+${formatNumber(m.production.municion)}`, getTotal: () => `+${formatNumber(familyTotals.produccionMunicion)}`, positive: true },
+        { label: "Alcohol/Hora", getValue: (m: MemberData) => `${m.production.alcohol >= 0 ? '+' : ''}${formatNumber(m.production.alcohol)}`, getTotal: () => `${familyTotals.produccionAlcohol >= 0 ? '+' : ''}${formatNumber(familyTotals.produccionAlcohol)}`, positive: true },
+        { label: "Dolares/Hora", getValue: (m: MemberData) => `+${formatNumber(m.production.dolares)}`, getTotal: () => `+${formatNumber(familyTotals.produccionDolares)}`, positive: true },
     ];
     
     const renderDesktopTable = () => (
