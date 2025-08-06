@@ -1,6 +1,5 @@
 
 
-
 'use server';
 
 import { getTrainingConfigurations, getTroopConfigurations } from '../data';
@@ -35,10 +34,10 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
         const userTrainings = simInput.trainings.map(t => ({
             configuracionEntrenamientoId: t.id,
             nivel: t.level,
-            configuracion: trainingConfigsMap.get(t.id)!
+            configuracion: trainingConfigsMap.get(t.id)!,
         }));
 
-        return (simInput.troops as (TroopData & {cantidad?: number})[]).map((troop) => {
+        return (simInput.troops).map((troop: TroopData) => {
             const config = troopConfigsMap.get(troop.id);
             if (!config) return null;
             const { ataqueActual, defensaActual } = calcularStatsTropaConBonus(config, userTrainings as any);
@@ -46,7 +45,7 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
                 id: troop.id,
                 nombre: config.nombre,
                 config: config,
-                quantity: troop.quantity ?? troop.cantidad ?? 0,
+                quantity: troop.quantity,
                 attack: ataqueActual,
                 defense: defensaActual,
             };
@@ -58,8 +57,8 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
     
     const bigIntReplacer = (key: string, value: unknown) => typeof value === 'bigint' ? value.toString() : value;
 
-    const initialAttackerArmy = JSON.parse(JSON.stringify(attackerArmy, bigIntReplacer));
-    const initialDefenderArmy = JSON.parse(JSON.stringify(defenderArmy, bigIntReplacer));
+    const initialAttackerArmy: ArmyUnit[] = JSON.parse(JSON.stringify(attackerArmy, bigIntReplacer));
+    const initialDefenderArmy: ArmyUnit[] = JSON.parse(JSON.stringify(defenderArmy, bigIntReplacer));
 
     const honorAtacante = attacker.trainings.find(t => t.id === 'honor')?.level || 0;
     const honorDefensor = defender.trainings.find(t => t.id === 'honor')?.level || 0;
