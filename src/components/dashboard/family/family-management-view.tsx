@@ -9,7 +9,7 @@ import { FamilyRole } from "@prisma/client";
 import { useTransition } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Crown, Shield, User as UserIcon, AlertCircle, Trash2, Loader2, Check, MoreVertical } from "lucide-react";
+import { ArrowLeft, AlertCircle, Trash2, Loader2, Check, MoreVertical } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -211,8 +211,6 @@ function MemberActions({ member, familyId, currentUserId }: { member: FullFamily
 
 
 export function FamilyManagementView({ family, currentUserId }: FamilyManagementViewProps) {
-    const isMobile = useIsMobile();
-    
     const sortedMembers = [...family.members].sort((a, b) => {
         if (a.role === FamilyRole.LEADER) return -1;
         if (b.role === FamilyRole.LEADER) return 1;

@@ -1,7 +1,7 @@
 
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FullFamilyInvitation } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
