@@ -1,9 +1,7 @@
 
 
-
-import type { UserWithProgress } from "../data";
 import prisma from "../prisma/prisma";
-import type { FullPropiedad } from "../types";
+import type { FullPropiedad, UserWithProgress } from "../types";
 import { EntrenamientoUsuario, ConfiguracionEntrenamiento } from "@prisma/client";
 
 export function calcularPuntosHabitaciones(propiedades: FullPropiedad[]): number {
