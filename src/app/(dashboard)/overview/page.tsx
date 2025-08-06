@@ -5,6 +5,8 @@ import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { OverviewView } from "@/components/dashboard/overview-view";
 import { getRoomConfigurations, getTroopConfigurations } from "@/lib/data";
+import React from "react";
+import { PropertyProvider } from "@/contexts/property-context";
 
 function OverviewLoading() {
     return (
@@ -35,17 +37,19 @@ export default async function OverviewPage() {
         getTroopConfigurations()
     ]);
 
-    const allRoomConfigs = allRooms.map(r => ({ id: r.id, nombre: r.nombre }));
+    const allRoomConfigs = allRooms.map(r => ({ id: r.id, nombre: r.nombre, urlImagen: r.urlImagen }));
 
     return (
         <div className="main-view h-full">
-          <Suspense fallback={<OverviewLoading/>}>
-              <OverviewView 
-                user={user} 
-                allRooms={allRoomConfigs} 
-                allTroops={allTroops} 
-              />
-          </Suspense>
+            <PropertyProvider properties={user.propiedades}>
+                <Suspense fallback={<OverviewLoading/>}>
+                    <OverviewView 
+                        user={user} 
+                        allRooms={allRoomConfigs} 
+                        allTroops={allTroops} 
+                    />
+                </Suspense>
+            </PropertyProvider>
         </div>
     )
 }
