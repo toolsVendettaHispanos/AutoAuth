@@ -8,6 +8,7 @@ import { getSessionUser } from "../auth";
 import { getTroopConfigurations } from "../data";
 import { calcularTiempoReclutamiento } from "../formulas/troop-formulas";
 import { ID_CAMPO_ENTRENAMIENTO, ID_SEGURIDAD, TROOP_TYPE_DEFENSE } from "../constants";
+import type { FullPropiedad, FullHabitacionUsuario } from "../types";
 
 
 export async function iniciarReclutamiento(propiedadId: string, tropaId: string, cantidad: number) {
@@ -21,7 +22,7 @@ export async function iniciarReclutamiento(propiedadId: string, tropaId: string,
         return { error: 'La cantidad debe ser mayor que cero.' };
     }
     
-    const propiedadActual = user.propiedades.find(p => p.id === propiedadId);
+    const propiedadActual = user.propiedades.find((p: FullPropiedad) => p.id === propiedadId);
     if (!propiedadActual) {
         return { error: 'Propiedad no encontrada para este usuario.' };
     }
@@ -41,7 +42,7 @@ export async function iniciarReclutamiento(propiedadId: string, tropaId: string,
         return { error: 'Las unidades de defensa se entrenan en la sección de Seguridad.' };
     }
 
-    const nivelCampoEntrenamiento = propiedadActual.habitaciones.find(h => h.configuracionHabitacionId === ID_CAMPO_ENTRENAMIENTO)?.nivel || 1;
+    const nivelCampoEntrenamiento = propiedadActual.habitaciones.find((h: FullHabitacionUsuario) => h.configuracionHabitacionId === ID_CAMPO_ENTRENAMIENTO)?.nivel || 1;
 
     const costoArmasTotal = Number(config.costoArmas) * cantidad;
     const costoMunicionTotal = Number(config.costoMunicion) * cantidad;
@@ -104,7 +105,7 @@ export async function iniciarEntrenamientoSeguridad(propiedadId: string, tropaId
         return { error: 'La cantidad debe ser mayor que cero.' };
     }
     
-    const propiedadActual = user.propiedades.find(p => p.id === propiedadId);
+    const propiedadActual = user.propiedades.find((p: FullPropiedad) => p.id === propiedadId);
     if (!propiedadActual) {
         return { error: 'Propiedad no encontrada para este usuario.' };
     }
@@ -124,7 +125,7 @@ export async function iniciarEntrenamientoSeguridad(propiedadId: string, tropaId
         return { error: 'Esta tropa no es una unidad de defensa.' };
     }
 
-    const nivelSeguridad = propiedadActual.habitaciones.find(h => h.configuracionHabitacionId === ID_SEGURIDAD)?.nivel || 1;
+    const nivelSeguridad = propiedadActual.habitaciones.find((h: FullHabitacionUsuario) => h.configuracionHabitacionId === ID_SEGURIDAD)?.nivel || 1;
 
     const costoArmasTotal = Number(config.costoArmas) * cantidad;
     const costoMunicionTotal = Number(config.costoMunicion) * cantidad;
