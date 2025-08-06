@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { UserWithProgress, FullPropiedad, ColaConstruccion, FullConfiguracionTropa } from '@/lib/types';
+import type { UserWithProgress, FullPropiedad, ColaConstruccion } from '@/lib/types';
 import { ConstructionStatus } from './construction-status';
 import { RecruitmentStatus } from './recruitment-status';
 import { TrainingStatus } from './training-status';

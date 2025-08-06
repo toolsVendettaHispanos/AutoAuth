@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useProperty } from "@/contexts/property-context"
 import { calcularCostosNivel, calcularTiempoConstruccion } from "@/lib/formulas/room-formulas"
-import type { FullConfiguracionHabitacion, UserWithProgress, FullPropiedad } from "@/lib/types"
+import type { FullConfiguracionHabitacion, FullPropiedad } from "@/lib/types"
 import { ID_OFICINA_JEFE, MAX_CONSTRUCTION_QUEUE_SIZE, ROOM_ORDER } from "@/lib/constants"
 import { RoomCard } from "./room-card"
 
