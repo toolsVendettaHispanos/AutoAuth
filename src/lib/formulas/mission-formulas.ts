@@ -1,6 +1,6 @@
 
+
 import type { ConfiguracionTropa } from "@prisma/client";
-import { ID_TROPA_ESPIA } from "../constants";
 
 interface Coordenadas {
     ciudad: number;
@@ -47,7 +47,7 @@ export function calcularVelocidadFlota(
 }
 
 
-export function calcularDuracionViaje(distancia: number, velocidadFlota: number, tropasEnviadas: string[]): number {
+export function calcularDuracionViaje(distancia: number, velocidadFlota: number): number {
     if (velocidadFlota <= 0) {
         return 86400 * 30; // 30 días como fallback.
     }

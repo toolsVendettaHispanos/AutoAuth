@@ -43,26 +43,23 @@ export function TechnologyTreeView({ user, rooms, trainings, troops }: Technolog
         return isUnlocked ? 'unlocked' : 'locked';
     };
 
-    const processRequirements = (reqs: any[], type: 'room' | 'training' | 'troop') => {
+    const processRequirements = (reqs: {requiredRoomId?: string, requiredLevel?: number, requiredTrainingId?: string}[], type: 'room' | 'training' | 'troop') => {
         return reqs.map(req => {
-            let reqId, reqLevel, reqType, nameMap, userLevelMap;
+            let reqId, reqLevel, nameMap, userLevelMap;
             
             if(type === 'room') {
                 reqId = req.requiredRoomId;
                 reqLevel = req.requiredLevel;
-                reqType = 'room';
                 nameMap = roomMap;
                 userLevelMap = userRoomsMap;
             } else if (type === 'training') {
                 reqId = req.requiredTrainingId;
                 reqLevel = req.requiredLevel;
-                reqType = 'training';
                 nameMap = trainingMap;
                 userLevelMap = userTrainingsMap;
             } else { // troop
                 reqId = req;
                 reqLevel = 1; // Troops just need the training unlocked
-                reqType = 'training';
                 nameMap = trainingMap;
                 userLevelMap = userTrainingsMap;
             }
@@ -76,15 +73,15 @@ export function TechnologyTreeView({ user, rooms, trainings, troops }: Technolog
         });
     }
 
-    const renderItems = (items: any[], type: Category) => {
+    const renderItems = (items: (FullConfiguracionHabitacion | FullConfiguracionTropa | FullConfiguracionEntrenamiento)[], type: Category) => {
         return items.map((item, index) => {
-            const requirements = type === 'rooms' ? processRequirements(item.requisitos, 'room')
-                               : type === 'trainings' ? processRequirements(item.requisitos, 'training')
-                               : processRequirements(item.requisitos || [], 'troop');
+            const requirements = type === 'rooms' ? processRequirements((item as FullConfiguracionHabitacion).requisitos, 'room')
+                               : type === 'trainings' ? processRequirements((item as FullConfiguracionEntrenamiento).requisitos, 'training')
+                               : processRequirements((item as FullConfiguracionTropa).requisitos || [], 'troop');
             
             const status = type === 'rooms' ? getStatus(requirements.map(r => ({ requiredId: r.id, requiredLevel: r.requiredLevel, type: 'room' })))
                          : type === 'trainings' ? getStatus(requirements.map(r => ({ requiredId: r.id, requiredLevel: r.requiredLevel, type: 'training' })))
-                         : getTroopStatus(item.requisitos || []);
+                         : getTroopStatus((item as FullConfiguracionTropa).requisitos || []);
 
             const isAvailable = status === 'locked' && requirements.every(r => (userTrainingsMap.get(r.id) || 0) >= r.requiredLevel);
             const finalStatus = status === 'unlocked' ? 'unlocked' : (isAvailable ? 'available' : 'locked');

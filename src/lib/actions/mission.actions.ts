@@ -102,7 +102,7 @@ export async function enviarMision(input: MissionInput) {
     const distancia = calcularDistancia(origenCoordsVirtuales, destinoCoordsVirtuales);
     
     const velocidadFlota = await calcularVelocidadFlota(tropas, troopConfigsMap);
-    const duracionViaje = calcularDuracionViaje(distancia, velocidadFlota, tropas.map(t => t.id));
+    const duracionViaje = calcularDuracionViaje(distancia, velocidadFlota);
     
     const fechaInicio = new Date();
     const fechaLlegada = new Date(fechaInicio.getTime() + duracionViaje * 1000);

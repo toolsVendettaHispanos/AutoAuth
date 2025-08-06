@@ -1,19 +1,19 @@
 
 
+
 'use client';
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { DeleteConfigButton } from "./delete-config-button";
 import { deleteTroopConfig } from "@/lib/actions/admin.actions";
-import { FullConfiguracionEntrenamiento, FullConfiguracionTropa } from "@/lib/data";
+import { FullConfiguracionTropa } from "@/lib/data";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 
 interface TroopConfigTableProps {
     initialData: FullConfiguracionTropa[];
-    allTrainings: FullConfiguracionEntrenamiento[];
-    tiposTropa: string[];
 }
 
 export function TroopConfigTable({ initialData }: TroopConfigTableProps) {

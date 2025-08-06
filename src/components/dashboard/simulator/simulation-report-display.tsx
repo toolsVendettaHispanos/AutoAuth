@@ -1,11 +1,10 @@
 
 'use client';
 
-import type { BattleReport, CombatStats } from '@/lib/types/simulation.types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import type { BattleReport } from '@/lib/types/simulation.types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { CheckCircle, XCircle, Swords, Users, Shield, Skull, TrendingDown, Package, Hourglass } from 'lucide-react';
+import { CheckCircle, XCircle, Swords, Users, Shield, TrendingDown, Package, Hourglass } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 

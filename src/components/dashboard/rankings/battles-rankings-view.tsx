@@ -13,7 +13,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { Swords } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { FullBattleReport } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { BattleReport } from '@/lib/types/simulation.types';

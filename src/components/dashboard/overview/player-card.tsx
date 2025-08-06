@@ -2,29 +2,16 @@
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardTitle } from "@/components/ui/card";
 import type { UserWithProgress } from "@/lib/types";
-import { Crown, Shield, User as UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { FamilyRole } from "@prisma/client";
 
 interface PlayerCardProps {
     user: UserWithProgress;
 }
 
-const roleIcons: Record<FamilyRole, React.ReactNode> = {
-    [FamilyRole.LEADER]: <Crown className="h-4 w-4 text-amber-400" />,
-    [FamilyRole.CO_LEADER]: <Shield className="h-4 w-4 text-blue-400" />,
-    [FamilyRole.MEMBER]: <UserIcon className="h-4 w-4 text-muted-foreground" />,
-}
-
 export function PlayerCard({ user }: PlayerCardProps) {
-    // Simulating progress towards the next level/rank
-    const progress = ( (user.puntuacion?.puntosTotales || 0) % 1000) / 10;
-
     return (
          <Card className="group relative overflow-hidden h-full flex items-center p-4 transition-all duration-300">
             <div className="absolute inset-0 bg-black/50 z-0">

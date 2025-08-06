@@ -1,8 +1,9 @@
 // In a real app, you'd use a library like next-auth or a custom solution.
 // For this mock, we'll just simulate a session.
 
-import type { UserWithProgress } from './data';
 import { getUserWithProgressByUsername } from './data';
+import type { UserWithProgress } from './types';
+
 
 export async function getSessionUser(): Promise<UserWithProgress | null> {
     // Simulate checking for a session cookie or token

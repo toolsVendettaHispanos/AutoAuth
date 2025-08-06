@@ -1,9 +1,10 @@
 
+
 'use client'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { FullFamily } from "@/lib/types";
+import type { FullFamily, UserWithProgress } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -32,10 +33,33 @@ function formatNumber(num: number | bigint): string {
   return Number(num).toLocaleString('de-DE');
 }
 
+type MemberData = {
+    userId: string;
+    familyId: string;
+    role: FamilyRole;
+    createdAt: Date;
+    user: UserWithProgress;
+    production: {
+        armas: number;
+        municion: number;
+        alcohol: number;
+        dolares: number;
+    };
+    roomLevels: Map<string, number>;
+    trainingLevels: Map<string, number>;
+    troops: Map<string, number>;
+    totalResources: {
+        armas: number;
+        municion: number;
+        alcohol: number;
+        dolares: number;
+    };
+}
+
 export function FamilyGlobalView({ family }: FamilyGlobalViewProps) {
     const isMobile = useIsMobile();
     const [openAccordions, setOpenAccordions] = useState<string[]>(['puntos']);
-    
+
     const membersData = useMemo(() => {
         return family.members.map(member => {
             const production = member.user.propiedades.reduce((acc, p) => {
@@ -84,12 +108,9 @@ export function FamilyGlobalView({ family }: FamilyGlobalViewProps) {
                     acc.dolares += Number(p.dolares);
                     return acc;
                 }, { armas: 0, municion: 0, alcohol: 0, dolares: 0 }),
-            }
+            };
         });
     }, [family.members]);
-    
-    type MemberData = (typeof membersData)[0];
-
 
     const familyTotals = useMemo(() => {
         return membersData.reduce((acc, member) => {

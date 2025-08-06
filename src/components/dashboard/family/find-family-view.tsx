@@ -20,7 +20,6 @@ import { acceptFamilyInvitation } from "@/lib/actions/family.actions";
 interface FindFamilyViewProps {
     families: FullFamily[];
     userInvitations: FullFamilyInvitation[];
-    currentUserId: string;
 }
 
 function ActionButton({ familyId, userInvitations }: { familyId: string, userInvitations: FullFamilyInvitation[] }) {

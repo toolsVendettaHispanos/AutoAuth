@@ -5,8 +5,9 @@
 import prisma from "../prisma/prisma";
 import { runBattleSimulation } from "./simulation.actions";
 import { ColaMisiones, MessageCategory } from "@prisma/client";
-import type { SimulationInput, BattleReport, EspionageReportDetails } from "../types/simulation.types";
+import type { SimulationInput, BattleReport } from "../types/simulation.types";
 import { ID_TROPA_ESPIA } from "../constants";
+import { EspionageReportDetails, MisionTropas } from "../types";
 
 export async function handleEspionageMission(mision: ColaMisiones) {
     const atacante = await prisma.user.findUnique({ 
@@ -67,11 +68,11 @@ export async function handleEspionageMission(mision: ColaMisiones) {
         return;
     }
 
-    const attackerTroops = (mision.tropas as any[]).filter(t => t.id === ID_TROPA_ESPIA);
+    const attackerTroops = (mision.tropas as MisionTropas).filter((t: {id: string}) => t.id === ID_TROPA_ESPIA);
     const defenderAllTroops = [...propiedadDefensora.TropaUsuario, ...propiedadDefensora.TropaSeguridadUsuario];
 
     const attackerInput: SimulationInput = {
-        troops: attackerTroops.map(t => ({ id: t.id, quantity: t.cantidad })),
+        troops: attackerTroops.map((t: {id: string, cantidad: number}) => ({ id: t.id, quantity: t.cantidad })),
         trainings: atacante.entrenamientos.map(t => ({ id: t.configuracionEntrenamientoId, level: t.nivel })),
         defenses: [],
         buildingsLevel: 1, 
@@ -113,8 +114,14 @@ export async function handleEspionageMission(mision: ColaMisiones) {
         intel: intel
     };
     
-    const survivingSpies = combatReport.rounds[combatReport.rounds.length - 1].attacker.troops.map(t => ({ id: t.id, cantidad: t.initialQuantity - t.lostQuantity })).filter(t => t.cantidad > 0);
-    const nonSpyTroops = (mision.tropas as any[]).filter(t => t.id !== ID_TROPA_ESPIA);
+    let survivingSpies: { id: string, cantidad: number }[] = [];
+    if (combatReport.rounds.length > 0) {
+        survivingSpies = combatReport.rounds[combatReport.rounds.length - 1].attacker.troops
+            .map(t => ({ id: t.id, cantidad: t.initialQuantity - t.lostQuantity }))
+            .filter(t => t.cantidad > 0);
+    }
+    
+    const nonSpyTroops = (mision.tropas as MisionTropas).filter((t: {id: string}) => t.id !== ID_TROPA_ESPIA);
     const tropaRegreso = [...survivingSpies, ...nonSpyTroops];
 
     await prisma.$transaction(async (tx) => {
@@ -152,7 +159,7 @@ export async function handleEspionageMission(mision: ColaMisiones) {
             where: { id: mision.id },
             data: {
                 tipoMision: 'REGRESO',
-                tropas: tropaRegreso as any,
+                tropas: tropaRegreso,
                 fechaRegreso: new Date(new Date().getTime() + mision.duracionViaje * 1000)
             }
         });

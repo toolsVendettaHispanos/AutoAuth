@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose, DialogFooter } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { calcularCostosNivel, calcularProduccionRecurso } from '@/lib/formulas/room-formulas';
+import { X } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
@@ -55,7 +56,7 @@ export function RoomDetailsModal({ room }: RoomDetailsModalProps) {
             <div className="w-24 h-20 relative rounded-md overflow-hidden border flex-shrink-0">
                 <Image src={room.urlImagen} alt={room.nombre} fill className="object-cover" data-ai-hint="game building icon" />
             </div>
-            <div className="flex-grow">
+            <div>
                 <DialogTitle className="text-2xl">{room.nombre}</DialogTitle>
                 <DialogDescription>
                 Nivel actual: <span className="font-bold text-primary">{room.nivel}</span>

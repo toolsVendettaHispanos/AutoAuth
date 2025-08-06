@@ -3,15 +3,14 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { UserProfileData } from "@/lib/types";
-import { Send, Target, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { calcularPuntosPropiedad } from "@/lib/formulas/score-formulas";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -31,7 +30,7 @@ export function ProfileView({ user }: ProfileViewProps) {
         if (!user.propiedades) return [];
         return user.propiedades.map(prop => ({
             ...prop,
-            puntos: calcularPuntosPropiedad(prop as any)
+            puntos: calcularPuntosPropiedad(prop)
         })).sort((a, b) => b.puntos - a.puntos);
     }, [user.propiedades]);
 

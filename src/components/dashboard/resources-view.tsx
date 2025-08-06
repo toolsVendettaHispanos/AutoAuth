@@ -156,7 +156,6 @@ export function ResourcesView({ user }: ResourcesViewProps) {
                  {storageCards.map((card, index) => {
                      const data = storageAndResourceData[card.resourceKey as keyof typeof storageAndResourceData];
                      const progress = data.capacidad > 0 ? (data.actual / data.capacidad) * 100 : 0;
-                     const safeProgress = data.capacidad > 0 ? (data.seguro / data.capacidad) * 100 : 0;
                      return (
                         <Card key={card.title} className="animate-fade-in-up relative overflow-hidden" style={{ animationDelay: `${index * 100}ms`}}>
                              <CardHeader className="flex-row items-center gap-3">

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { getPropertyOwner } from '@/lib/data';
-import type { UserWithProgress, FullConfiguracionTropa, FullTropaUsuario } from '@/lib/types';
+import type { FullConfiguracionTropa, FullTropaUsuario, MissionInput } from '@/lib/types';
 import { debounce } from 'lodash';
 import { Loader2, User, UserX, Clock, Send, Users, Package, PlaneTakeoff, Minus, Plus, DollarSign } from 'lucide-react';
 import Image from 'next/image';
@@ -58,7 +58,7 @@ function formatNumber(num: number): string {
     return num.toLocaleString('de-DE');
 }
 
-export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, troopConfigs: FullConfiguracionTropa[] }) {
+export function MissionsView({ troopConfigs }: { troopConfigs: FullConfiguracionTropa[] }) {
     const { selectedProperty } = useProperty();
     const { toast } = useToast();
     const searchParams = useSearchParams();
@@ -136,7 +136,7 @@ export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, t
             edificio: parseInt(coordinates.edificio, 10),
         });
         const distancia = calcularDistancia(origenCoords, destinoCoords);
-        const duracion = calcularDuracionViaje(distancia, velocidad, activeTroops.map(t => t.id));
+        const duracion = calcularDuracionViaje(distancia, velocidad);
 
         const tropasConSalario = activeTroops.map((t: TroopInput) => {
             const config = troopConfigsMap.get(t.id);
@@ -414,3 +414,4 @@ export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, t
         </div>
     );
 }
+

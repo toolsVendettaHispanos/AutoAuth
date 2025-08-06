@@ -1,6 +1,7 @@
 
 
 
+
 import type { ConfiguracionTropa, TropaBonusContrincante } from '@prisma/client';
 
 // --- INPUT TYPES ---

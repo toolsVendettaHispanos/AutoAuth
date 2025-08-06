@@ -15,15 +15,25 @@ import { Building, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { FullPropiedad } from '@/lib/types'
 import { useProperty } from '@/contexts/property-context'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 interface PropertySelectorProps {
   properties: FullPropiedad[]
 }
 
 export function PropertySelector({ properties }: PropertySelectorProps) {
+  const router = useRouter();
   const { selectedProperty, setSelectedPropertyById } = useProperty();
 
-  const handlePropertyChange = (direction: 'next' | 'prev') => {
+  const changeProperty = (propertyId: string) => {
+    const property = properties.find(p => p.id === propertyId);
+    if (property) {
+      setSelectedPropertyById(property.id);
+      router.push(`/rooms/${property.ciudad}:${property.barrio}:${property.edificio}`);
+    }
+  }
+
+  const handleCycleProperty = (direction: 'next' | 'prev') => {
     if (!selectedProperty || properties.length <= 1) return;
 
     const currentIndex = properties.findIndex(p => p.id === selectedProperty.id);
@@ -36,8 +46,8 @@ export function PropertySelector({ properties }: PropertySelectorProps) {
         nextIndex = (currentIndex - 1 + properties.length) % properties.length;
     }
     
-    const nextPropertyId = properties[nextIndex].id;
-    setSelectedPropertyById(nextPropertyId);
+    const nextProperty = properties[nextIndex];
+    changeProperty(nextProperty.id);
   }
 
   if (!properties || properties.length === 0) {
@@ -61,7 +71,7 @@ export function PropertySelector({ properties }: PropertySelectorProps) {
 
   return (
     <div className="p-2 flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 transition-colors" onClick={() => handlePropertyChange('prev')}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 transition-colors" onClick={() => handleCycleProperty('prev')}>
             <ChevronLeft className="h-4 w-4" />
             <span className="sr-only">Propiedad anterior</span>
         </Button>
@@ -84,7 +94,7 @@ export function PropertySelector({ properties }: PropertySelectorProps) {
           {properties.map((property) => (
             <DropdownMenuItem
               key={property.id}
-              onSelect={() => setSelectedPropertyById(property.id)}
+              onSelect={() => changeProperty(property.id)}
             >
               <Check
                 className={cn('mr-2 h-4 w-4',
@@ -93,14 +103,13 @@ export function PropertySelector({ properties }: PropertySelectorProps) {
               />
               <span>{property.nombre} [{property.ciudad}:{property.barrio}:{property.edificio}]</span>
             </DropdownMenuItem>
-          ))}
+          ))}\
         </DropdownMenuContent>
       </DropdownMenu>
-       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 transition-colors" onClick={() => handlePropertyChange('next')}>
+       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 transition-colors" onClick={() => handleCycleProperty('next')}>
             <ChevronRight className="h-4 w-4" />
             <span className="sr-only">Siguiente propiedad</span>
         </Button>
     </div>
   )
 }
-

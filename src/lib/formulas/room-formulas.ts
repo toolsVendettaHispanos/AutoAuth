@@ -1,7 +1,8 @@
 
 
+
 import type { FullConfiguracionHabitacion, FullPropiedad, ResourceCost } from '../types';
-import { BASE_STORAGE_CAPACITY, ID_CAMPO_ENTRENAMIENTO, ID_ESCUELA_ESPECIALIZACION, ID_OFICINA_JEFE, STORAGE_CAPACITY_PER_LEVEL } from '../constants';
+import { BASE_STORAGE_CAPACITY, ID_OFICINA_JEFE, STORAGE_CAPACITY_PER_LEVEL } from '../constants';
 
 export interface ProductionData {
   produccionBruta: number;
@@ -152,13 +153,13 @@ export function calcularProduccionTotalPorSegundo(propiedad: FullPropiedad): { a
   });
 
   let produccionDolaresTabernaPorHora = calcularProduccionRecurso('taberna', nivelTaberna);
-  let consumoAlcoholTaberna = calcularConsumoAlcoholTaberna(produccionDolaresTabernaPorHora);
+  const consumoAlcoholTaberna = calcularConsumoAlcoholTaberna(produccionDolaresTabernaPorHora);
   
   let produccionDolaresContrabandoPorHora = calcularProduccionRecurso('contrabando', nivelContrabando);
-  let consumoAlcoholContrabando = calcularConsumoAlcoholContrabando(produccionDolaresContrabandoPorHora);
+  const consumoAlcoholContrabando = calcularConsumoAlcoholContrabando(produccionDolaresContrabandoPorHora);
   
-  let consumoTotalAlcohol = consumoAlcoholTaberna + consumoAlcoholContrabando;
-  let produccionNetaAlcoholPorHora = produccionAlcoholBrutaPorHora - consumoTotalAlcohol;
+  const consumoTotalAlcohol = consumoAlcoholTaberna + consumoAlcoholContrabando;
+  const produccionNetaAlcoholPorHora = produccionAlcoholBrutaPorHora - consumoTotalAlcohol;
 
 
   if (produccionNetaAlcoholPorHora < 0) {

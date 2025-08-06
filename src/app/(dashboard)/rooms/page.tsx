@@ -1,45 +1,29 @@
 
-import { RoomsView } from "@/components/dashboard/rooms-view"
-import { Suspense } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { getSessionUser } from "@/lib/auth"
-import { getRoomConfigurations } from "@/lib/data"
-import { redirect } from "next/navigation"
-import { PropertyProvider } from "@/contexts/property-context"
+import { getSessionUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { FullPropiedad } from "@/lib/types";
 
-function RoomsLoading() {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight font-heading"><Skeleton className="h-8 w-64 mb-2 shimmer" /></h2>
-            <Skeleton className="h-4 w-80 shimmer" />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(9)].map((_, i) => (
-                <Skeleton key={i} className="h-48 w-full shimmer" />
-            ))}
-        </div>
-      </div>
-    )
-  }
-
-export default async function RoomsPage() {
+// This page will now redirect to the primary property's specific room page.
+export default async function RoomsRedirectPage() {
   const user = await getSessionUser();
   if (!user) {
     redirect('/');
   }
 
-  const allRoomConfigs = await getRoomConfigurations();
+  if (!user.propiedades || user.propiedades.length === 0) {
+    // Should not happen, but as a fallback, we can show a message.
+    // Ideally, we'd redirect to a page where they can create a property.
+    return (
+        <div className="main-view">
+            <h2 className="text-3xl font-bold tracking-tight">Sin Propiedades</h2>
+            <p>No tienes ninguna propiedad para gestionar.</p>
+        </div>
+    );
+  }
 
-  return (
-    <div className="main-view">
-        <PropertyProvider properties={user.propiedades}>
-            <Suspense fallback={<RoomsLoading />}>
-                <RoomsView user={user} allRoomConfigs={allRoomConfigs} />
-            </Suspense>
-        </PropertyProvider>
-    </div>
-  )
+  const primaryProperty = user.propiedades.find((p: FullPropiedad) => p.nombre === 'Propiedad Principal') || user.propiedades[0];
+  
+  const { ciudad, barrio, edificio } = primaryProperty;
+  
+  redirect(`/rooms/${ciudad}:${barrio}:${edificio}`);
 }

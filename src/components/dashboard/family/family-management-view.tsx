@@ -1,5 +1,6 @@
 
 
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -211,6 +212,7 @@ function MemberActions({ member, familyId, currentUserId }: { member: FullFamily
 
 
 export function FamilyManagementView({ family, currentUserId }: FamilyManagementViewProps) {
+    
     const sortedMembers = [...family.members].sort((a, b) => {
         if (a.role === FamilyRole.LEADER) return -1;
         if (b.role === FamilyRole.LEADER) return 1;

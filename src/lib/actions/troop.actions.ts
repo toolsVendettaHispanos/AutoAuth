@@ -88,8 +88,8 @@ export async function iniciarReclutamiento(propiedadId: string, tropaId: string,
   
       return { success: `¡El reclutamiento de ${cantidad} x ${config.nombre} ha comenzado!` };
     } catch (error) {
-      console.error('Error durante la transacción de reclutamiento:', error);
-      return { error: 'Ocurrió un error en el servidor al intentar reclutar.' };
+      console.error('Error durante la transacci\u00f3n de reclutamiento:', error);
+      return { error: 'Ocurri\u00f3 un error en el servidor al intentar reclutar.' };
     }
 }
 
@@ -172,8 +172,8 @@ export async function iniciarEntrenamientoSeguridad(propiedadId: string, tropaId
   
       return { success: `¡El entrenamiento de ${cantidad} x ${config.nombre} ha comenzado!` };
     } catch (error) {
-      console.error('Error durante la transacción de entrenamiento de seguridad:', error);
-      return { error: 'Ocurrió un error en el servidor al intentar entrenar la seguridad.' };
+      console.error('Error durante la transacci\u00f3n de entrenamiento de seguridad:', error);
+      return { error: 'Ocurri\u00f3 un error en el servidor al intentar entrenar la seguridad.' };
     }
 }
 
@@ -200,7 +200,12 @@ export async function assignTroopsToSecurity(propertyId: string, troopId: string
     try {
         await prisma.$transaction(async (tx) => {
             await tx.tropaUsuario.update({
-                where: { id: troopInProperty.id },
+                where: { 
+                    propiedadId_configuracionTropaId: {
+                        propiedadId: propertyId,
+                        configuracionTropaId: troopId
+                    }
+                 },
                 data: { cantidad: { decrement: quantity } }
             });
 
@@ -210,7 +215,12 @@ export async function assignTroopsToSecurity(propertyId: string, troopId: string
 
             if(existingSecurityTroop) {
                 await tx.tropaSeguridadUsuario.update({
-                    where: { id: existingSecurityTroop.id },
+                    where: { 
+                        propiedadId_configuracionTropaId: {
+                            propiedadId: propertyId,
+                            configuracionTropaId: troopId
+                        }
+                     },
                     data: { cantidad: { increment: quantity } }
                 });
             } else {
@@ -255,7 +265,12 @@ export async function withdrawTroopsFromSecurity(propertyId: string, troopId: st
     try {
         await prisma.$transaction(async (tx) => {
             await tx.tropaSeguridadUsuario.update({
-                where: { id: securityTroop.id },
+                where: { 
+                    propiedadId_configuracionTropaId: {
+                        propiedadId: propertyId,
+                        configuracionTropaId: troopId
+                    }
+                 },
                 data: { cantidad: { decrement: quantity } }
             });
 
@@ -265,7 +280,12 @@ export async function withdrawTroopsFromSecurity(propertyId: string, troopId: st
 
             if(existingTroop) {
                 await tx.tropaUsuario.update({
-                    where: { id: existingTroop.id },
+                    where: { 
+                        propiedadId_configuracionTropaId: {
+                            propiedadId: propertyId,
+                            configuracionTropaId: troopId
+                        }
+                     },
                     data: { cantidad: { increment: quantity } }
                 });
             } else {

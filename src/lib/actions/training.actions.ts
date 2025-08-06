@@ -1,5 +1,6 @@
 
 
+
 'use server';
 
 import { revalidatePath } from "next/cache";
@@ -8,7 +9,7 @@ import { getSessionUser } from "../auth";
 import { getTrainingConfigurations } from "../data";
 import { calcularCostosEntrenamiento, calcularTiempoEntrenamiento } from "../formulas/training-formulas";
 import { ID_ESCUELA_ESPECIALIZACION } from "../constants";
-import type { FullConfiguracionEntrenamiento, UserWithProgress, FullPropiedad, FullHabitacionUsuario } from '../types';
+import type { FullPropiedad, FullHabitacionUsuario } from '../types';
 import { EntrenamientoUsuario, ConfiguracionEntrenamiento } from "@prisma/client";
 
 export async function iniciarEntrenamiento(trainingId: string, propertyId: string) {
@@ -89,7 +90,7 @@ export async function iniciarEntrenamiento(trainingId: string, propertyId: strin
   
       return { success: `¡El entrenamiento de ${config.nombre} a nivel ${nivelSiguiente} ha comenzado!` };
     } catch (error) {
-      console.error('Error durante la transacción de entrenamiento:', error);
-      return { error: 'Ocurrió un error en el servidor al intentar entrenar.' };
+      console.error('Error durante la transacci\u00f3n de entrenamiento:', error);
+      return { error: 'Ocurri\u00f3 un error en el servidor al intentar entrenar.' };
     }
 }

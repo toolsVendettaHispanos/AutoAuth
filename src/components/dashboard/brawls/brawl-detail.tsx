@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation";
 
 interface BrawlDetailProps {
     report: FullBattleReport;
-    currentUserId: string;
 }
 
 function formatNumber(num: number): string {

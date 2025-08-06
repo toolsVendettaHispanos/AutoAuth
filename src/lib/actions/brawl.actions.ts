@@ -1,14 +1,13 @@
 
-
-
 'use server'
 
 import prisma from "../prisma/prisma";
 import { runBattleSimulation } from "./simulation.actions";
 import { ColaMisiones, MessageCategory } from "@prisma/client";
-import type { SimulationInput, BattleReport, ResourceCost } from "../types/simulation.types";
 import { getTroopConfigurations } from "../data";
 import { calculateSafeStorage } from "../formulas/room-formulas";
+import { FullPropiedad, MisionTropas } from "../types";
+import type { BattleReport, ResourceCost, SimulationInput } from "../types/simulation.types";
 
 export async function handleAttackMission(mision: ColaMisiones) {
     const atacante = await prisma.user.findUnique({ 
@@ -39,6 +38,8 @@ export async function handleAttackMission(mision: ColaMisiones) {
                 }
             },
             user: true,
+            TropaUsuario: { include: { configuracionTropa: true } },
+            TropaSeguridadUsuario: { include: { configuracionTropa: true } }
         }
     });
 
@@ -78,7 +79,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
         return;
     }
     
-    const attackerTroops = (mision.tropas as any[]).map(t => ({ id: t.id, quantity: t.cantidad }));
+    const attackerTroops = (mision.tropas as MisionTropas).map(t => ({ id: t.id, quantity: t.cantidad }));
 
     const attackerInput: SimulationInput = {
         troops: attackerTroops,
@@ -96,7 +97,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
         propertyCount: defensor.propiedades?.length || 1
     };
 
-    const report = await runBattleSimulation(attackerInput, defenderInput) as BattleReport;
+    const report = await runBattleSimulation(attackerInput, defenderInput);
     
     let tropaRegreso: { id: string, cantidad: number }[];
     let recursosSaqueados: ResourceCost | null = null;
@@ -106,7 +107,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
             .map(t => ({ id: t.id, cantidad: t.initialQuantity - t.lostQuantity }))
             .filter(t => t.cantidad > 0);
     } else {
-        tropaRegreso = (mision.tropas as any[]).map(t => ({ id: t.id, cantidad: t.cantidad }));
+        tropaRegreso = (mision.tropas as MisionTropas).map(t => ({ id: t.id, cantidad: t.cantidad }));
     }
     
     if (report.winner === 'attacker') {
@@ -120,7 +121,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
             return sum + ((config?.capacidad || 0) * troop.cantidad);
         }, 0);
 
-        const safeStorage = calculateSafeStorage(propiedadDefensora as any);
+        const safeStorage = calculateSafeStorage(propiedadDefensora as FullPropiedad);
 
         const lootableResources: ResourceCost = {
             armas: Math.max(0, Number(propiedadDefensora.armas) - safeStorage.armas),
@@ -151,7 +152,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
 
 
     const bigIntReplacer = (key: any, value: any) => typeof value === 'bigint' ? value.toString() : value;
-    const serializableReport = JSON.parse(JSON.stringify(report, bigIntReplacer));
+    const serializableReport = JSON.parse(JSON.stringify(report, bigIntReplacer)) as BattleReport;
 
     const honorGanadoAtacante = report.finalStats.defender.pointsLost;
     const honorGanadoDefensor = report.finalStats.attacker.pointsLost;
@@ -207,8 +208,8 @@ export async function handleAttackMission(mision: ColaMisiones) {
             where: { id: mision.id },
             data: {
                 tipoMision: 'REGRESO',
-                tropas: tropaRegreso as any,
-                recursos: recursosSaqueados as any,
+                tropas: tropaRegreso,
+                recursos: recursosSaqueados || undefined,
                 fechaRegreso: new Date(new Date().getTime() + mision.duracionViaje * 1000)
             }
         });
@@ -269,4 +270,3 @@ export async function handleAttackMission(mision: ColaMisiones) {
         });
     });
 }
-

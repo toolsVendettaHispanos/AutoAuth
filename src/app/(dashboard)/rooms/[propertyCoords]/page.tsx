@@ -1,4 +1,5 @@
 
+
 import { RoomsView } from "@/components/dashboard/rooms-view"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -6,7 +7,6 @@ import { getSessionUser } from "@/lib/auth"
 import { getRoomConfigurations } from "@/lib/data"
 import { redirect } from "next/navigation"
 import { FullPropiedad, PageProps } from "@/lib/types"
-import { PropertyProvider } from "@/contexts/property-context"
 
 function RoomsLoading() {
     return (
@@ -35,7 +35,7 @@ function RoomsLoading() {
     )
   }
 
-export default async function RoomsByCoordsPage({ params }: PageProps<{ propertyCoords: string }>) {
+export default async function RoomsByCoordsPage({ params }: { params: { propertyCoords: string } }) {
   const user = await getSessionUser();
   if (!user) {
     redirect('/');
@@ -57,15 +57,13 @@ export default async function RoomsByCoordsPage({ params }: PageProps<{ property
 
   return (
     <div className="main-view">
-        <PropertyProvider properties={user.propiedades}>
-            <Suspense fallback={<RoomsLoading />}>
-                <RoomsView 
-                    user={user} 
-                    allRoomConfigs={allRoomConfigs} 
-                    initialProperty={propertyFromCoords}
-                />
-            </Suspense>
-        </PropertyProvider>
+        <Suspense fallback={<RoomsLoading />}>
+            <RoomsView 
+                user={user} 
+                allRoomConfigs={allRoomConfigs} 
+                initialProperty={propertyFromCoords}
+            />
+        </Suspense>
     </div>
   )
 }
