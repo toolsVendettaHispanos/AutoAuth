@@ -34,8 +34,8 @@ export async function createFamily(formData: FormData) {
         });
         revalidatePath('/family');
         return { success: `¡Familia "${newFamily.name}" creada con éxito!`, family: newFamily };
-    } catch (error: any) {
-        if (error.code === 'P2002') { // Prisma unique constraint violation
+    } catch (error: unknown) {
+        if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') { // Prisma unique constraint violation
             return { error: "El nombre o el tag de la familia ya están en uso." };
         }
         console.error(error);
@@ -64,8 +64,8 @@ export async function inviteUserToFamily(userIdToInvite: string, familyId: strin
         });
         revalidatePath('/family');
         return { success: "Invitación enviada." };
-    } catch (error: any) {
-         if (error.code === 'P2002') {
+    } catch (error: unknown) {
+         if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
             return { error: "Ya existe una invitación o solicitud para este usuario." };
         }
         console.error(error);
@@ -107,7 +107,7 @@ export async function acceptFamilyInvitation(invitationId: string) {
 
         revalidatePath('/family');
         return { success: "¡Bienvenido a la familia!" };
-    } catch(error) {
+    } catch(error: unknown) {
         console.error(error);
         return { error: "Error al unirse a la familia." };
     }
@@ -168,8 +168,8 @@ export async function applyToFamily(familyId: string) {
         });
         revalidatePath('/family/find');
         return { success: "Solicitud enviada." };
-    } catch (error: any) {
-         if (error.code === 'P2002') {
+    } catch (error: unknown) {
+         if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
             return { error: "Ya has enviado una solicitud a esta familia." };
         }
         console.error(error);
@@ -282,9 +282,9 @@ export async function acceptRequest(invitationId: string) {
         revalidatePath('/family');
         revalidatePath('/family/requests');
         return { success: "¡Nuevo miembro aceptado en la familia!" };
-    } catch(error: any) {
+    } catch(error: unknown) {
         console.error(error);
-        return { error: error.message || "Error al aceptar al miembro." };
+        return { error: (error as Error).message || "Error al aceptar al miembro." };
     }
 }
 
@@ -319,7 +319,7 @@ export async function createFamilyAnnouncement(familyId: string, content: string
 
         revalidatePath('/family');
         return { success: "Anuncio publicado." };
-    } catch (e) {
+    } catch (e: unknown) {
         console.error(e);
         return { error: "Error al publicar el anuncio." };
     }
@@ -340,7 +340,7 @@ export async function updateMemberRole(memberId: string, familyId: string, newRo
         });
         revalidatePath('/family/management');
         return { success: "Rango actualizado correctamente." };
-    } catch (error) {
+    } catch (e: unknown) {
         return { error: "Error al actualizar el rango." };
     }
 }
@@ -364,7 +364,7 @@ export async function transferLeadership(newLeaderId: string, familyId: string) 
         revalidatePath('/family/management');
         revalidatePath('/family');
         return { success: "Liderazgo transferido con éxito." };
-    } catch (error) {
+    } catch (e: unknown) {
         return { error: "Error al transferir el liderazgo." };
     }
 }
@@ -380,7 +380,7 @@ export async function expelMember(memberId: string, familyId: string) {
         });
         revalidatePath('/family/management');
         return { success: "Miembro expulsado." };
-    } catch (error) {
+    } catch (e: unknown) {
         return { error: "Error al expulsar al miembro." };
     }
 }
