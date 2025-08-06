@@ -6,7 +6,7 @@ import { Prisma, PrismaClient, ColaMisiones } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { cache } from 'react';
 import { calculateStorageCapacity, calcularProduccionTotalPorSegundo } from './formulas/room-formulas';
-import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport } from './types';
+import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport, IncomingAttack } from './types';
 
 
 const prisma = new PrismaClient().$extends(withAccelerate())
@@ -526,22 +526,19 @@ export const getUserProfileById = cache(async (userId: string): Promise<UserProf
                     include: {
                         habitaciones: {
                             include: {
-                                configuracionHabitacion: true
+                                configuracionHabitacion: true,
                             }
                         },
                         TropaUsuario: {
                             include: {
-                                configuracionTropa: true
+                                configuracionTropa: true,
                             }
                         },
                         TropaSeguridadUsuario: {
                              include: {
-                                configuracionTropa: true
+                                configuracionTropa: true,
                             }
                         }
-                    },
-                    orderBy: {
-                        nombre: 'asc'
                     }
                 },
                 familyMember: {
@@ -699,7 +696,7 @@ function getTroopsInMissions(missions: ColaMisiones[]): Map<string, number> {
   return troopMap;
 }
 
-export async function getUserWithProgressByUsername(username: string): Promise<UserWithProgress | null> {
+export const getUserWithProgressByUsername = cache(async (username: string): Promise<UserWithProgress | null> => {
     const userInclude = {
         propiedades: {
             include: {
@@ -817,118 +814,96 @@ export async function getUserWithProgressByUsername(username: string): Promise<U
         console.error(`Error fetching user ${username} with progress:`, error);
         return null;
     }
-}
+});
 
-export async function getUserWithProgressById(userId: string): Promise<UserWithProgress | null> {
-    const userInclude = {
-        propiedades: {
-            include: {
-                habitaciones: {
-                    include: {
-                        configuracionHabitacion: {
-                          include: {
-                            requisitos: true
-                          }
-                        }
-                    },
-                     orderBy: {
-                        configuracionHabitacionId: 'asc' as Prisma.SortOrder
-                    }
-                },
-                TropaUsuario: {
-                    include: {
-                        configuracionTropa: true
-                    }
-                },
-                TropaSeguridadUsuario: {
-                    include: {
-                        configuracionTropa: true
-                    }
-                },
-                colaConstruccion: {
-                    orderBy: {
-                        createdAt: 'asc' as Prisma.SortOrder
-                    }
-                },
-                colaReclutamiento: {
-                    include: {
-                        tropaConfig: true
-                    }
-                }
-            }
-        },
-        entrenamientos: {
-            include: {
-                configuracionEntrenamiento: true
-            },
-            orderBy: {
-                configuracionEntrenamientoId: 'asc' as Prisma.SortOrder
-            }
-        },
-        puntuacion: true,
-        misiones: {
-            orderBy: {
-                fechaLlegada: 'asc' as Prisma.SortOrder
-            }
-        },
-        colaEntrenamientos: {
-            include: {
-                entrenamiento: true,
-                propiedad: {
-                    select: { nombre: true }
-                }
-            },
-            orderBy: {
-                fechaFinalizacion: 'asc' as Prisma.SortOrder
-            }
-        },
+export const getPlayerCardData = cache(async (userId: string) => {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: { 
+        id: true,
+        name: true, 
+        title: true, 
+        avatarUrl: true, 
+        puntuacion: true, 
+        lastSeen: true,
         familyMember: {
             include: {
-                family: {
-                    include: {
-                        members: {
-                            include: {
-                                user: {
-                                    select: {
-                                        lastSeen: true
-                                    }
+                family: true
+            }
+        }
+    },
+  });
+});
+
+export const getQueueStatusData = cache(async (propertyId: string) => {
+  return prisma.propiedad.findUnique({
+    where: { id: propertyId },
+    select: {
+      colaConstruccion: { orderBy: { createdAt: 'asc' } },
+      colaReclutamiento: { include: { tropaConfig: true } },
+    },
+  });
+});
+
+export const getIncomingAttacksData = cache(async (userId: string): Promise<IncomingAttack[]> => {
+    return prisma.incomingAttack.findMany({
+        where: { defenderId: userId },
+        orderBy: { arrivalTime: 'asc' },
+    });
+});
+
+export const getFamilyCardData = cache(async (userId: string) => {
+    const familyMember = await prisma.familyMember.findUnique({
+        where: { userId },
+        include: {
+            family: {
+                include: {
+                    members: {
+                        include: {
+                            user: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    avatarUrl: true,
+                                    puntuacion: true
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+    });
+    return familyMember?.family ?? null;
+});
+
+export const getMissionsData = cache(async (userId: string) => {
+    return prisma.colaMisiones.findMany({
+        where: { userId },
+        orderBy: {
+            fechaLlegada: 'asc',
         },
-        _count: {
-            select: {
-                receivedMessages: {
-                    where: { isRead: false }
+    });
+});
+
+export const getGlobalStatsData = cache(async (userId: string) => {
+    return prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            puntuacion: true,
+            entrenamientos: {
+                where: {
+                    configuracionEntrenamientoId: 'honor'
+                },
+                select: {
+                    nivel: true
+                }
+            },
+            _count: {
+                select: {
+                    propiedades: true
                 }
             }
         }
-    };
-    try {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            include: userInclude
-        });
-        
-        if (!user) return null;
-
-        const troopsInMission = getTroopsInMissions(user.misiones);
-
-        if (troopsInMission.size > 0) {
-            user.propiedades.forEach(propiedad => {
-                propiedad.TropaUsuario.forEach(tropaUsuario => {
-                    const inMissionCount = troopsInMission.get(tropaUsuario.configuracionTropaId) || 0;
-                    tropaUsuario.cantidad = Math.max(0, tropaUsuario.cantidad - inMissionCount);
-                });
-            });
-        }
-
-        return user as UserWithProgress | null;
-    } catch (error) {
-        console.error(`Error fetching user with ID ${userId} with progress:`, error);
-        return null;
-    }
-}
+    });
+});
