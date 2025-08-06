@@ -1,5 +1,6 @@
 
 
+
 import type { FullConfiguracionHabitacion, FullPropiedad, ResourceCost } from '../types';
 import { BASE_STORAGE_CAPACITY, ID_CAMPO_ENTRENAMIENTO, ID_ESCUELA_ESPECIALIZACION, ID_OFICINA_JEFE, STORAGE_CAPACITY_PER_LEVEL } from '../constants';
 
