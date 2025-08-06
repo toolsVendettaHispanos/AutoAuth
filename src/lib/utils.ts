@@ -7,14 +7,16 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export function formatNumber(num: number): string {
-  if (num < 1000) {
-    return num.toLocaleString('de-DE');
+    const numberValue = Math.floor(num);
+    if (numberValue < 1000) {
+      return numberValue.toLocaleString('de-DE');
+    }
+    const suffixes = ["", "K", "M", "B", "T"];
+    const i = Math.floor(Math.log10(numberValue) / 3);
+    const shortValue = (numberValue / Math.pow(1000, i));
+    return shortValue.toFixed(i > 0 ? 2 : 0) + suffixes[i];
   }
-  const suffixes = ["", "K", "M", "B", "T"];
-  const i = Math.floor(Math.log10(num) / 3);
-  const shortValue = (num / Math.pow(1000, i));
-  return shortValue.toFixed(i > 0 ? 2 : 0) + suffixes[i];
-}
+  
 
 
 export function formatDuration(seconds: number): string {

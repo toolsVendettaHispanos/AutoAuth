@@ -37,10 +37,6 @@ export default async function OverviewPage() {
   return (
     <div className="main-view h-full space-y-4">
       <Suspense fallback={<OverviewLoading />}>
-        <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
-          <GlobalStatsServer userId={user.id} />
-        </Suspense>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
             <PlayerCardServer userId={user.id} />
@@ -62,6 +58,10 @@ export default async function OverviewPage() {
         
         <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
           <MissionOverviewServer userId={user.id} />
+        </Suspense>
+        
+        <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
+          <GlobalStatsServer userId={user.id} />
         </Suspense>
       </Suspense>
     </div>
