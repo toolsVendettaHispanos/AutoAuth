@@ -1,6 +1,4 @@
 
-
-import prisma from "../prisma/prisma";
 import type { FullPropiedad, UserWithProgress } from "../types";
 import { EntrenamientoUsuario, ConfiguracionEntrenamiento } from "@prisma/client";
 
@@ -14,7 +12,6 @@ export function calcularPuntosHabitaciones(propiedades: FullPropiedad[]): number
     return totalPuntos + puntosPropiedad;
   }, 0);
 }
-
 
 export function calcularPuntosPropiedad(propiedad: FullPropiedad): number {
     if (!propiedad) return 0;

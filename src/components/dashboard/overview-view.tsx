@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import type { UserWithProgress, FullConfiguracionTropa, FullFamilyMember } from "@/lib/types";
 import { IncomingAttacks } from "./incoming-attacks";
-import { TroopOverview } from "./troop-overview";
 import { PlayerCard } from "./overview/player-card";
 import { useProperty } from "@/contexts/property-context";
 import { calcularPoderAtaque } from "@/lib/formulas/score-formulas";
