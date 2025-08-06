@@ -1,7 +1,7 @@
 
 
 import type { User, HabitacionUsuario, EntrenamientoUsuario, TropaUsuario, TropaSeguridadUsuario, ConfiguracionHabitacion, ConfiguracionEntrenamiento, ColaConstruccion, ColaReclutamiento, ConfiguracionTropa as PrismaConfiguracionTropa, Propiedad, PuntuacionUsuario, ColaMisiones as PrismaColaMisiones, Family, FamilyMember, TrainingRequirement, RoomRequirement, TropaBonusContrincante, Message, BattleReport as PrismaBattleReport, Prisma, ColaEntrenamiento, FamilyInvitation, IncomingAttack as PrismaIncomingAttack, FamilyAnnouncement, EspionageReport as PrismaEspionageReport } from '@prisma/client/edge'
-import { BattleReport, EspionageReportDetails, ResourceCost } from './simulation.types';
+import { BattleReport, EspionageReportDetails as EspionageDetailsType, ResourceCost } from './simulation.types';
 
 export type PageProps<T extends Record<string, string> = {}> = {
     params: T;
@@ -13,7 +13,7 @@ export type ColaMisiones = PrismaColaMisiones & { recursos?: ResourceCost | null
 export type ConfiguracionTropa = PrismaConfiguracionTropa & { requisitos: string[] };
 export type { ColaConstruccion };
 export type { ResourceCost };
-export type { EspionageReportDetails };
+export type EspionageReportDetails = EspionageDetailsType;
 
 
 export type PropertyWithOwner = Propiedad & { 
