@@ -1,72 +1,103 @@
+
 @tailwind base;
-@tailwind components;
 @tailwind utilities;
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
+@tailwind components;
+ 
 @layer base {
   :root {
-    --background: 228 67% 96%;
-    --foreground: 222 47% 11%;
-    --card: 228 67% 99%;
-    --card-foreground: 222 47% 11%;
-    --popover: 228 67% 99%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 230 98% 66%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 228 50% 92%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 228 50% 92%;
-    --muted-foreground: 222 20% 46%;
-    --accent: 283 68% 37%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 84.2% 60.2%;
+    --background: 0 0% 11%;
+    --foreground: 45 33% 91%;
+    --card: 0 0% 14%;
+    --card-foreground: 45 33% 91%;
+    --popover: 0 0% 14%;
+    --popover-foreground: 45 33% 91%;
+    --primary: 359 70% 35%;
+    --primary-foreground: 0 86% 97%;
+    --secondary: 101 12% 31%;
+    --secondary-foreground: 45 33% 91%;
+    --muted: 45 11% 40%;
+    --muted-foreground: 45 33% 74%;
+    --accent: 28 41% 28%;
+    --accent-foreground: 45 33% 91%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 228 30% 88%;
-    --input: 228 30% 88%;
-    --ring: 230 98% 66%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --success: 86 100% 45%;
+    --success-border: 79 69% 45%;
+    --error: 0 100% 81%;
+    --error-border: 0 100% 34%;
+    --border: 28 41% 28%;
+    --input: 0 0% 16%;
+    --ring: 359 70% 35%;
+    --map-player: 120 60% 50%;
+    --map-family: 60 100% 50%;
+    --map-enemy: 0 100% 50%;
+
+    --sidebar-background: 0 0% 7%;
+    --sidebar-foreground: 45 33% 74%;
+    --sidebar-primary: 359 70% 35%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 25%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 359 70% 35%;
   }
-  .dark {
-    --background: 222 47% 11%;
-    --foreground: 0 0% 98%;
-    --card: 222 47% 13%;
-    --card-foreground: 0 0% 98%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 230 98% 66%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 222 47% 18%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 222 47% 18%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 283 68% 45%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 222 47% 18%;
-    --input: 222 47% 18%;
-    --ring: 230 98% 76%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+}
+ 
+@layer base {
+  * {
+    @apply border-border transition-all duration-200;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground bg-[url('/img/general/paper-texture.png')] bg-repeat;
+  }
+  
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+
+  table {
+    @apply w-full;
+  }
+
+  table > tbody > tr:nth-child(even) {
+    @apply bg-muted/20;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+@layer components {
+    .main-view {
+        @apply p-4 md:p-6 space-y-4 animate-fade-in;
+    }
+    .ok-message {
+      @apply bg-success border-b-4 border-success-border text-center font-bold p-2 mb-4;
+    }
+    .error-message {
+      @apply bg-error border-b-4 border-error-border text-center font-bold p-2 mb-4;
+    }
+     .content_box {
+      @apply bg-[#FFFCDB] border-b-4 border-[#7D2221] mb-4 p-1;
+    }
+    .room-card {
+      @apply flex flex-col transition-all duration-300 ease-in-out border-accent/50;
+    }
+    .room-card:hover {
+      @apply -translate-y-1 shadow-lg shadow-primary/20 border-primary;
+    }
+    .troop-card, .security-card, .tech-card {
+      @apply flex flex-col transition-all duration-300 ease-in-out border-accent/50 overflow-hidden;
+    }
+    .troop-card:hover, .security-card:hover, .tech-card:hover {
+      @apply -translate-y-1 shadow-lg shadow-primary/20 border-primary;
+    }
+    .training-card {
+      @apply flex flex-col transition-all duration-300 ease-in-out border-accent/50 overflow-hidden;
+    }
+    .training-card:hover {
+      @apply -translate-y-1 shadow-lg shadow-primary/20 border-primary;
+    }
 }
+
+    

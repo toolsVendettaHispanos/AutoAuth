@@ -1,200 +1,51 @@
 
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
-import { Home, Settings, Bell, UserRound, LogOut, ShieldCheck } from "lucide-react";
-import Link from 'next/link';
-import { PrismaClient } from '@prisma/client'
-import { ResourceBar } from '@/components/recursos-bar';
-import { PropertyProvider } from '@/contexts/property-context';
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getSessionUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { OverviewView } from "@/components/dashboard/overview-view";
+import { getRoomConfigurations, getTroopConfigurations } from "@/lib/data";
 
-const prisma = new PrismaClient()
-
-async function getUserData() {
-  const user = await prisma.user.findUnique({
-    where: {
-        username: "bomberox"
-    },
-    include: {
-        propiedades: true,
-    }
-  })
-  return user;
+function OverviewLoading() {
+    return (
+        <div className="flex-grow p-4 md:p-6 space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <Skeleton className="h-24 w-full rounded-lg" />
+                <Skeleton className="h-48 lg:h-auto lg:row-span-2 w-full rounded-lg" />
+                <Skeleton className="h-48 lg:h-auto lg:row-span-2 w-full rounded-lg" />
+                 <div className="lg:col-span-1 space-y-4">
+                    <Skeleton className="h-24 w-full rounded-lg" />
+                    <Skeleton className="h-24 w-full rounded-lg" />
+                 </div>
+            </div>
+             <Skeleton className="h-[74px] w-full rounded-lg" />
+        </div>
+    )
 }
 
+
 export default async function OverviewPage() {
-  const user = await getUserData();
+    const user = await getSessionUser();
+    if (!user) {
+        redirect('/');
+    }
 
-  const userProperties = user?.propiedades.map(p => ({
-    id: p.id,
-    nombre: p.nombre,
-    ciudad: p.ciudad,
-    barrio: p.barrio,
-    edificio: p.edificio,
-    armas: String(p.armas),
-    municion: String(p.municion),
-    alcohol: String(p.alcohol),
-    dolares: String(p.dolares),
-    username: user.username,
-  })) || [];
+    const [allRooms, allTroops] = await Promise.all([
+        getRoomConfigurations(),
+        getTroopConfigurations()
+    ]);
 
-  return (
-    <PropertyProvider properties={user?.propiedades || []}>
-      <div className="flex min-h-screen w-full bg-background">
-        <aside className="w-64 border-r bg-card p-6 hidden lg:flex flex-col">
-          <div className="flex items-center gap-2 mb-8">
-              <ShieldCheck className="w-8 h-8 text-primary" />
-              <h1 className="text-2xl font-bold text-foreground">AutoAuth</h1>
-          </div>
-          <nav className="flex flex-col gap-2 flex-grow">
-            <Button variant="ghost" className="justify-start gap-2 text-primary bg-primary/10 font-semibold">
-              <Home className="h-5 w-5" />
-              Overview
-            </Button>
-            <Button variant="ghost" className="justify-start gap-2 text-muted-foreground hover:text-foreground">
-              <Bell className="h-5 w-5" />
-              Notifications
-            </Button>
-            <Button variant="ghost" className="justify-start gap-2 text-muted-foreground hover:text-foreground">
-              <Settings className="h-5 w-5" />
-              Settings
-            </Button>
-          </nav>
-          <div className="mt-auto">
-               <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-                  <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-base">Upgrade your plan</CardTitle>
-                      <CardDescription className="text-sm">Get more features and enhance your security.</CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4 pt-0">
-                      <Button size="sm" className="w-full bg-accent text-accent-foreground hover:bg-accent/90">Upgrade</Button>
-                  </CardContent>
-              </Card>
-          </div>
-        </aside>
+    const allRoomConfigs = allRooms.map(r => ({ id: r.id, nombre: r.nombre }));
 
-        <main className="flex-1 flex flex-col">
-          <header className="flex h-16 items-center justify-between border-b bg-card px-6">
-              <div className="lg:hidden">
-                  <Button variant="ghost" size="icon">
-                      <Home className="w-6 h-6" />
-                  </Button>
-              </div>
-              <div className="flex-1 text-left">
-                  <h2 className="text-xl font-semibold">Welcome, bomberox!</h2>
-              </div>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon">
-                <UserRound className="h-6 w-6" />
-              </Button>
-              <Link href="/">
-                  <Button variant="outline" size="sm" className="gap-2">
-                      <LogOut className="h-4 w-4" />
-                      Logout
-                  </Button>
-              </Link>
-            </div>
-          </header>
-
-          <ResourceBar user={user as any} />
-
-          <div className="flex-1 overflow-auto p-6 bg-background">
-              <div className="grid gap-6">
-                   <Card>
-                      <CardHeader>
-                          <CardTitle className="flex items-center gap-2">
-                              <ShieldCheck className="text-primary"/> 
-                              Authentication Successful
-                          </CardTitle>
-                          <CardDescription>
-                          You have been successfully authenticated and are now on the overview dashboard.
-                          </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                          <div className="p-6 border rounded-lg bg-primary/5 text-sm">
-                              <p className="text-foreground">
-                                  This is your secure area. You are logged in as <span className="font-semibold text-primary">bomberox</span>. From here you can manage your account and settings.
-                              </p>
-                          </div>
-                      </CardContent>
-                  </Card>
-
-                  <Card>
-                      <CardHeader>
-                          <CardTitle>User Properties</CardTitle>
-                          <CardDescription>Details for the currently logged-in user from the database.</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                          <Table>
-                              <TableHeader>
-                                  <TableRow>
-                                      <TableHead>Property</TableHead>
-                                      <TableHead>Value</TableHead>
-                                  </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                  {userProperties.map((item) => (
-                                      <React.Fragment key={item.id}>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Username</TableCell>
-                                              <TableCell>{item.username}</TableCell>
-                                          </TableRow>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Propiedad</TableCell>
-                                              <TableCell>{item.nombre}</TableCell>
-                                          </TableRow>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Ciudad</TableCell>
-                                              <TableCell>{item.ciudad}</TableCell>
-                                          </TableRow>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Barrio</TableCell>
-                                              <TableCell>{item.barrio}</TableCell>
-                                          </TableRow>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Edificio</TableCell>
-                                              <TableCell>{item.edificio}</TableCell>
-                                          </TableRow>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Armas</TableCell>
-                                              <TableCell>{item.armas}</TableCell>
-                                          </TableRow>
-                                           <TableRow>
-                                              <TableCell className="font-medium">Municion</TableCell>
-                                              <TableCell>{item.municion}</TableCell>
-                                          </TableRow>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Alcohol</TableCell>
-                                              <TableCell>{item.alcohol}</TableCell>
-                                          </TableRow>
-                                          <TableRow>
-                                              <TableCell className="font-medium">Dolares</TableCell>
-                                              <TableCell>{item.dolares}</TableCell>
-                                          </TableRow>
-                                      </React.Fragment>
-                                  ))}
-                              </TableBody>
-                          </Table>
-                      </CardContent>
-                  </Card>
-              </div>
-          </div>
-        </main>
-      </div>
-    </PropertyProvider>
-  );
+    return (
+        <div className="main-view h-full">
+          <Suspense fallback={<OverviewLoading/>}>
+              <OverviewView 
+                user={user} 
+                allRooms={allRoomConfigs} 
+                allTroops={allTroops} 
+              />
+          </Suspense>
+        </div>
+    )
 }

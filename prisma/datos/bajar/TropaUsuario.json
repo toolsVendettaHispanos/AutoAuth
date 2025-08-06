@@ -1,0 +1,27 @@
+[
+  {
+    "propiedadId": "1",
+    "configuracionTropaId": "espia",
+    "cantidad": 111
+  },
+  {
+    "propiedadId": "1",
+    "configuracionTropaId": "mercenario",
+    "cantidad": 29971
+  },
+  {
+    "propiedadId": "1",
+    "configuracionTropaId": "trabajador_ilegal",
+    "cantidad": 1
+  },
+  {
+    "propiedadId": "4",
+    "configuracionTropaId": "mercenario",
+    "cantidad": 0
+  },
+  {
+    "propiedadId": "1",
+    "configuracionTropaId": "portero",
+    "cantidad": 113
+  }
+]
