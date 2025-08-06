@@ -33,7 +33,7 @@ export async function actualizarEstadoCompletoDelJuego(sessionUser: UserWithProg
       verificarYFinalizarEntrenamientos(sessionUser),
     ]);
     
-    const combinedUser = { ...sessionUser, ...userAfterConstructionCheck, ...userAfterRecruitmentCheck, ...userAfterMissionCheck, ...userAfterTrainingCheck };
+    let combinedUser = { ...sessionUser, ...userAfterConstructionCheck, ...userAfterRecruitmentCheck, ...userAfterMissionCheck, ...userAfterTrainingCheck };
   
     const userWithUpdatedProgress = await obtenerEstadoJuegoActualizado(combinedUser);
     const finalUser = await actualizarPuntuacionUsuario(userWithUpdatedProgress);
@@ -202,6 +202,7 @@ async function verificarYFinalizarConstruccionDePropiedad(propiedad: FullPropied
   let seHizoUnCambio = false;
 
   const construccionesTerminadas = cola.filter(c => c.fechaFinalizacion && new Date() >= new Date(c.fechaFinalizacion));
+  const idsTerminados = construccionesTerminadas.map(c => c.id);
   
   if (construccionesTerminadas.length > 0) {
     try {
@@ -218,10 +219,10 @@ async function verificarYFinalizarConstruccionDePropiedad(propiedad: FullPropied
                         nivel: terminada.nivelDestino,
                     },
                 });
-                await tx.colaConstruccion.delete({
-                    where: { id: terminada.id },
-                });
             }
+            await tx.colaConstruccion.deleteMany({
+                where: { id: { in: idsTerminados } },
+            });
         });
         seHizoUnCambio = true;
     } catch (error) {
@@ -406,12 +407,12 @@ export async function verificarYFinalizarMisiones(user: UserWithProgress): Promi
             if (mision.tipoMision === 'ATAQUE') {
                 await Promise.all([
                     handleAttackMission(mision),
-                    prisma.incomingAttack.deleteMany({ where: { missionId: mision.id } })
+                    prisma.incomingAttack.deleteMany({ where: { missionId: mision.id } }),
                 ]);
             } else if (mision.tipoMision === 'ESPIONAJE') {
                  await Promise.all([
                     handleEspionageMission(mision),
-                    prisma.incomingAttack.deleteMany({ where: { missionId: mision.id } })
+                    prisma.incomingAttack.deleteMany({ where: { missionId: mision.id } }),
                 ]);
             }
         }
