@@ -26,45 +26,35 @@ export function PlayerCard({ user }: PlayerCardProps) {
     const progress = ( (user.puntuacion?.puntosTotales || 0) % 1000) / 10;
 
     return (
-        <Card className="group relative overflow-hidden h-full">
-            <Image 
-                src="/nuevas/edificionuevo.jpg" 
-                alt="Player background"
-                fill
-                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                data-ai-hint="dark office interior"
-            />
-             <div className="absolute inset-0 bg-black/70" />
-            <CardContent className="relative flex flex-col items-center justify-center h-full p-4 text-center text-white">
-                <Avatar className="h-32 w-32 border-4 border-white/10 shadow-lg mb-2 transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-primary/20">
+         <Card className="group relative overflow-hidden h-full flex items-center p-4 transition-all duration-300">
+            <div className="absolute inset-0 bg-black/50 z-0">
+                 <Image 
+                    src="/nuevas/edificionuevo.jpg" 
+                    alt="Player background"
+                    fill
+                    className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 opacity-30"
+                    data-ai-hint="dark office interior"
+                />
+            </div>
+            <div className="relative z-10 flex items-center gap-4 w-full">
+                <Avatar className="h-24 w-24 border-4 border-primary/50 shadow-lg shrink-0">
                     <AvatarImage src={user.avatarUrl || ''} alt={user.name} data-ai-hint="mafia boss" />
-                    <AvatarFallback className="text-5xl">{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback className="text-4xl">{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
-                 <CardTitle className="text-3xl font-bold tracking-wider [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">{user.name}</CardTitle>
-                <p className="text-md text-white/80 [text-shadow:0_1px_2px_rgb(0_0_0_/_0.8)] mb-2">{user.title || 'Nuevo Jefe'}</p>
-                <Progress value={progress} className="w-3/4 mx-auto h-1.5" indicatorClassName="bg-amber-400" />
-                <div className="mt-4">
-                    {user.familyMember ? (
-                        <div className="flex flex-col items-center gap-2">
-                             <Link href={`/family/members?id=${user.familyMember.family.id}`} className="hover:underline flex items-center gap-2">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={user.familyMember.family.avatarUrl || ''} />
-                                    <AvatarFallback>{user.familyMember.family.tag.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                 <span className="font-semibold text-lg">[{user.familyMember.family.tag}] {user.familyMember.family.name}</span>
-                            </Link>
-                             <div className="flex items-center gap-1 text-xs bg-black/30 px-2 py-1 rounded-full">
-                                {roleIcons[user.familyMember.role]}
-                                <span>{user.familyMember.role}</span>
-                            </div>
-                        </div>
-                    ) : (
-                        <Button asChild variant="secondary" className="mt-2">
-                            <Link href="/family/find">Buscar Familia</Link>
-                        </Button>
+                 <div className="flex flex-col justify-center flex-grow">
+                     <CardTitle className="text-2xl font-bold tracking-wider text-white [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">{user.name}</CardTitle>
+                    <p className="text-md text-white/80 [text-shadow:0_1px_2px_rgb(0_0_0_/_0.8)] mb-2">{user.title || 'Nuevo Jefe'}</p>
+                     {user.familyMember && (
+                         <Link href={`/family/members?id=${user.familyMember.family.id}`} className="hover:underline flex items-center gap-2 text-sm text-primary-foreground/80">
+                             <Avatar className="h-6 w-6 border">
+                                <AvatarImage src={user.familyMember.family.avatarUrl || ''} />
+                                <AvatarFallback className="text-xs">{user.familyMember.family.tag.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-semibold">[{user.familyMember.family.tag}]</span>
+                        </Link>
                     )}
-                </div>
-            </CardContent>
+                 </div>
+            </div>
         </Card>
     )
 }

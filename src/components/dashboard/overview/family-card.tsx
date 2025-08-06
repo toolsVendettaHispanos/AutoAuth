@@ -1,3 +1,4 @@
+
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,64 +41,56 @@ export function FamilyCard({ family }: FamilyCardProps) {
 
 
     return (
-        <Card className="group relative overflow-hidden h-full flex flex-col transition-transform hover:scale-105">
+        <Card className="group relative overflow-hidden h-full flex flex-col transition-all duration-300">
              <Image 
                 src="/nuevas/vendettasilueta.jpg" 
                 alt="Family background"
                 fill
-                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 opacity-30"
                 data-ai-hint="dark meeting room"
             />
-            <div className="absolute inset-0 bg-black/70" />
-            <div className="relative flex flex-col flex-grow">
-                <CardHeader className="flex flex-row items-center gap-4 text-white">
-                    <Avatar className="h-16 w-16 border-2 border-white/20">
+            <div className="absolute inset-0 bg-black/60 z-0" />
+            <div className="relative z-10 flex flex-col flex-grow p-4">
+                 <div className="flex items-center gap-4 text-white mb-4">
+                    <Avatar className="h-20 w-20 border-2 border-primary/50 shrink-0">
                         <AvatarImage src={family.avatarUrl || ''} />
-                        <AvatarFallback>{family.tag}</AvatarFallback>
+                        <AvatarFallback className="text-2xl">{family.tag}</AvatarFallback>
                     </Avatar>
-                    <div>
+                    <div className="flex-grow">
                         <CardTitle className="text-2xl font-bold tracking-wider [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">[{family.tag}] {family.name}</CardTitle>
+                         <p className="text-sm text-white/80 flex items-center gap-2"><Users className="h-4 w-4" />{family.members.length} Miembros</p>
                     </div>
-                </CardHeader>
-                <CardContent className="text-white flex-grow">
-                    <div className="flex items-center gap-2 bg-black/30 p-2 rounded-md mb-4">
-                        <Users className="h-5 w-5" />
-                        <span className="font-semibold">{family.members.length} Miembros</span>
-                    </div>
-
-                    <div>
-                        <h4 className="font-semibold mb-2">Top 3 Miembros (Honor)</h4>
-                        <div className="space-y-2">
-                             {topMembers.map(member => (
-                                <TooltipProvider key={member.userId}>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <div className="flex items-center gap-3 text-sm bg-black/20 p-2 rounded-md transition-all hover:bg-primary/20">
-                                                <Avatar className="h-8 w-8">
-                                                    <AvatarImage src={member.user.avatarUrl || ''} />
-                                                    <AvatarFallback>{member.user.name ? member.user.name.charAt(0) : 'U'}</AvatarFallback>
-                                                </Avatar>
-                                                <span className="font-medium flex-grow truncate">{member.user.name || 'Usuario desconocido'}</span>
-                                                <span className="font-mono text-amber-400">{formatPoints(member.user.puntuacion?.puntosHonorTotales)}</span>
-                                            </div>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p className="font-bold">{member.user.name}</p>
-                                            <p>Puntos de Honor: {formatPoints(member.user.puntuacion?.puntosHonorTotales)}</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            ))}
-                        </div>
-                    </div>
-                </CardContent>
-                <CardFooter className="mt-auto">
-                    <Button asChild className="w-full" variant="outline">
+                     <Button asChild size="sm" variant="outline" className="shrink-0">
                         <Link href={`/family/members?id=${family.id}`}>
-                            Ver Detalles de Familia
+                            Ver Familia
                         </Link>
                     </Button>
-                </CardFooter>
+                </div>
+                 <div className="text-white flex-grow">
+                    <h4 className="font-semibold mb-2 text-sm">Top Miembros (Honor)</h4>
+                    <div className="space-y-2">
+                         {topMembers.map(member => (
+                            <TooltipProvider key={member.userId}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div className="flex items-center gap-3 text-sm bg-black/20 p-2 rounded-md transition-all hover:bg-primary/20">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage src={member.user.avatarUrl || ''} />
+                                                <AvatarFallback>{member.user.name ? member.user.name.charAt(0) : 'U'}</AvatarFallback>
+                                            </Avatar>
+                                            <span className="font-medium flex-grow truncate">{member.user.name || 'Usuario desconocido'}</span>
+                                            <span className="font-mono text-amber-400">{formatPoints(member.user.puntuacion?.puntosHonorTotales)}</span>
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p className="font-bold">{member.user.name}</p>
+                                        <p>Puntos de Honor: {formatPoints(member.user.puntuacion?.puntosHonorTotales)}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        ))}
+                    </div>
+                </div>
             </div>
         </Card>
     );
