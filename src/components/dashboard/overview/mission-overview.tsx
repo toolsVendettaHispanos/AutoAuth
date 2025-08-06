@@ -170,10 +170,17 @@ const MissionRow = ({ mission, type, allTroops }: { mission: ColaMisiones | Inco
     );
 }
 
+const getMovementArrival = (movement: ColaMisiones | IncomingAttack): Date => {
+    if ('fechaLlegada' in movement) {
+        return movement.fechaLlegada;
+    }
+    return movement.arrivalTime;
+}
+
 export function MissionOverview({ missions, incomingAttacks, allTroops }: MissionOverviewProps) {
     const isMobile = useIsMobile();
     const allMovements = [...missions, ...incomingAttacks].sort(
-        (a, b) => new Date(a.fechaLlegada || a.arrivalTime).getTime() - new Date(b.fechaLlegada || b.arrivalTime).getTime()
+        (a, b) => getMovementArrival(a).getTime() - getMovementArrival(b).getTime()
     );
 
     if (allMovements.length === 0) return null;
