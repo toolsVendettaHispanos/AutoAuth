@@ -5,10 +5,10 @@
 import prisma from "../prisma/prisma";
 import { runBattleSimulation } from "./simulation.actions";
 import { ColaMisiones, MessageCategory } from "@prisma/client";
-import type { SimulationInput, BattleReport, ResourceCost, MisionTropas } from "../types";
 import { getTroopConfigurations } from "../data";
 import { calculateSafeStorage } from "../formulas/room-formulas";
-import { FullPropiedad } from "../types";
+import { FullPropiedad, MisionTropas } from "../types";
+import { BattleReport, ResourceCost, SimulationInput } from "../types/simulation.types";
 
 export async function handleAttackMission(mision: ColaMisiones) {
     const atacante = await prisma.user.findUnique({ 
@@ -150,7 +150,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
     }
 
 
-    const bigIntReplacer = (key: string, value: unknown) => typeof value === 'bigint' ? value.toString() : value;
+    const bigIntReplacer = (key: any, value: any) => typeof value === 'bigint' ? value.toString() : value;
     const serializableReport = JSON.parse(JSON.stringify(report, bigIntReplacer)) as BattleReport;
 
     const honorGanadoAtacante = report.finalStats.defender.pointsLost;
