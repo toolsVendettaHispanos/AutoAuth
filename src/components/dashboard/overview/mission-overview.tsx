@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { ColaMisiones, IncomingAttack, FullConfiguracionTropa, ResourceCost } from '@/lib/types';
-import { ArrowLeftRight, Check, Loader2, Shield, Swords, Undo2, Users, X } from 'lucide-react';
+import { ArrowLeftRight, Check, Loader2, Shield, Swords, Undo2, X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
@@ -82,7 +82,6 @@ const MissionRow = ({ mission, type, allTroops }: { mission: ColaMisiones | Inco
     const to = isOutgoing ? `${mission.destinoCiudad}:${mission.destinoBarrio}` : mission.targetProperty;
     const troops = isOutgoing ? (mission.tropas as {id: string, cantidad: number}[]).reduce((sum, t) => sum + t.cantidad, 0) : mission.totalTroops;
     const missionType = isOutgoing ? mission.tipoMision : 'ATAQUE';
-    const startDate = isOutgoing ? mission.fechaInicio : new Date(); // Placeholder
     const arrivalDate = isOutgoing ? mission.fechaLlegada : mission.arrivalTime;
     const returnDate = isOutgoing ? mission.fechaRegreso : null;
     const resources = (isOutgoing && mission.tipoMision === 'REGRESO' && mission.recursos) ? mission.recursos as ResourceCost : null;

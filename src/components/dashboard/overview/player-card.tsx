@@ -6,14 +6,12 @@ import { Card, CardTitle } from "@/components/ui/card";
 import type { UserWithProgress } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
-import { FamilyRole } from "@prisma/client";
 
 interface PlayerCardProps {
     user: UserWithProgress;
 }
 
 export function PlayerCard({ user }: PlayerCardProps) {
-
     return (
          <Card className="group relative overflow-hidden h-full flex items-center p-4 transition-all duration-300">
             <div className="absolute inset-0 bg-black/50 z-0">

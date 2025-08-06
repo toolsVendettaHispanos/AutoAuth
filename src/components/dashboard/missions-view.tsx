@@ -58,7 +58,7 @@ function formatNumber(num: number): string {
     return num.toLocaleString('de-DE');
 }
 
-export function MissionsView({ troopConfigs }: { user: UserWithProgress, troopConfigs: FullConfiguracionTropa[] }) {
+export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, troopConfigs: FullConfiguracionTropa[] }) {
     const { selectedProperty } = useProperty();
     const { toast } = useToast();
     const searchParams = useSearchParams();
