@@ -5,6 +5,7 @@ import { getRoomConfigurations, getTrainingConfigurations, getTroopConfiguration
 import { TechnologyTreeView } from "@/components/dashboard/technologies/technology-tree-view";
 import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { UserWithProgress } from "@/lib/types";
 
 function TechnologiesLoading() {
     return (
@@ -53,7 +54,7 @@ export default async function TechnologiesPage() {
             </div>
             <Suspense fallback={<TechnologiesLoading />}>
                 <TechnologyTreeView
-                    user={user}
+                    user={user as UserWithProgress}
                     rooms={rooms}
                     trainings={trainings}
                     troops={troops}
