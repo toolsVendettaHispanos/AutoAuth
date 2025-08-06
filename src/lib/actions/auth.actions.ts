@@ -28,7 +28,9 @@ export async function login(credentials: LoginInput) {
     }
     
     // Set the session cookie
-    cookies().set(SESSION_COOKIE_NAME, user.username, {
+    (await
+        // Set the session cookie
+        cookies()).set(SESSION_COOKIE_NAME, user.username, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24 * 7, // One week
@@ -37,7 +39,7 @@ export async function login(credentials: LoginInput) {
 
     // Log login history
     try {
-        const headerList = headers();
+        const headerList = await headers();
         const ip = headerList.get('x-forwarded-for') ?? 'unknown';
         const userAgent = headerList.get('user-agent') ?? 'unknown';
         
@@ -56,7 +58,7 @@ export async function login(credentials: LoginInput) {
 }
 
 export async function logout() {
-  cookies().delete(SESSION_COOKIE_NAME);
+  (await cookies()).delete(SESSION_COOKIE_NAME);
 }
 
 
