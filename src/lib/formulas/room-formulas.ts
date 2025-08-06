@@ -1,6 +1,6 @@
 
 
-import type { FullConfiguracionHabitacion, FullPropiedad } from '../types';
+import type { FullConfiguracionHabitacion, FullPropiedad, ResourceCost } from '../types';
 import { BASE_STORAGE_CAPACITY, ID_CAMPO_ENTRENAMIENTO, ID_ESCUELA_ESPECIALIZACION, ID_OFICINA_JEFE, STORAGE_CAPACITY_PER_LEVEL } from '../constants';
 
 export interface ProductionData {
@@ -16,9 +16,14 @@ export interface ProductionData {
 export function calcularCostosNivel(
   nivel: number,
   config: FullConfiguracionHabitacion
-): { armas: number; municion: number; dolares: number } {
+): ResourceCost {
   if (nivel <= 1) {
-    return { armas: Number(config.costoArmas), municion: Number(config.costoMunicion), dolares: Number(config.costoDolares) };
+    return { 
+        armas: Number(config.costoArmas), 
+        municion: Number(config.costoMunicion), 
+        dolares: Number(config.costoDolares),
+        alcohol: 0, // Habitaciones no cuestan alcohol
+    };
   }
 
   const factor = nivel * nivel;
@@ -27,7 +32,7 @@ export function calcularCostosNivel(
   const costoMunicion = Math.floor(Number(config.costoMunicion) * factor);
   const costoDolares = Math.floor(Number(config.costoDolares) * factor);
 
-  return { armas: costoArmas, municion: costoMunicion, dolares: costoDolares };
+  return { armas: costoArmas, municion: costoMunicion, dolares: costoDolares, alcohol: 0 };
 }
 
 /**
