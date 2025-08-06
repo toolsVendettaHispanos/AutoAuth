@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useMemo } from "react";
-import { calcularProduccionTotalPorSegundo, calculateStorageCapacity, calculateSafeStorage } from "@/lib/formulas/room-formulas";
+import { calculateStorageCapacity, calculateSafeStorage, calcularProduccionTotalPorSegundo } from "@/lib/formulas/room-formulas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import type { UserWithProgress, FullPropiedad } from "@/lib/types";
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { resourceIcons } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { Progress } from "../ui/progress";
 
 const resourceNames: { [key: string]: string } = {
     armas: "Armas",
@@ -50,17 +51,17 @@ export function ResourcesView({ user }: ResourcesViewProps) {
 
     }, [user.propiedades, selectedPropertyId]);
 
-    const storageData = useMemo(() => {
+    const storageAndResourceData = useMemo(() => {
         const propertiesToCalc = selectedPropertyId === 'all'
             ? user.propiedades
             : user.propiedades.filter((p: FullPropiedad) => p.id === selectedPropertyId);
 
         if (propertiesToCalc.length === 0) {
             return {
-                armas: { capacidad: 0, seguro: 0 },
-                municion: { capacidad: 0, seguro: 0 },
-                alcohol: { capacidad: 0, seguro: 0 },
-                dolares: { capacidad: 0, seguro: 0 }
+                armas: { capacidad: 0, seguro: 0, actual: 0 },
+                municion: { capacidad: 0, seguro: 0, actual: 0 },
+                alcohol: { capacidad: 0, seguro: 0, actual: 0 },
+                dolares: { capacidad: 0, seguro: 0, actual: 0 }
             };
         }
 
@@ -69,18 +70,22 @@ export function ResourcesView({ user }: ResourcesViewProps) {
             const safe = calculateSafeStorage(prop);
             acc.armas.capacidad += capacity.armas;
             acc.armas.seguro += safe.armas;
+            acc.armas.actual += Number(prop.armas);
             acc.municion.capacidad += capacity.municion;
             acc.municion.seguro += safe.municion;
+            acc.municion.actual += Number(prop.municion);
             acc.alcohol.capacidad += capacity.alcohol;
             acc.alcohol.seguro += safe.alcohol;
+            acc.alcohol.actual += Number(prop.alcohol);
             acc.dolares.capacidad += capacity.dolares;
             acc.dolares.seguro += safe.dolares;
+            acc.dolares.actual += Number(prop.dolares);
             return acc;
         }, {
-            armas: { capacidad: 0, seguro: 0 },
-            municion: { capacidad: 0, seguro: 0 },
-            alcohol: { capacidad: 0, seguro: 0 },
-            dolares: { capacidad: 0, seguro: 0 }
+            armas: { capacidad: 0, seguro: 0, actual: 0 },
+            municion: { capacidad: 0, seguro: 0, actual: 0 },
+            alcohol: { capacidad: 0, seguro: 0, actual: 0 },
+            dolares: { capacidad: 0, seguro: 0, actual: 0 }
         });
     }, [user.propiedades, selectedPropertyId]);
 
@@ -98,7 +103,7 @@ export function ResourcesView({ user }: ResourcesViewProps) {
     ];
 
     return (
-        <div className="space-y-4 mt-4">
+        <div className="space-y-4 mt-4 animate-fade-in">
             <Select value={selectedPropertyId} onValueChange={setSelectedPropertyId}>
                 <SelectTrigger className="w-full md:w-[280px]">
                     <SelectValue placeholder="Filtrar por propiedad..." />
@@ -130,7 +135,7 @@ export function ResourcesView({ user }: ResourcesViewProps) {
                         </TableHeader>
                         <TableBody>
                             {productionTableRows.map(row => (
-                                <TableRow key={row.label}>
+                                <TableRow key={row.label} className="hover:bg-muted/50">
                                     <TableCell className="font-medium">{row.label}</TableCell>
                                     {Object.keys(productionData).map(key => {
                                         const value = productionData[key as keyof typeof productionData] * row.multiplier;
@@ -149,21 +154,28 @@ export function ResourcesView({ user }: ResourcesViewProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                  {storageCards.map((card, index) => {
-                     const data = storageData[card.resourceKey as keyof typeof storageData];
+                     const data = storageAndResourceData[card.resourceKey as keyof typeof storageAndResourceData];
+                     const progress = data.capacidad > 0 ? (data.actual / data.capacidad) * 100 : 0;
+                     const safeProgress = data.capacidad > 0 ? (data.seguro / data.capacidad) * 100 : 0;
                      return (
-                        <Card key={card.title} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms`}}>
+                        <Card key={card.title} className="animate-fade-in-up relative overflow-hidden" style={{ animationDelay: `${index * 100}ms`}}>
                              <CardHeader className="flex-row items-center gap-3">
                                 <Image src={resourceIcons[card.resourceKey]} alt={card.title} width={32} height={32} />
                                 <CardTitle>{card.title}</CardTitle>
                              </CardHeader>
-                            <CardContent className="space-y-2">
+                            <CardContent className="space-y-3">
+                                <Progress value={progress} className="h-3" indicatorClassName="bg-primary/80" />
                                 <div className="flex justify-between items-baseline">
-                                    <span className="text-muted-foreground">Capacidad:</span>
+                                    <span className="text-muted-foreground text-sm">Capacidad:</span>
                                     <span className="font-bold text-lg font-mono">{formatNumber(data.capacidad)}</span>
                                 </div>
                                  <div className="flex justify-between items-baseline">
-                                    <span className="text-muted-foreground">Seguro:</span>
+                                    <span className="text-muted-foreground text-sm">Seguro:</span>
                                     <span className="font-bold text-lg font-mono">{formatNumber(data.seguro)}</span>
+                                </div>
+                                <div className="flex justify-between items-baseline">
+                                    <span className="text-muted-foreground text-sm">Actual:</span>
+                                    <span className="font-bold text-lg font-mono text-primary">{formatNumber(data.actual)}</span>
                                 </div>
                             </CardContent>
                         </Card>
