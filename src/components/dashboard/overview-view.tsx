@@ -21,10 +21,10 @@ interface OverviewViewProps {
 
 export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
     const components = [
-        <div key="player-card" className="xl:col-span-2">
+        <div key="player-card" className="lg:col-span-2">
             <PlayerCard user={user} />
         </div>,
-        <div key="family-card" className="xl:col-span-2">
+        <div key="family-card" className="lg:col-span-2">
             <FamilyCard family={user.familyMember?.family as any} />
         </div>,
         <div key="queue-status" className="lg:col-span-2 xl:col-span-4">
@@ -46,7 +46,7 @@ export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
     ];
 
     return (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {components.map((component, index) => (
                 <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
                     {component}

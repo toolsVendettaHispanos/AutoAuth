@@ -6,25 +6,22 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PlayerCardServer } from '@/components/dashboard/overview/player-card-server';
 import { FamilyCardServer } from '@/components/dashboard/overview/family-card-server';
 import { QueueStatusServer } from '@/components/dashboard/overview/queue-status-server';
-import { IncomingAttacksServer } from '@/components/dashboard/overview/incoming-attacks-server';
 import { MissionOverviewServer } from '@/components/dashboard/overview/mission-overview-server';
 import { GlobalStatsServer } from '@/components/dashboard/overview/global-stats-server';
+import { IncomingAttacksServer } from '@/components/dashboard/overview/incoming-attacks-server';
 
 function OverviewLoading() {
   return (
-    <div className="grid flex-grow grid-cols-1 gap-6 p-4 md:grid-cols-2 md:p-6 lg:grid-cols-2">
-      {/* Columna Izquierda */}
-      <div className="space-y-6">
-        <Skeleton className="h-48 w-full rounded-lg" />
-        <Skeleton className="h-48 w-full rounded-lg" />
-      </div>
-      {/* Columna Derecha */}
-      <div className="space-y-6">
+    <div className="grid flex-grow grid-cols-1 gap-6 p-4 md:grid-cols-2 md:p-6 lg:grid-cols-4">
+      <div className="lg:col-span-2 space-y-6">
         <Skeleton className="h-48 w-full rounded-lg" />
         <Skeleton className="h-64 w-full rounded-lg" />
       </div>
-      {/* Fila Inferior */}
-      <div className="md:col-span-2 lg:col-span-2">
+      <div className="lg:col-span-2 space-y-6">
+        <Skeleton className="h-48 w-full rounded-lg" />
+        <Skeleton className="h-64 w-full rounded-lg" />
+      </div>
+      <div className="md:col-span-2 lg:col-span-4">
         <Skeleton className="h-24 w-full rounded-lg" />
       </div>
     </div>
@@ -42,9 +39,16 @@ export default async function OverviewPage() {
   return (
     <div className="main-view h-full">
       <Suspense fallback={<OverviewLoading />}>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+          
+          <div className="lg:col-span-4">
+            <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+              <IncomingAttacksServer userId={user.id} />
+            </Suspense>
+          </div>
+          
           {/* Columna Izquierda */}
-          <div className="space-y-6">
+          <div className="lg:col-span-2 space-y-6">
             <div className="animate-fade-in-up" style={{ animationDelay: '0ms' }}>
               <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
                 <PlayerCardServer userId={user.id} />
@@ -60,7 +64,7 @@ export default async function OverviewPage() {
           </div>
 
           {/* Columna Derecha */}
-          <div className="space-y-6">
+          <div className="lg:col-span-2 space-y-6">
              <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
               <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
                 <FamilyCardServer userId={user.id} />
@@ -74,7 +78,7 @@ export default async function OverviewPage() {
           </div>
           
            {/* Fila Inferior */}
-           <div className="lg:col-span-2 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+           <div className="lg:col-span-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
                  <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
                     <GlobalStatsServer userId={user.id} />
                 </Suspense>
