@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { UserProfileData } from "@/lib/types";
-import { Building, Send } from "lucide-react";
+import { Send, Target, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { calcularPuntosPropiedad } from "@/lib/formulas/score-formulas";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface ProfileViewProps {
     user: UserProfileData;
@@ -25,21 +27,21 @@ function formatPoints(points: number | null | undefined): string {
 export function ProfileView({ user }: ProfileViewProps) {
     const router = useRouter();
 
-    const allBuildings = useMemo(() => {
-        const buildingsMap = new Map<string, { name: string; level: number }>();
-        user.propiedades.forEach(prop => {
-            prop.habitaciones.forEach(hab => {
-                const existing = buildingsMap.get(hab.configuracionHabitacion.id);
-                if (!existing || hab.nivel > existing.level) {
-                    buildingsMap.set(hab.configuracionHabitacion.id, {
-                        name: hab.configuracionHabitacion.nombre,
-                        level: hab.nivel
-                    });
-                }
-            });
-        });
-        return Array.from(buildingsMap.values());
+    const propertiesWithPoints = useMemo(() => {
+        if (!user.propiedades) return [];
+        return user.propiedades.map(prop => ({
+            ...prop,
+            puntos: calcularPuntosPropiedad(prop as any)
+        })).sort((a, b) => b.puntos - a.puntos);
     }, [user.propiedades]);
+
+    const handleSendMission = (ciudad: number, barrio: number, edificio: number) => {
+        const params = new URLSearchParams();
+        params.set('ciudad', ciudad.toString());
+        params.set('barrio', barrio.toString());
+        params.set('edificio', edificio.toString());
+        router.push(`/missions?${params.toString()}`);
+    }
 
 
     return (
@@ -81,7 +83,7 @@ export function ProfileView({ user }: ProfileViewProps) {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-2 space-y-6">
+                <div className="md:col-span-3 space-y-6">
                     <Card>
                         <CardHeader>
                             <CardTitle>Estadísticas de Puntuación</CardTitle>
@@ -97,7 +99,7 @@ export function ProfileView({ user }: ProfileViewProps) {
                              <Separator />
                              <div className="flex justify-between items-baseline"><span className="text-muted-foreground">Puntos de Honor (Defensor)</span><span className="font-semibold font-mono text-red-400">{formatPoints(user.puntuacion?.puntosHonorDefensor)}</span></div>
                              <Separator />
-                             <div className="flex justify-between items-baseline"><span className="text-muted-foreground font-bold">Puntos de Honor (Total)</span><span className="font-semibold font-mono text-primary">{formatPoints(user.puntuacion?.puntosHonorTotales)}</span></div>
+                             <div className="flex justify-between items-baseline"><span className="font-bold">Puntos de Honor (Total)</span><span className="font-semibold font-mono text-primary">{formatPoints(user.puntuacion?.puntosHonorTotales)}</span></div>
                             <Separator />
                              <div className="flex justify-between text-xs text-muted-foreground pt-2">
                                 <span>Miembro desde</span>
@@ -106,25 +108,40 @@ export function ProfileView({ user }: ProfileViewProps) {
                         </CardContent>
                     </Card>
                 </div>
-
-                <Card className="md:col-span-1">
-                    <CardHeader>
-                        <CardTitle>Edificios del Imperio</CardTitle>
-                        <CardDescription>Nivel máximo alcanzado en todas las propiedades.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                         <ScrollArea className="h-80 pr-2">
-                            <div className="space-y-2">
-                                {allBuildings.map(building => (
-                                    <div key={building.name} className="flex justify-between items-baseline p-2 rounded-md hover:bg-muted/50 text-sm">
-                                        <p className="font-medium">{building.name}</p>
-                                        <p className="font-mono text-primary font-bold">Nvl {building.level}</p>
-                                    </div>
-                                ))}
-                            </div>
-                         </ScrollArea>
-                    </CardContent>
-                </Card>
+                
+                 <div className="md:col-span-3">
+                    <Card>
+                        <CardHeader className="bg-destructive/90 text-destructive-foreground rounded-t-lg">
+                            <CardTitle>EDIFICIOS</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[150px]">Posición</TableHead>
+                                        <TableHead className="w-[120px]">Enviar tropa</TableHead>
+                                        <TableHead>Nombre</TableHead>
+                                        <TableHead className="text-right">Puntos</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {propertiesWithPoints.map(prop => (
+                                        <TableRow key={prop.id}>
+                                            <TableCell className="font-mono">{prop.ciudad}:{prop.barrio}:{prop.edificio}</TableCell>
+                                            <TableCell>
+                                                <Button variant="ghost" size="icon" onClick={() => handleSendMission(prop.ciudad, prop.barrio, prop.edificio)} className="h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10">
+                                                    <X className="h-5 w-5" />
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell className="font-semibold">{prop.nombre}</TableCell>
+                                            <TableCell className="text-right font-mono">{formatPoints(prop.puntos)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     )

@@ -528,6 +528,16 @@ export const getUserProfileById = cache(async (userId: string): Promise<UserProf
                             include: {
                                 configuracionHabitacion: true
                             }
+                        },
+                        TropaUsuario: {
+                            include: {
+                                configuracionTropa: true
+                            }
+                        },
+                        TropaSeguridadUsuario: {
+                             include: {
+                                configuracionTropa: true
+                            }
                         }
                     },
                     orderBy: {

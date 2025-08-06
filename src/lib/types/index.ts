@@ -114,7 +114,11 @@ export type FullConfiguracionHabitacion = ConfiguracionHabitacion & {
   
   export type UserProfileData = User & {
     puntuacion: PuntuacionUsuario | null;
-    propiedades: (Propiedad & { habitaciones: (HabitacionUsuario & { configuracionHabitacion: ConfiguracionHabitacion })[] })[];
+    propiedades: (Propiedad & { 
+        habitaciones: (HabitacionUsuario & { configuracionHabitacion: ConfiguracionHabitacion })[],
+        TropaUsuario: (TropaUsuario & { configuracionTropa: ConfiguracionTropa })[],
+        TropaSeguridadUsuario: (TropaSeguridadUsuario & { configuracionTropa: ConfiguracionTropa })[]
+    })[];
     familyMember: (FamilyMember & { family: Family }) | null;
 }
   
