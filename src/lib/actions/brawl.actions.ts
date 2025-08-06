@@ -1,5 +1,4 @@
 
-
 'use server'
 
 import prisma from "../prisma/prisma";
@@ -8,7 +7,7 @@ import { ColaMisiones, MessageCategory } from "@prisma/client";
 import { getTroopConfigurations } from "../data";
 import { calculateSafeStorage } from "../formulas/room-formulas";
 import { FullPropiedad, MisionTropas } from "../types";
-import { BattleReport, ResourceCost, SimulationInput } from "../types/simulation.types";
+import type { BattleReport, ResourceCost, SimulationInput } from "../types/simulation.types";
 
 export async function handleAttackMission(mision: ColaMisiones) {
     const atacante = await prisma.user.findUnique({ 
@@ -39,6 +38,8 @@ export async function handleAttackMission(mision: ColaMisiones) {
                 }
             },
             user: true,
+            TropaUsuario: { include: { configuracionTropa: true } },
+            TropaSeguridadUsuario: { include: { configuracionTropa: true } }
         }
     });
 
