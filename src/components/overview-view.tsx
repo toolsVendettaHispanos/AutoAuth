@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Bell, ChevronRight, MessageSquare, UserPlus, Users2, Wifi } from "lucide-react";
 import { QueueStatusCard } from "./queue-status-card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import { PlayerCard } from "./dashboard/overview/player-card";
 import { useProperty } from "@/contexts/property-context";
 import { calcularPoderAtaque } from "@/lib/formulas/score-formulas";
 import { MissionOverview } from "./dashboard/overview/mission-overview";
+import { FamilyCard } from "./dashboard/overview/family-card";
 
 function ActionIcons({ unreadMessages, inFamily }: { unreadMessages: number, inFamily: boolean }) {
     const actions = [
@@ -63,7 +64,7 @@ interface OverviewViewProps {
 
 export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
     const { selectedProperty } = useProperty();
-    const [lealtad, setLealtad] = useState(100);
+    const [lealtad, setLealtad] = useState<number | null>(null);
 
     useEffect(() => {
         const calculateLealtad = async () => {
@@ -95,63 +96,13 @@ export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
     return (
          <div className="flex-grow space-y-4 animate-fade-in">
             <IncomingAttacks attacks={user.incomingAttacks || []} />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="lg:col-span-1 space-y-4">
                     <PlayerCard user={user} />
                 </div>
                  <div className="space-y-4 animate-fade-in-up lg:col-span-1" style={{ animationDelay: '100ms' }}>
-                    <TroopOverview troops={selectedProperty.TropaUsuario} />
-                 
+                    <FamilyCard family={user.familyMember?.family} />
                 </div>
- 
-                 <div className="lg:col-span-1 animate-fade-in-up" style={{animationDelay: '200ms'}}>
-                    <Card className="h-full group relative">
-                        <CardContent className="p-0 flex flex-col items-center justify-center h-full">
-                            {familyMember ? (
-                                <>
-                                    <Image 
-                                        src={familyMember.family.avatarUrl || "/img/login_bg.jpg"}
-                                        alt="Family Banner"
-                                        fill
-                                        className="object-cover rounded-lg transition-transform duration-500 ease-in-out group-hover:scale-105"
-                                        data-ai-hint="mafia meeting room"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                                    <div className="absolute bottom-0 left-0 p-4 text-white w-full">
-                                        <div className="flex items-end gap-4">
-                                            <div>
-                                                <p className="text-sm text-muted-foreground text-white/80">Familia</p>
-                                                <p className="text-xl font-bold font-heading tracking-widest">{familyMember.family.name}</p>
-                                                <Badge variant="secondary" className="mt-1">[{familyMember.family.tag}]</Badge>
-                                            </div>
-                                            <div className="ml-auto text-right">
-                                                <div className="flex items-center gap-2 text-xs text-green-400">
-                                                    <Wifi className="h-4 w-4" />
-                                                    <span>{membersOnline} / {familyMember.family.members.length} en línea</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="p-4 flex flex-col items-center justify-center gap-2 h-full">
-                                    <Users2 className="h-24 w-24 text-muted-foreground" />
-                                    <p className="text-sm text-muted-foreground">Sin Familia</p>
-                                    <Button asChild size="lg" className="mt-2 animate-fade-in">
-                                        <Link href="/family">
-                                            <UserPlus className="mr-2 h-5 w-5" />
-                                            Unirse o Crear
-                                        </Link>
-                                    </Button>
-                                </div>
-                            )}
-                        </CardContent>
-                        <ActionIcons unreadMessages={unreadMessages} inFamily={!!familyMember} />
-                        <Link href="/family" className="absolute inset-0">
-                            <span className="sr-only">Ir a la familia</span>
-                        </Link>
-                    </Card>
-                 </div>
             </div>
             
              <QueueStatusCard user={user} allRooms={allRooms} allTroops={allTroops} />
@@ -168,8 +119,8 @@ export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
                     <Card key={item.label} className="text-center p-3 bg-destructive/80 text-white/90 border-destructive/90 animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
                         <p className="text-xs font-semibold">{item.label}</p>
                         <p className="font-bold text-2xl font-heading tracking-wider">
-                            {formatPoints(item.value)}
-                            {item.isPercent && '%'}
+                            {item.value !== null ? formatPoints(item.value) : '...'}
+                            {item.isPercent && item.value !== null && '%'}
                         </p>
                         {item.label === 'Lealtad' && <Link href="/powerattack" className="text-xs text-amber-300 hover:underline">Ver honor</Link>}
                     </Card>
