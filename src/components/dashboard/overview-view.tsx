@@ -63,7 +63,7 @@ interface OverviewViewProps {
 
 export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
     const { selectedProperty } = useProperty();
-    const [lealtad, setLealtad] = useState(100);
+    const [lealtad, setLealtad] = useState<number | null>(null);
 
     useEffect(() => {
         const calculateLealtad = async () => {
@@ -168,8 +168,8 @@ export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
                     <Card key={item.label} className="text-center p-3 bg-destructive/80 text-white/90 border-destructive/90 animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
                         <p className="text-xs font-semibold">{item.label}</p>
                         <p className="font-bold text-2xl font-heading tracking-wider">
-                            {formatPoints(item.value)}
-                            {item.isPercent && '%'}
+                            {item.value !== null ? formatPoints(item.value) : '...'}
+                            {item.isPercent && item.value !== null && '%'}
                         </p>
                         {item.label === 'Lealtad' && <Link href="/powerattack" className="text-xs text-amber-300 hover:underline">Ver honor</Link>}
                     </Card>
