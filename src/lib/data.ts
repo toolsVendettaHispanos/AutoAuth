@@ -6,7 +6,7 @@ import { Prisma, PrismaClient, ColaMisiones } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { cache } from 'react';
 import { calculateStorageCapacity, calcularProduccionTotalPorSegundo } from './formulas/room-formulas';
-import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport } from './types';
+import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport, IncomingAttack } from './types';
 
 
 const prisma = new PrismaClient().$extends(withAccelerate())
@@ -833,4 +833,45 @@ export const getQueueStatusData = cache(async (propertyId: string) => {
       colaReclutamiento: { include: { tropaConfig: true } },
     },
   });
+});
+
+export const getIncomingAttacksData = cache(async (userId: string): Promise<IncomingAttack[]> => {
+    return prisma.incomingAttack.findMany({
+        where: { defenderId: userId },
+        orderBy: { arrivalTime: 'asc' },
+    });
+});
+
+export const getFamilyCardData = cache(async (userId: string) => {
+    const familyMember = await prisma.familyMember.findUnique({
+        where: { userId },
+        include: {
+            family: {
+                include: {
+                    members: {
+                        include: {
+                            user: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    avatarUrl: true,
+                                    puntuacion: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    return familyMember?.family ?? null;
+});
+
+export const getMissionsData = cache(async (userId: string) => {
+    return prisma.colaMisiones.findMany({
+        where: { userId },
+        orderBy: {
+            fechaLlegada: 'asc',
+        },
+    });
 });

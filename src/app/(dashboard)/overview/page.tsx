@@ -1,58 +1,63 @@
 
-
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getSessionUser } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { OverviewView } from "@/components/dashboard/overview-view";
-import { getRoomConfigurations, getTroopConfigurations } from "@/lib/data";
-import React from "react";
-import { PropertyProvider } from "@/contexts/property-context";
+import { Suspense } from 'react';
+import { getSessionUser } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PlayerCardServer } from '@/components/dashboard/overview/player-card-server';
+import { FamilyCardServer } from '@/components/dashboard/overview/family-card-server';
+import { QueueStatusServer } from '@/components/dashboard/overview/queue-status-server';
+import { IncomingAttacksServer } from '@/components/dashboard/overview/incoming-attacks-server';
+import { MissionOverviewServer } from '@/components/dashboard/overview/mission-overview-server';
 
 function OverviewLoading() {
-    return (
-        <div className="flex-grow p-4 md:p-6 space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <Skeleton className="h-24 w-full rounded-lg" />
-                <Skeleton className="h-48 lg:h-auto lg:row-span-2 w-full rounded-lg" />
-                <Skeleton className="h-48 lg:h-auto lg:row-span-2 w-full rounded-lg" />
-                 <div className="lg:col-span-1 space-y-4">
-                    <Skeleton className="h-24 w-full rounded-lg" />
-                    <Skeleton className="h-24 w-full rounded-lg" />
-                 </div>
-            </div>
-             <Skeleton className="h-[74px] w-full rounded-lg" />
-        </div>
-    )
+  return (
+    <div className="flex-grow p-4 md:p-6 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Skeleton className="h-48 w-full rounded-lg" />
+        <Skeleton className="h-48 w-full rounded-lg" />
+      </div>
+      <Skeleton className="h-[200px] w-full rounded-lg" />
+      <Skeleton className="h-[200px] w-full rounded-lg" />
+    </div>
+  );
 }
 
-
 export default async function OverviewPage() {
-    const user = await getSessionUser();
-    if (!user) {
-        redirect('/');
-    }
+  const user = await getSessionUser();
+  if (!user) {
+    redirect('/');
+  }
 
-    // Although these are fetched here, OverviewView still uses the large `user` object.
-    // This will be refactored in the next step to use more granular components.
-    const [allRooms, allTroops] = await Promise.all([
-        getRoomConfigurations(),
-        getTroopConfigurations()
-    ]);
+  // Assuming the first property is the "main" one for overview purposes.
+  // This could be made more sophisticated later (e.g., using a context or user setting).
+  const primaryPropertyId = user.propiedades[0]?.id;
 
-    const allRoomConfigs = allRooms.map(r => ({ id: r.id, nombre: r.nombre, urlImagen: r.urlImagen }));
-
-    return (
-        <div className="main-view h-full">
-            <PropertyProvider properties={user.propiedades}>
-                <Suspense fallback={<OverviewLoading/>}>
-                    <OverviewView 
-                        user={user} 
-                        allRooms={allRoomConfigs} 
-                        allTroops={allTroops} 
-                    />
-                </Suspense>
-            </PropertyProvider>
+  return (
+    <div className="main-view h-full space-y-4">
+      <Suspense fallback={<OverviewLoading />}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
+            <PlayerCardServer userId={user.id} />
+          </Suspense>
+          <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
+            <FamilyCardServer userId={user.id} />
+          </Suspense>
         </div>
-    )
+
+        {primaryPropertyId && (
+          <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
+            <QueueStatusServer propertyId={primaryPropertyId} />
+          </Suspense>
+        )}
+
+        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+          <IncomingAttacksServer userId={user.id} />
+        </Suspense>
+        
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
+          <MissionOverviewServer userId={user.id} />
+        </Suspense>
+      </Suspense>
+    </div>
+  );
 }
