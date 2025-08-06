@@ -1,5 +1,4 @@
 
-
 import { SecurityView } from "@/components/dashboard/security-view";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
