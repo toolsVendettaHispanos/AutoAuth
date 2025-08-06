@@ -67,7 +67,9 @@ export default function RankingsPage({
               <h2 className="text-3xl font-bold tracking-tight">Clasificaciones</h2>
             </div>
              <div className="mt-4">
+                <Suspense>
                  <RankingTypeSelector />
+                </Suspense>
             </div>
             <Suspense fallback={<RankingsLoading />}>
                 <RankingsContent searchParams={searchParams} />
