@@ -1,6 +1,5 @@
 
 
-
 'use client'
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,9 +22,9 @@ type RoomsViewProps = {
 
 export function RoomsView({ user, allRoomConfigs, initialProperty }: RoomsViewProps) {
     const router = useRouter();
+    const { toast } = useToast();
     const { setSelectedPropertyById } = useProperty();
     const [isSubmitting, setIsSubmitting] = useState<string | null>(null);
-    const { toast } = useToast();
     const [timers, setTimers] = useState<Record<string, number>>({});
     
     // Use the property from the URL as the source of truth
