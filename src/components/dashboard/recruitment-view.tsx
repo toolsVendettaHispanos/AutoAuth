@@ -24,6 +24,7 @@ import type { UserWithProgress, FullConfiguracionTropa, FullTropaUsuario } from 
 import { cn } from "@/lib/utils"
 import { Slider } from "../ui/slider"
 import { useToast } from "@/hooks/use-toast"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel"
 
 function formatNumber(num: number | bigint): string {
     const numberValue = Number(num);
@@ -213,9 +214,16 @@ export function RecruitmentView({ user, troopConfigsWithStats }: RecruitmentView
             </div>
        </div>
         <RecruitmentQueueAlert />
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <Carousel
+        opts={{
+          align: "start",
+        }}
+        className="w-full"
+      >
+        <CarouselContent>
               {sortedTroops.map((troop, index) => (
-                <Dialog key={troop.id}>
+                <CarouselItem key={troop.id} className="md:basis-1/2 lg:basis-1/3">
+                <Dialog>
                     <Card className="troop-card animate-fade-in-up" style={{ animationDelay: `${index * 50}ms`}}>
                         <CardHeader className="relative p-0 h-32 overflow-hidden">
                            <Image
@@ -268,8 +276,14 @@ export function RecruitmentView({ user, troopConfigsWithStats }: RecruitmentView
                         salarioActual={troop.salarioActual}
                      />
                 </Dialog>
+                </CarouselItem>
               ))}
-            </div>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </div>
   )
 }
+
+    
