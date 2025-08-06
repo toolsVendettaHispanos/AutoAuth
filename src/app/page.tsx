@@ -10,7 +10,7 @@ async function attemptLogin(user: string, pass: string): Promise<boolean> {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(user === 'bomberox' && pass === '123456789');
-    }, 1500); // Simulate a 1.5-second network delay
+    }, 500); // Simulate a 1.5-second network delay
   });
 }
 
@@ -42,7 +42,7 @@ export default function AutoAuthPage() {
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
         <div className="text-center">
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
-            Securely signing you in
+            Conectando como bomberox
           </h1>
           <p className="text-muted-foreground">
             Please wait while we verify your credentials.
