@@ -33,14 +33,20 @@ function BrawlsLoading() {
     );
 }
 
-export default async function BrawlsPage() {
+async function BrawlsPageContent() {
     const user = await getSessionUser();
     if (!user) {
         redirect('/');
     }
 
     const reports = await getBattleReportsForUser(user.id);
-    
+
+    return (
+        <BrawlsView initialReports={reports} currentUserId={user.id} />
+    )
+}
+
+export default function BrawlsPage() {
     return (
         <div className="main-view">
             <div className="flex items-center justify-between">
@@ -52,7 +58,7 @@ export default async function BrawlsPage() {
                 </div>
             </div>
             <Suspense fallback={<BrawlsLoading />}>
-                <BrawlsView initialReports={reports} currentUserId={user.id} />
+                <BrawlsPageContent />
             </Suspense>
         </div>
     );
