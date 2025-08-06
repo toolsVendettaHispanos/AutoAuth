@@ -16,14 +16,30 @@ import {
 } from "@/components/ui/table";
 import { Home, Settings, Bell, UserRound, LogOut, ShieldCheck } from "lucide-react";
 import Link from 'next/link';
+import { PrismaClient } from '@prisma/client'
 
-export default function OverviewPage() {
-  const userProperties = [
-    { property: "Username", value: "bomberox" },
-    { property: "Role", value: "Administrator" },
-    { property: "Status", value: "Active" },
-    { property: "Last Login", value: new Date().toLocaleString() },
-  ];
+const prisma = new PrismaClient()
+
+async function getUserProperties() {
+  // In a real app, you'd fetch this based on the logged-in user
+  // For now, we'll create some sample data if it doesn't exist
+  let properties = await prisma.properties.findMany();
+  if (properties.length === 0) {
+    await prisma.properties.createMany({
+        data: [
+            { property: "Username", value: "bomberox" },
+            { property: "Role", value: "Administrator" },
+            { property: "Status", value: "Active" },
+            { property: "Last Login", value: new Date().toLocaleString() },
+        ]
+    })
+    properties = await prisma.properties.findMany();
+  }
+  return properties;
+}
+
+export default async function OverviewPage() {
+  const userProperties = await getUserProperties();
 
   return (
     <div className="flex min-h-screen w-full bg-background">
@@ -106,7 +122,7 @@ export default function OverviewPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>User Properties</CardTitle>
-                        <CardDescription>Details for the currently logged-in user.</CardDescription>
+                        <CardDescription>Details for the currently logged-in user from the database.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -118,7 +134,7 @@ export default function OverviewPage() {
                             </TableHeader>
                             <TableBody>
                                 {userProperties.map((item) => (
-                                    <TableRow key={item.property}>
+                                    <TableRow key={item.id}>
                                         <TableCell className="font-medium">{item.property}</TableCell>
                                         <TableCell>{item.value}</TableCell>
                                     </TableRow>
