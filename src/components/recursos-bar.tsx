@@ -1,7 +1,7 @@
 
 'use client'
 
-import { LiveClock } from "./live-clock";
+import { LiveClock } from "./dashboard/live-clock";
 import type { UserWithProgress } from '@/lib/types';
 import { useProperty } from '@/contexts/property-context';
 import Image from "next/image";
@@ -81,7 +81,7 @@ interface ResourceBarProps {
     user: UserWithProgress | null;
 }
 
-const ResourceTooltipContent = ({ resource, capacity, production, safeStorage }: { resource: {name:string, value: bigint}, capacity: number, production: ProductionData, safeStorage: number }) => {
+const ResourceTooltipContent = ({ resource, capacity, production, safeStorage }: { resource: {name: string, value: bigint}, capacity: number, production: ProductionData, safeStorage: number }) => {
     const timeToFill = production.produccionNeta > 0 ? (capacity - Number(resource.value)) / (production.produccionNeta / 3600) : Infinity;
 
     return (
