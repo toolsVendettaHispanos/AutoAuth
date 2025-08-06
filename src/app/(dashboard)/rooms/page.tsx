@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getSessionUser } from "@/lib/auth"
 import { getRoomConfigurations } from "@/lib/data"
 import { redirect } from "next/navigation"
+import { PropertyProvider } from "@/contexts/property-context"
 
 function RoomsLoading() {
     return (
@@ -34,9 +35,11 @@ export default async function RoomsPage() {
 
   return (
     <div className="main-view">
-      <Suspense fallback={<RoomsLoading />}>
-          <RoomsView user={user} allRoomConfigs={allRoomConfigs} />
-      </Suspense>
+        <PropertyProvider properties={user.propiedades}>
+            <Suspense fallback={<RoomsLoading />}>
+                <RoomsView user={user} allRoomConfigs={allRoomConfigs} />
+            </Suspense>
+        </PropertyProvider>
     </div>
   )
 }
