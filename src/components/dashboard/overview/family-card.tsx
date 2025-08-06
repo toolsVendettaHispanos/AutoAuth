@@ -51,16 +51,16 @@ export function FamilyCard({ family }: FamilyCardProps) {
             />
             <div className="absolute inset-0 bg-black/60 z-0" />
             <div className="relative z-10 flex flex-col flex-grow p-4">
-                 <div className="flex items-center gap-4 text-white mb-4">
+                 <div className="flex flex-col sm:flex-row items-center gap-4 text-white mb-4 text-center sm:text-left">
                     <Avatar className="h-20 w-20 border-2 border-primary/50 shrink-0">
                         <AvatarImage src={family.avatarUrl || ''} />
                         <AvatarFallback className="text-2xl">{family.tag}</AvatarFallback>
                     </Avatar>
                     <div className="flex-grow">
                         <CardTitle className="text-2xl font-bold tracking-wider [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">[{family.tag}] {family.name}</CardTitle>
-                         <p className="text-sm text-white/80 flex items-center gap-2"><Users className="h-4 w-4" />{family.members.length} Miembros</p>
+                         <p className="text-sm text-white/80 flex items-center justify-center sm:justify-start gap-2"><Users className="h-4 w-4" />{family.members.length} Miembros</p>
                     </div>
-                     <Button asChild size="sm" variant="outline" className="shrink-0">
+                     <Button asChild size="sm" variant="outline" className="shrink-0 mt-4 sm:mt-0">
                         <Link href={`/family/members?id=${family.id}`}>
                             Ver Familia
                         </Link>
