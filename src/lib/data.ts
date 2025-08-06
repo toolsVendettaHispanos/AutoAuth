@@ -523,12 +523,12 @@ export const getUserProfileById = cache(async (userId: string): Promise<UserProf
             include: {
                 puntuacion: true,
                 propiedades: {
-                    select: {
-                        id: true,
-                        nombre: true,
-                        ciudad: true,
-                        barrio: true,
-                        edificio: true,
+                    include: {
+                        habitaciones: {
+                            include: {
+                                configuracionHabitacion: true
+                            }
+                        }
                     },
                     orderBy: {
                         nombre: 'asc'
@@ -541,7 +541,7 @@ export const getUserProfileById = cache(async (userId: string): Promise<UserProf
                 }
             }
         });
-        return user as UserProfileData | null;
+        return user as any;
     } catch(e) {
         console.error(`Error fetching profile for user ${userId}`, e);
         return null;

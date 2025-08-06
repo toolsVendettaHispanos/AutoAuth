@@ -10,6 +10,8 @@ import { Building, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProfileViewProps {
     user: UserProfileData;
@@ -23,13 +25,22 @@ function formatPoints(points: number | null | undefined): string {
 export function ProfileView({ user }: ProfileViewProps) {
     const router = useRouter();
 
-    const handleSendMission = (ciudad: number, barrio: number, edificio: number) => {
-        const params = new URLSearchParams();
-        params.set('ciudad', ciudad.toString());
-        params.set('barrio', barrio.toString());
-        params.set('edificio', edificio.toString());
-        router.push(`/missions?${params.toString()}`);
-    }
+    const allBuildings = useMemo(() => {
+        const buildingsMap = new Map<string, { name: string; level: number }>();
+        user.propiedades.forEach(prop => {
+            prop.habitaciones.forEach(hab => {
+                const existing = buildingsMap.get(hab.configuracionHabitacion.id);
+                if (!existing || hab.nivel > existing.level) {
+                    buildingsMap.set(hab.configuracionHabitacion.id, {
+                        name: hab.configuracionHabitacion.nombre,
+                        level: hab.nivel
+                    });
+                }
+            });
+        });
+        return Array.from(buildingsMap.values());
+    }, [user.propiedades]);
+
 
     return (
         <div className="space-y-6">
@@ -98,27 +109,20 @@ export function ProfileView({ user }: ProfileViewProps) {
 
                 <Card className="md:col-span-1">
                     <CardHeader>
-                        <CardTitle>Propiedades</CardTitle>
+                        <CardTitle>Edificios del Imperio</CardTitle>
+                        <CardDescription>Nivel máximo alcanzado en todas las propiedades.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
-                            {user.propiedades.map(prop => (
-                                <div key={prop.id} className="flex justify-between items-center p-2 rounded-md hover:bg-muted/50">
-                                    <div>
-                                        <p className="font-semibold">{prop.nombre}</p>
-                                        <p className="text-sm text-muted-foreground">[{prop.ciudad}:{prop.barrio}:{prop.edificio}]</p>
+                         <ScrollArea className="h-80 pr-2">
+                            <div className="space-y-2">
+                                {allBuildings.map(building => (
+                                    <div key={building.name} className="flex justify-between items-baseline p-2 rounded-md hover:bg-muted/50 text-sm">
+                                        <p className="font-medium">{building.name}</p>
+                                        <p className="font-mono text-primary font-bold">Nvl {building.level}</p>
                                     </div>
-                                    <div className="flex items-center">
-                                        <Button asChild size="sm" variant="ghost">
-                                            <Link href={`/rooms/${prop.ciudad}:${prop.barrio}:${prop.edificio}`}>
-                                                <Building className="mr-2 h-4 w-4" />
-                                                Gestionar
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                         </ScrollArea>
                     </CardContent>
                 </Card>
             </div>
