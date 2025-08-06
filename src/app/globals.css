@@ -41,15 +41,11 @@
     --sidebar-border: 0 0% 20%;
     --sidebar-ring: 359 70% 35%;
   }
-}
- 
-@layer base {
-  * {
-    @apply border-border transition-all duration-200;
-  }
+
   html {
     @apply font-sans;
   }
+
   body {
     @apply bg-background text-foreground bg-[url('/img/general/paper-texture.png')] bg-repeat;
   }
