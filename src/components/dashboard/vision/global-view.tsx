@@ -1,5 +1,5 @@
 
-'use client';
+'use client'
 
 import { useMemo, useState } from "react";
 import type { FullPropiedad, UserWithProgress } from "@/lib/types";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import Link from "next/link";
-import { Building, Users, Box, Factory, DollarSign, Clock, ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { resourceIcons, RECRUITMENT_TROOP_ORDER, SECURITY_TROOP_ORDER } from "@/lib/constants";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -108,7 +108,7 @@ export function GlobalVisionView({ user }: GlobalVisionViewProps) {
 
 
     const renderDesktopTable = () => (
-         <Card>
+         <Card className="col-span-1 lg:col-span-3">
             <CardContent className="p-0">
                 <ScrollArea className="w-full whitespace-nowrap h-[75vh]">
                     <Table className="min-w-full">
@@ -163,57 +163,113 @@ export function GlobalVisionView({ user }: GlobalVisionViewProps) {
 
      const renderMobileCards = () => (
         <div className="space-y-4">
-             <Card className="animate-fade-in-up">
-                <CardHeader>
-                    <CardTitle className="text-2xl font-heading tracking-wider text-primary">Resumen del Imperio</CardTitle>
-                </CardHeader>
-                <CardContent>
-                     <Accordion type="multiple" defaultValue={['resources', 'production']} className="w-full">
-                         <AccordionItem value="resources">
-                            <AccordionTrigger>Recursos Totales</AccordionTrigger>
-                            <AccordionContent className="grid grid-cols-2 gap-4 pt-2">
-                                {Object.entries(empireTotals.resources).map(([key, value]) => (
-                                    <div key={key} className="flex items-center gap-2">
-                                        <Image src={resourceIcons[key]} alt={key} width={24} height={24} />
-                                        <div>
-                                            <p className="text-xs capitalize text-muted-foreground">{key}</p>
-                                            <p className="font-bold text-lg">{formatNumber(value)}</p>
+            {propertiesData.map(prop => (
+                 <Card key={prop.id} className="animate-fade-in-up">
+                    <CardHeader>
+                        <CardTitle className="text-lg font-heading tracking-wider">{prop.nombre}</CardTitle>
+                        <CardDescription>{prop.coords}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Accordion type="multiple" defaultValue={openAccordions} className="w-full" onValueChange={setOpenAccordions}>
+                            <AccordionItem value="resources">
+                                <AccordionTrigger>Recursos</AccordionTrigger>
+                                <AccordionContent className="grid grid-cols-2 gap-4 pt-2">
+                                    {Object.entries(prop.resources).map(([key, value]) => (
+                                        <div key={key} className="flex items-center gap-2">
+                                            <Image src={resourceIcons[key]} alt={key} width={24} height={24} />
+                                            <div>
+                                                <p className="text-xs capitalize text-muted-foreground">{key}</p>
+                                                <p className="font-bold text-lg">{formatNumber(value)}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </AccordionContent>
-                         </AccordionItem>
-                          <AccordionItem value="production">
-                            <AccordionTrigger>Producción Total</AccordionTrigger>
-                            <AccordionContent className="grid grid-cols-2 gap-4 pt-2">
-                                 {Object.entries(empireTotals.production).map(([key, value]) => (
-                                    <p key={key} className="flex items-center gap-2 font-mono text-green-400">
-                                        <Image src={resourceIcons[key]} alt={key} width={20} height={20} />
-                                        +{formatNumber(value)}/h
-                                    </p>
-                                ))}
-                            </AccordionContent>
-                         </AccordionItem>
-                          <AccordionItem value="troops">
-                            <AccordionTrigger>Ejército Total</AccordionTrigger>
-                            <AccordionContent className="space-y-2 pt-2 text-sm">
-                                {allTroopIds.map(id => {
-                                    const count = empireTotals.troops.get(id) || 0;
-                                    if(count === 0) return null;
-                                    return (
-                                        <div key={id} className="flex justify-between">
-                                            <span>{troopNames.get(id) || id}</span>
-                                            <span className="font-bold">{formatNumber(count)}</span>
-                                        </div>
-                                    )
-                                })}
-                            </AccordionContent>
-                         </AccordionItem>
-                     </Accordion>
-                </CardContent>
-            </Card>
+                                    ))}
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="production">
+                                <AccordionTrigger>Producción/h</AccordionTrigger>
+                                <AccordionContent className="grid grid-cols-2 gap-4 pt-2">
+                                    {Object.entries(prop.production).map(([key, value]) => (
+                                        <p key={key} className={cn("flex items-center gap-2 font-mono", value >= 0 ? "text-green-400" : "text-destructive")}>
+                                            <Image src={resourceIcons[key]} alt={key} width={20} height={20} />
+                                            {value >= 0 ? '+' : ''}{formatNumber(value)}/h
+                                        </p>
+                                    ))}
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="troops">
+                                <AccordionTrigger>Tropas en Propiedad</AccordionTrigger>
+                                <AccordionContent className="space-y-2 pt-2 text-sm">
+                                    {allTroopIds.map(id => {
+                                        const count = prop.troops.get(id) || 0;
+                                        if (count === 0) return null;
+                                        return (
+                                            <div key={id} className="flex justify-between">
+                                                <span>{troopNames.get(id) || id}</span>
+                                                <span className="font-bold">{formatNumber(count)}</span>
+                                            </div>
+                                        );
+                                    })}
+                                    {Array.from(prop.troops.values()).every(v => v === 0) && <p className="text-muted-foreground text-center">No hay tropas.</p>}
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            ))}
         </div>
     );
+
+     const EmpireSummaryCard = () => (
+        <Card className="lg:col-span-1">
+             <CardHeader>
+                <CardTitle className="text-2xl font-heading tracking-wider text-primary">Resumen del Imperio</CardTitle>
+            </CardHeader>
+            <CardContent>
+                 <Accordion type="multiple" defaultValue={['resources', 'production']} className="w-full">
+                     <AccordionItem value="resources">
+                        <AccordionTrigger>Recursos Totales</AccordionTrigger>
+                        <AccordionContent className="grid grid-cols-2 gap-4 pt-2">
+                            {Object.entries(empireTotals.resources).map(([key, value]) => (
+                                <div key={key} className="flex items-center gap-2">
+                                    <Image src={resourceIcons[key]} alt={key} width={24} height={24} />
+                                    <div>
+                                        <p className="text-xs capitalize text-muted-foreground">{key}</p>
+                                        <p className="font-bold text-lg">{formatNumber(value)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </AccordionContent>
+                     </AccordionItem>
+                      <AccordionItem value="production">
+                        <AccordionTrigger>Producción Total/h</AccordionTrigger>
+                        <AccordionContent className="grid grid-cols-2 gap-4 pt-2">
+                             {Object.entries(empireTotals.production).map(([key, value]) => (
+                                <p key={key} className={cn("flex items-center gap-2 font-mono", value >= 0 ? "text-green-400" : "text-destructive")}>
+                                    <Image src={resourceIcons[key]} alt={key} width={20} height={20} />
+                                    {value >= 0 ? '+' : ''}{formatNumber(value)}/h
+                                </p>
+                            ))}
+                        </AccordionContent>
+                     </AccordionItem>
+                      <AccordionItem value="troops">
+                        <AccordionTrigger>Ejército Total</AccordionTrigger>
+                        <AccordionContent className="space-y-2 pt-2 text-sm">
+                            {allTroopIds.map(id => {
+                                const count = empireTotals.troops.get(id) || 0;
+                                if(count === 0) return null;
+                                return (
+                                    <div key={id} className="flex justify-between">
+                                        <span>{troopNames.get(id) || id}</span>
+                                        <span className="font-bold">{formatNumber(count)}</span>
+                                    </div>
+                                )
+                            })}
+                        </AccordionContent>
+                     </AccordionItem>
+                 </Accordion>
+            </CardContent>
+        </Card>
+     )
 
     return (
         <div className="space-y-6">
@@ -229,9 +285,19 @@ export function GlobalVisionView({ user }: GlobalVisionViewProps) {
                     </Link>
                 </Button>
             </div>
-
-            {isMobile ? renderMobileCards() : renderDesktopTable()}
-            
+             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                 {isMobile ? (
+                    <div className="col-span-1 lg:col-span-4 space-y-4">
+                        <EmpireSummaryCard />
+                        {renderMobileCards()}
+                    </div>
+                 ) : (
+                    <>
+                        <EmpireSummaryCard />
+                        {renderDesktopTable()}
+                    </>
+                 )}
+            </div>
         </div>
     );
 }
