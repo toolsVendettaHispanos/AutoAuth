@@ -34,8 +34,6 @@ export default async function OverviewPage() {
     redirect('/');
   }
 
-  const primaryPropertyId = user.propiedades[0]?.id;
-
   return (
     <div className="main-view h-full">
       <Suspense fallback={<OverviewLoading />}>
@@ -54,13 +52,13 @@ export default async function OverviewPage() {
                 <PlayerCardServer userId={user.id} />
               </Suspense>
             </div>
-            {primaryPropertyId && (
-              <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-                <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
-                  <QueueStatusServer propertyId={primaryPropertyId} />
-                </Suspense>
-              </div>
-            )}
+            
+            <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
+                <QueueStatusServer />
+              </Suspense>
+            </div>
+            
           </div>
 
           {/* Columna Derecha */}
