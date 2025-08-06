@@ -1,6 +1,8 @@
 
 import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import type { FullPropiedad } from '@/lib/types';
+
 
 export default async function RoomsRedirectPage() {
     const user = await getSessionUser();
@@ -17,7 +19,7 @@ export default async function RoomsRedirectPage() {
     }
     
     // Find the main property or default to the first one
-    const mainProperty = user.propiedades.find(p => p.nombre === 'Propiedad Principal') || user.propiedades[0];
+    const mainProperty = user.propiedades.find((p: FullPropiedad) => p.nombre === 'Propiedad Principal') || user.propiedades[0];
     
     // Redirect to the dynamic route for that property
     redirect(`/rooms/${mainProperty.ciudad}:${mainProperty.barrio}:${mainProperty.edificio}`);
