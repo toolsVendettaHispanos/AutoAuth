@@ -72,9 +72,9 @@ export function FamilyCard({ family }: FamilyCardProps) {
                                 <div key={member.userId} className="flex items-center gap-3 text-sm bg-black/20 p-2 rounded-md">
                                     <Avatar className="h-8 w-8">
                                         <AvatarImage src={member.user.avatarUrl || ''} />
-                                        <AvatarFallback>{member.user.name.charAt(0)}</AvatarFallback>
+                                        <AvatarFallback>{member.user.name ? member.user.name.charAt(0) : 'U'}</AvatarFallback>
                                     </Avatar>
-                                    <span className="font-medium flex-grow truncate">{member.user.name}</span>
+                                    <span className="font-medium flex-grow truncate">{member.user.name || 'Usuario desconocido'}</span>
                                     <span className="font-mono text-amber-400">{formatPoints(member.user.puntuacion?.puntosHonorTotales)}</span>
                                 </div>
                             ))}
@@ -92,4 +92,3 @@ export function FamilyCard({ family }: FamilyCardProps) {
         </Card>
     );
 }
-
