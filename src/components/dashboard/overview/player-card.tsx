@@ -4,9 +4,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Progress } from "@/components/ui/progress";
 import type { UserWithProgress } from "@/lib/types";
-import { Eye, Crown, Shield, User as UserIcon } from "lucide-react";
+import { Crown, Shield, User as UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FamilyRole } from "@prisma/client";
@@ -22,8 +22,11 @@ const roleIcons: Record<FamilyRole, React.ReactNode> = {
 }
 
 export function PlayerCard({ user }: PlayerCardProps) {
+    // Simulating progress towards the next level/rank
+    const progress = ( (user.puntuacion?.puntosTotales || 0) % 1000) / 10;
+
     return (
-        <Card className="group animate-fade-in-up relative overflow-hidden h-full">
+        <Card className="group relative overflow-hidden h-full">
             <Image 
                 src="/nuevas/edificionuevo.jpg" 
                 alt="Player background"
@@ -33,13 +36,13 @@ export function PlayerCard({ user }: PlayerCardProps) {
             />
              <div className="absolute inset-0 bg-black/70" />
             <CardContent className="relative flex flex-col items-center justify-center h-full p-4 text-center text-white">
-                <Avatar className="h-28 w-28 border-4 border-white/10 shadow-lg mb-4">
+                <Avatar className="h-32 w-32 border-4 border-white/10 shadow-lg mb-2 transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-primary/20">
                     <AvatarImage src={user.avatarUrl || ''} alt={user.name} data-ai-hint="mafia boss" />
-                    <AvatarFallback className="text-4xl">{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback className="text-5xl">{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
-                 <CardTitle className="text-2xl font-bold tracking-wider [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">{user.name}</CardTitle>
-                <p className="text-sm text-white/80 [text-shadow:0_1px_2px_rgb(0_0_0_/_0.8)]">{user.title || 'Nuevo Jefe'}</p>
-
+                 <CardTitle className="text-3xl font-bold tracking-wider [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">{user.name}</CardTitle>
+                <p className="text-md text-white/80 [text-shadow:0_1px_2px_rgb(0_0_0_/_0.8)] mb-2">{user.title || 'Nuevo Jefe'}</p>
+                <Progress value={progress} className="w-3/4 mx-auto h-1.5" indicatorClassName="bg-amber-400" />
                 <div className="mt-4">
                     {user.familyMember ? (
                         <div className="flex flex-col items-center gap-2">

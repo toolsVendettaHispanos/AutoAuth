@@ -48,3 +48,4 @@ export function formatDuration(seconds: number): string {
 
     return result.trim() || '0s';
 }
+

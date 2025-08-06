@@ -98,6 +98,7 @@
     .training-card:hover {
       @apply -translate-y-1 shadow-lg shadow-primary/20 border-primary;
     }
+    .animate-fade-in-up {
+      animation: fade-in-up 0.5s ease-out forwards;
+    }
 }
-
-    
