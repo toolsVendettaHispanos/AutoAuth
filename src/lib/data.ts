@@ -2,11 +2,11 @@
 
 "use server"
 
-import { Prisma, PrismaClient, ColaMisiones } from '@prisma/client/edge'
+import { Prisma, PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { cache } from 'react';
-import { calculateStorageCapacity, calcularProduccionTotalPorSegundo } from './formulas/room-formulas';
-import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport, IncomingAttack } from './types';
+import { calculateStorageCapacity } from './formulas/room-formulas';
+import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport, IncomingAttack, ColaMisiones } from './types';
 
 
 const prisma = new PrismaClient().$extends(withAccelerate())
@@ -270,7 +270,7 @@ export const getFamilyByIdWithAllMembersData = cache(async (familyId: string): P
                 }
             }
         });
-        return family as any;
+        return family as unknown as FullFamily | null;
     } catch (e) {
         console.error("Error fetching full family data by id", e);
         return null;
@@ -548,7 +548,7 @@ export const getUserProfileById = cache(async (userId: string): Promise<UserProf
                 }
             }
         });
-        return user as any;
+        return user as unknown as UserProfileData;
     } catch(e) {
         console.error(`Error fetching profile for user ${userId}`, e);
         return null;
@@ -649,7 +649,7 @@ export const getFamilyRequests = cache(async (familyId: string): Promise<FullFam
                 createdAt: 'asc'
             }
         });
-        return requests as any;
+        return requests as unknown as FullFamilyInvitation[];
     } catch(e) {
         console.error(`Error fetching requests for family ${familyId}`, e);
         return [];
@@ -678,7 +678,7 @@ export const getInvitationsForUser = cache(async (userId: string): Promise<FullF
                 createdAt: 'desc'
             }
         });
-        return invitations as any;
+        return invitations as unknown as FullFamilyInvitation[];
     } catch(e) {
         console.error(`Error fetching invitations for user ${userId}`, e);
         return [];
