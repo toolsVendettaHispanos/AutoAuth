@@ -174,13 +174,19 @@ function OutgoingMission({ mission, allTroops }: { mission: ColaMisiones, allTro
     );
 }
 
+const getMovementArrival = (movement: ColaMisiones | IncomingAttack): Date => {
+    if ('fechaLlegada' in movement) {
+        return movement.fechaLlegada;
+    }
+    return movement.arrivalTime;
+}
 
 export function MissionStatus({ missions, incomingAttacks, allTroops }: MissionStatusProps) {
     const router = useRouter();
     const allMovements = [
         ...missions,
         ...incomingAttacks
-    ].sort((a,b) => new Date(a.fechaLlegada || a.arrivalTime).getTime() - new Date(b.fechaLlegada || b.arrivalTime).getTime());
+    ].sort((a,b) => getMovementArrival(a).getTime() - getMovementArrival(b).getTime());
 
     return (
         <div className="bg-card text-card-foreground px-4 py-3 rounded-b-md space-y-2">
