@@ -1,3 +1,4 @@
+
 'use client'
 
 import Image from "next/image"
@@ -31,6 +32,9 @@ export type RoomCardData = {
         dolares: number;
         alcohol: number;
     };
+    puntos: number;
+    produccionBase: number;
+    produccionRecurso: string | null;
     tiempo: number;
     enConstruccion: boolean;
     construccionActiva?: {
@@ -121,7 +125,19 @@ export function RoomCard({ room, timeLeft, isQueueFull, isSubmitting, onUpgrade,
                         </form>
                     </div>
                 </CardFooter>
-                <RoomDetailsModal room={{ ...room, nivel: room.nivelProyectado }} />
+                 <RoomDetailsModal room={{
+                    ...room,
+                    nivel: room.nivelProyectado,
+                    costoArmas: BigInt(room.costos.armas),
+                    costoMunicion: BigInt(room.costos.municion),
+                    costoDolares: BigInt(room.costos.dolares),
+                    duracion: room.tiempo,
+                    // Estos son campos que necesita RoomWithLevel pero no están en RoomCardData
+                    // Se pueden añadir con valores por defecto o traerlos desde el servidor si son necesarios
+                    requisitos: [],
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                }} />
             </Card>
         </Dialog>
     )

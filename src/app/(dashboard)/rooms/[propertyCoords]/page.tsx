@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getSessionUser } from "@/lib/auth"
 import { getRoomConfigurations } from "@/lib/data"
 import { redirect } from "next/navigation"
-import { PageProps } from "@/lib/types"
+import { FullPropiedad, PageProps } from "@/lib/types"
 import { PropertyProvider } from "@/contexts/property-context"
 
 function RoomsLoading() {
@@ -53,7 +53,7 @@ export default async function RoomsByCoordsPage({ params }: PageProps<{ property
   }
 
   const [ciudad, barrio, edificio] = params.propertyCoords.split(':').map(Number);
-  const propertyFromCoords = user.propiedades.find(p => p.ciudad === ciudad && p.barrio === barrio && p.edificio === edificio);
+  const propertyFromCoords = user.propiedades.find((p: FullPropiedad) => p.ciudad === ciudad && p.barrio === barrio && p.edificio === edificio);
 
   return (
     <div className="main-view">
