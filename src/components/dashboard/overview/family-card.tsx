@@ -1,4 +1,3 @@
-
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -42,7 +41,7 @@ export function FamilyCard({ family }: FamilyCardProps) {
     return (
         <Card className="group relative overflow-hidden h-full flex flex-col">
              <Image 
-                src="/img/nuevas/edificionuevo.jpg" 
+                src="/nuevas/vendettasilueta.jpg" 
                 alt="Family background"
                 fill
                 className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"

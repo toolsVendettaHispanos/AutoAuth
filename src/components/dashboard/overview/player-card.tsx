@@ -25,7 +25,7 @@ export function PlayerCard({ user }: PlayerCardProps) {
     return (
         <Card className="group animate-fade-in-up relative overflow-hidden h-full">
             <Image 
-                src="/img/nuevas/edificionuevo.jpg" 
+                src="/nuevas/edificionuevo.jpg" 
                 alt="Player background"
                 fill
                 className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
