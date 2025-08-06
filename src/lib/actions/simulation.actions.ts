@@ -1,6 +1,5 @@
 
 
-
 'use server';
 
 import { getTrainingConfigurations, getTroopConfigurations } from '../data';
@@ -17,9 +16,10 @@ function calculateResourceLoss(lostTroops: ArmyUnit[], troopConfigsMap: Map<stri
             total.armas += Number(config.costoArmas) * unit.quantity;
             total.municion += Number(config.costoMunicion) * unit.quantity;
             total.dolares += Number(config.costoDolares) * unit.quantity;
+            total.alcohol += 0; // Assuming troops don't cost alcohol to replace
         }
         return total;
-    }, { armas: 0, municion: 0, dolares: 0 });
+    }, { armas: 0, municion: 0, dolares: 0, alcohol: 0 });
 }
 
 export async function runBattleSimulation(attacker: SimulationInput, defender: SimulationInput): Promise<BattleReport> {
