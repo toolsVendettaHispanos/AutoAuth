@@ -1,11 +1,11 @@
 
 
+
 'use client';
-import { useState } from "react";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
-import type { TipoTropa } from "@prisma/client";
 import { DeleteConfigButton } from "./delete-config-button";
 import { deleteTroopConfig } from "@/lib/actions/admin.actions";
 import { FullConfiguracionEntrenamiento, FullConfiguracionTropa } from "@/lib/data";
@@ -18,7 +18,7 @@ interface TroopConfigTableProps {
     tiposTropa: string[];
 }
 
-export function TroopConfigTable({ initialData, allTrainings, tiposTropa }: TroopConfigTableProps) {
+export function TroopConfigTable({ initialData, }: TroopConfigTableProps) {
     
     return (
         <Card>

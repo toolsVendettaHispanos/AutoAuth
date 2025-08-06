@@ -1,5 +1,6 @@
 
 
+
 'use client';
 
 import { useTransition, useState } from "react";
@@ -10,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { saveTroopConfig } from "@/lib/actions/admin.actions";
 import { Loader2, PlusCircle, Trash2 } from "lucide-react";
-import type { ConfiguracionTropa, TipoTropa } from "@prisma/client";
+import type { ConfiguracionTropa } from "@prisma/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FullConfiguracionEntrenamiento, FullConfiguracionTropa } from "@/lib/data";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -123,7 +124,7 @@ export function TroopConfigForm({ troop, allTrainings, allTroops, tiposTropa }: 
         form.append('bonusDefensa', Array.from(bonusDefensa).join(','));
         form.append('requisitos', Array.from(requisitos).join(','));
         form.append('bonusContrincantes', JSON.stringify(
-            bonusContrincantes.map(({id, tropaAtacanteId, ...rest}) => rest))
+            bonusContrincantes.map(({...rest}) => rest))
         );
         
         startTransition(async () => {
@@ -250,7 +251,7 @@ export function TroopConfigForm({ troop, allTrainings, allTroops, tiposTropa }: 
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-2">
-                            {bonusContrincantes.map((bonus, index) => (
+                            {bonusContrincantes.map((bonus) => (
                                 <div key={bonus.id} className="flex items-center gap-2 p-2 border rounded-md">
                                     <Select 
                                         value={bonus.tropaDefensoraId} 

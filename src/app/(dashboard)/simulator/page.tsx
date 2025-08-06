@@ -1,13 +1,12 @@
 
 'use client';
 
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTroopConfigurations, getTrainingConfigurations, getRoomConfigurations } from "@/lib/data";
 import { SimulatorView } from "@/components/dashboard/simulator-view";
-import type { BattleReport } from '@/lib/types/simulation.types';
 import type { UserWithProgress, FullConfiguracionTropa, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion } from "@/lib/types";
 
 function SimulatorLoading() {

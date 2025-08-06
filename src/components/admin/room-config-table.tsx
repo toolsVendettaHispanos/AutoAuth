@@ -1,9 +1,10 @@
 
 
+
 'use client';
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { RoomConfigForm } from "./forms/room-config-form";
@@ -12,7 +13,6 @@ import { DeleteConfigButton } from "./delete-config-button";
 import { ConfiguracionHabitacion } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
-import { cn } from "@/lib/utils";
 
 interface RoomConfigTableProps {
     initialData: (ConfiguracionHabitacion & { requisitos: { requiredRoomId: string; requiredLevel: number }[] })[];

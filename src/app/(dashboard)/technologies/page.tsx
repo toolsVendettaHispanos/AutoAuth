@@ -1,7 +1,7 @@
 
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getRoomConfigurations, getTrainingConfigurations, getTroopConfigurations, UserWithProgress } from "@/lib/data";
+import { getRoomConfigurations, getTrainingConfigurations, getTroopConfigurations } from "@/lib/data";
 import { TechnologyTreeView } from "@/components/dashboard/technologies/technology-tree-view";
 import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
