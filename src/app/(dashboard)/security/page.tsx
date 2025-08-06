@@ -7,7 +7,6 @@ import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { calcularStatsTropaConBonus } from "@/lib/formulas/troop-formulas";
 import { SECURITY_TROOP_ORDER, TROOP_TYPE_DEFENSE } from "@/lib/constants";
-import type { UserWithProgress } from "@/lib/types";
 
 function SecurityLoading() {
     return (
@@ -22,47 +21,4 @@ function SecurityLoading() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(3)].map((_, i) => (
                 <Skeleton key={i} className="h-64 w-full shimmer" />
-            ))}
-        </div>
-      </div>
-    )
-}
-
-export default async function SecurityPage() {
-  const user = await getSessionUser();
-  if (!user) {
-    redirect('/');
-  }
-
-  const troopConfigs = await getTroopConfigurations();
-  
-  const defenseTroops = troopConfigs.filter(t => t.tipo === TROOP_TYPE_DEFENSE);
-
-  const sortedDefenseTroops = [...defenseTroops].sort((a, b) => {
-    const indexA = SECURITY_TROOP_ORDER.indexOf(a.id);
-    const indexB = SECURITY_TROOP_ORDER.indexOf(b.id);
-    if (indexA === -1) return 1;
-    if (indexB === -1) return -1;
-    return indexA - indexB;
-  });
-
-  const troopsWithStats = sortedDefenseTroops.map(config => {
-      const { ataqueActual, defensaActual, capacidadActual, velocidadActual, salarioActual } = calcularStatsTropaConBonus(config, user.entrenamientos);
-      return {
-          ...config,
-          ataqueActual,
-          defensaActual,
-          capacidadActual,
-          velocidadActual,
-          salarioActual,
-      }
-  })
-
-  return (
-    <div className="main-view">
-      <Suspense fallback={<SecurityLoading />}>
-          <SecurityView user={user} defenseTroops={troopsWithStats} />
-      </Suspense>
-    </div>
-  )
-}
+            ))

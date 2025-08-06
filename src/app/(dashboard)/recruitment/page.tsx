@@ -6,7 +6,6 @@ import { getTroopConfigurations } from "@/lib/data"
 import { getSessionUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { calcularStatsTropaConBonus } from "@/lib/formulas/troop-formulas"
-import type { UserWithProgress } from "@/lib/types"
 
 function RecruitmentLoading() {
     return (
@@ -58,8 +57,4 @@ export default async function RecruitmentPage() {
   return (
     <div className="main-view">
       <Suspense fallback={<RecruitmentLoading />}>
-          <RecruitmentView user={user} troopConfigsWithStats={troopsWithStats} />
-      </Suspense>
-    </div>
-  )
-}
+          <RecruitmentView user={user} troopConfigsWith
