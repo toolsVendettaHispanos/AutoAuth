@@ -1,11 +1,12 @@
 
+
 'use server';
 
 import prisma from "../prisma/prisma";
 import type { FullPropiedad, UserWithProgress } from "../types";
 import { calculateStorageCapacity, calcularProduccionTotalPorSegundo } from "../formulas/room-formulas";
 import { revalidatePath } from "next/cache";
-import { calcularPuntosEntrenamientos, calcularPuntosHabitaciones, calcularPuntosPropiedad, calcularPuntosTropas } from "../formulas/score-formulas";
+import { calcularPuntosEntrenamientos, calcularPuntosHabitaciones, calcularPuntosTropas } from "../formulas/score-formulas";
 import { getSessionUser } from "../auth";
 import { getUserWithProgressByUsername } from "../data";
 import { handleAttackMission } from "./brawl.actions"; 
@@ -32,7 +33,7 @@ export async function actualizarEstadoCompletoDelJuego(sessionUser: UserWithProg
       verificarYFinalizarEntrenamientos(sessionUser),
     ]);
     
-    let combinedUser = { ...sessionUser, ...userAfterConstructionCheck, ...userAfterRecruitmentCheck, ...userAfterMissionCheck, ...userAfterTrainingCheck };
+    const combinedUser = { ...sessionUser, ...userAfterConstructionCheck, ...userAfterRecruitmentCheck, ...userAfterMissionCheck, ...userAfterTrainingCheck };
   
     const userWithUpdatedProgress = await obtenerEstadoJuegoActualizado(combinedUser);
     const finalUser = await actualizarPuntuacionUsuario(userWithUpdatedProgress);
