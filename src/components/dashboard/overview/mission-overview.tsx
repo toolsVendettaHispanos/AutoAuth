@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect, useTransition } from 'react';
@@ -100,7 +99,7 @@ const MissionRow = ({ mission, type, allTroops }: { mission: ColaMisiones | Inco
             <TableCell className="text-center">
                  <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger asChild><Button variant="ghost" size="sm" className="font-mono">{troops}</Button></TooltipTrigger>
+                        <TooltipTrigger asChild><Button variant="ghost" size="sm" className="font-mono">{troops.toLocaleString('de-DE')}</Button></TooltipTrigger>
                         <TooltipContent>
                            <div className="p-2 space-y-2 w-48">
                                 <p className="font-bold text-base">Carga de Flota</p>
@@ -115,7 +114,7 @@ const MissionRow = ({ mission, type, allTroops }: { mission: ColaMisiones | Inco
                                                     <Image src={config?.urlImagen || ''} alt={config?.nombre || ''} width={16} height={16} className="bg-white/10 rounded-sm" />
                                                     {config?.nombre || t.id}
                                                 </span>
-                                                <span className="font-bold">{t.cantidad.toLocaleString()}</span>
+                                                <span className="font-bold">{t.cantidad.toLocaleString('de-DE')}</span>
                                             </div>
                                         )
                                     })}
@@ -132,7 +131,7 @@ const MissionRow = ({ mission, type, allTroops }: { mission: ColaMisiones | Inco
                                                             <Image src={resourceIcons[key]} alt={key} width={16} height={16} />
                                                             {key}:
                                                         </span> 
-                                                        <span className="font-bold">{(value as number).toLocaleString()}</span>
+                                                        <span className="font-bold">{(value as number).toLocaleString('de-DE')}</span>
                                                     </div>
                                                 )
                                             ))}

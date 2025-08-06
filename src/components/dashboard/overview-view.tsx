@@ -17,6 +17,7 @@ import { PlayerCard } from "./overview/player-card";
 import { useProperty } from "@/contexts/property-context";
 import { calcularPoderAtaque } from "@/lib/formulas/score-formulas";
 import { MissionOverview } from "./overview/mission-overview";
+import { FamilyCard } from "./overview/family-card";
 
 function ActionIcons({ unreadMessages, inFamily }: { unreadMessages: number, inFamily: boolean }) {
     const actions = [
@@ -100,8 +101,7 @@ export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
                     <PlayerCard user={user} />
                 </div>
                  <div className="space-y-4 animate-fade-in-up lg:col-span-1" style={{ animationDelay: '100ms' }}>
-                    <TroopOverview troops={selectedProperty.TropaUsuario} />
-                 
+                    <FamilyCard family={user.familyMember?.family} />
                 </div>
  
                  <div className="lg:col-span-1 animate-fade-in-up" style={{animationDelay: '200ms'}}>
