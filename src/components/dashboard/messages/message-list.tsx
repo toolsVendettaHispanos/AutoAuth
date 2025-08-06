@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Inbox, Trash2, Shield, Swords, Eye, CheckCircle, XCircle } from "lucide-react";
+import { Inbox, Trash2, Shield, User, Swords, Eye, CheckCircle, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { deleteMessage, markMessageAsRead } from "@/lib/actions/message.actions";
 import { useTransition } from "react";
@@ -107,11 +107,11 @@ export function MessageList({ items, selectedItemId, onSelectItem, currentUserId
                      <div className="pt-1"><Swords className="h-6 w-6 text-destructive" /></div>
                      <div className="flex-grow overflow-hidden">
                          <p className="font-semibold truncate">{isAttacker ? "Ataque a " : "Defensa de "} {opponent.name}</p>
-                         <p className="text-sm text-muted-foreground">
+                         <div className="text-sm text-muted-foreground">
                              <Badge variant={wasVictory ? "default" : "destructive"} className={cn(wasVictory && "bg-green-600/80")}>
                                 {wasVictory ? "Victoria" : "Derrota"}
                              </Badge>
-                         </p>
+                         </div>
                      </div>
                  </div>
              )
@@ -125,12 +125,12 @@ export function MessageList({ items, selectedItemId, onSelectItem, currentUserId
                      <div className="pt-1"><Eye className="h-6 w-6 text-blue-500" /></div>
                      <div className="flex-grow overflow-hidden">
                          <p className="font-semibold truncate">{isAttacker ? "Espionaje a " : "Espionaje de "} {opponent.name}</p>
-                         <p className="text-sm text-muted-foreground">
+                         <div className="text-sm text-muted-foreground">
                               <Badge variant={wasSuccess ? "default" : "destructive"} className={cn(wasSuccess && "bg-green-600/80")}>
                                 {wasSuccess ? <CheckCircle className="h-3 w-3 mr-1"/> : <XCircle className="h-3 w-3 mr-1"/>}
                                 {wasSuccess ? "Éxito" : "Fallo"}
                              </Badge>
-                         </p>
+                         </div>
                      </div>
                  </div>
              )
