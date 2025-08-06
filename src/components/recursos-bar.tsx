@@ -1,7 +1,7 @@
 
 'use client'
 
-import { LiveClock } from "./live-clock";
+import { LiveClock } from './dashboard/live-clock';
 import type { UserWithProgress } from '@/lib/types';
 import { useProperty } from '@/contexts/property-context';
 import Image from "next/image";

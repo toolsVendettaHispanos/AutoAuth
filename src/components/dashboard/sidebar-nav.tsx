@@ -3,7 +3,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 import {
   SidebarMenu,
   SidebarMenuItem,
@@ -78,7 +78,6 @@ const tertiaryNav: NavItem[] = [
 
 export function SidebarNav({ user }: SidebarNavProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { selectedProperty } = useProperty();
   const { setOpenMobile, isMobile } = useSidebar();
 
@@ -92,13 +91,10 @@ export function SidebarNav({ user }: SidebarNavProps) {
     <SidebarMenu>
       {items.map((item) => {
         const isActive = pathname.startsWith(item.href);
-        const params = new URLSearchParams(searchParams);
         
         let finalHref = item.href;
         if(item.href === '/rooms' && selectedProperty) {
             finalHref = `/rooms/${selectedProperty.ciudad}:${selectedProperty.barrio}:${selectedProperty.edificio}`;
-        } else if (item.href !== '/rooms') {
-            finalHref = `${item.href}?${params.toString()}`;
         }
 
         return (
