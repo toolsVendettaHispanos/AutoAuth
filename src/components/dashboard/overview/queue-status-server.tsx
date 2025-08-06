@@ -15,3 +15,4 @@ export async function QueueStatusServer() {
 
   return <QueueStatusCard user={user} allRooms={allRooms} allTroops={allTroops} />;
 }
+

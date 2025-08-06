@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { UserWithProgress, FullPropiedad, ColaConstruccion } from '@/lib/types';
+import type { UserWithProgress, FullPropiedad, ColaConstruccion, FullConfiguracionTropa } from '@/lib/types';
 import { ConstructionStatus } from './construction-status';
 import { RecruitmentStatus } from './recruitment-status';
 import { TrainingStatus } from './training-status';
@@ -13,9 +13,10 @@ import { ScrollArea } from '../ui/scroll-area';
 type QueueCardProps = {
     user: UserWithProgress;
     allRooms: { id: string; nombre: string; }[];
+    allTroops: FullConfiguracionTropa[];
 };
 
-export function QueueStatusCard({ user, allRooms }: QueueCardProps) {
+export function QueueStatusCard({ user, allRooms, allTroops }: QueueCardProps) {
     
     const activeConstructionsPerProperty = user.propiedades
         .map((p: FullPropiedad) => {
@@ -60,3 +61,4 @@ export function QueueStatusCard({ user, allRooms }: QueueCardProps) {
         </Card>
     );
 }
+
