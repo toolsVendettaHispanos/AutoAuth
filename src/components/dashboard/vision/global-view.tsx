@@ -2,11 +2,10 @@
 'use client'
 
 import { useMemo, useState } from "react";
-import type { FullPropiedad, UserWithProgress } from "@/lib/types";
+import type { UserWithProgress } from "@/lib/types";
 import { calcularProduccionTotalPorSegundo } from "@/lib/formulas/room-formulas";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -122,7 +121,7 @@ export function GlobalVisionView({ user }: GlobalVisionViewProps) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {metricRows.map((row, index) => {
+                            {metricRows.map(row => {
                                 if(row.type === 'header') {
                                     return <TableRow key={row.label}><TableCell colSpan={propertiesData.length + 2} className="h-2 bg-muted/50 p-1 font-bold text-center text-primary">{row.label}</TableCell></TableRow>
                                 }

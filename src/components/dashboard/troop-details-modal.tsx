@@ -5,12 +5,11 @@ import Image from 'next/image';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '../ui/scroll-area';
 import { Button } from '../ui/button';
-import type { ConfiguracionTropa, UserWithProgress } from '@/lib/types';
+import type { ConfiguracionTropa } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 interface TroopDetailsModalProps {
   troop: ConfiguracionTropa;
-  user: UserWithProgress;
   ataqueActual: number;
   defensaActual: number;
   capacidadActual: number;
@@ -23,7 +22,7 @@ function formatNumber(num: number): string {
     return num.toLocaleString('de-DE');
 }
 
-export function TroopDetailsModal({ troop, user, ataqueActual, defensaActual, capacidadActual, velocidadActual, salarioActual }: TroopDetailsModalProps) {
+export function TroopDetailsModal({ troop, ataqueActual, defensaActual, capacidadActual, velocidadActual, salarioActual }: TroopDetailsModalProps) {
     const stats = [
         { label: 'Ataque', base: troop.ataque, actual: ataqueActual },
         { label: 'Defensa', base: troop.defensa, actual: defensaActual },

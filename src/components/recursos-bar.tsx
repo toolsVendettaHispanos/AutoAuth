@@ -81,7 +81,7 @@ interface ResourceBarProps {
     user: UserWithProgress | null;
 }
 
-const ResourceTooltipContent = ({ resource, capacity, production, safeStorage }: { resource: any, capacity: number, production: ProductionData, safeStorage: number }) => {
+const ResourceTooltipContent = ({ resource, capacity, production, safeStorage }: { resource: {name:string, value: bigint}, capacity: number, production: ProductionData, safeStorage: number }) => {
     const timeToFill = production.produccionNeta > 0 ? (capacity - Number(resource.value)) / (production.produccionNeta / 3600) : Infinity;
 
     return (

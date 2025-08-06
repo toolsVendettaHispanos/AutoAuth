@@ -5,8 +5,7 @@
 // The composition now happens in src/app/(dashboard)/overview/page.tsx.
 'use client';
 
-import type { UserWithProgress, FullConfiguracionTropa, FullConfiguracionHabitacion } from "@/lib/types";
-import { IncomingAttacks } from "./incoming-attacks";
+import type { UserWithProgress, FullConfiguracionTropa } from "@/lib/types";
 import { PlayerCard } from "./overview/player-card";
 import { FamilyCard } from "./overview/family-card";
 import { QueueStatusCard } from "./queue-status-card";
@@ -25,7 +24,7 @@ export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
             <PlayerCard user={user} />
         </div>,
         <div key="family-card" className="lg:col-span-2">
-            <FamilyCard family={user.familyMember?.family as any} />
+            <FamilyCard family={user.familyMember?.family} />
         </div>,
         <div key="queue-status" className="lg:col-span-2 xl:col-span-4">
             <QueueStatusCard user={user} allRooms={allRooms} allTroops={allTroops} />

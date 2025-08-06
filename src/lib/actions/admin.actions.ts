@@ -1,5 +1,6 @@
 
 
+
 'use server';
 
 import { revalidatePath } from "next/cache";
@@ -80,8 +81,8 @@ export async function saveRoomConfig(formData: FormData) {
         });
         revalidatePath('/admin/panel');
         return { success: true };
-    } catch (e: any) {
-        return { error: e.message };
+    } catch (e: unknown) {
+        return { error: (e as Error).message };
     }
 }
 
@@ -98,8 +99,8 @@ export async function deleteRoomConfig(id: string) {
         });
         revalidatePath('/admin/panel');
         return { success: true };
-    } catch (e: any) {
-        return { error: e.message };
+    } catch (e: unknown) {
+        return { error: (e as Error).message };
     }
 }
 
@@ -165,8 +166,8 @@ export async function saveTrainingConfig(formData: FormData) {
         });
         revalidatePath('/admin/panel');
         return { success: true };
-    } catch (e: any) {
-        return { error: e.message };
+    } catch (e: unknown) {
+        return { error: (e as Error).message };
     }
 }
 
@@ -183,8 +184,8 @@ export async function deleteTrainingConfig(id: string) {
         });
         revalidatePath('/admin/panel');
         return { success: true };
-    } catch (e: any) {
-        return { error: e.message };
+    } catch (e: unknown) {
+        return { error: (e as Error).message };
     }
 }
 
@@ -246,8 +247,8 @@ export async function saveTroopConfig(formData: FormData) {
         });
         revalidatePath('/admin/panel/troops');
         return { success: true };
-    } catch (e: any) {
-        return { error: e.message };
+    } catch (e: unknown) {
+        return { error: (e as Error).message };
     }
 }
 
@@ -264,8 +265,8 @@ export async function deleteTroopConfig(id: string) {
         });
         revalidatePath('/admin/panel/troops');
         return { success: true };
-    } catch (e: any) {
-        return { error: e.message };
+    } catch (e: unknown) {
+        return { error: (e as Error).message };
     }
 }
 
@@ -285,7 +286,7 @@ export async function saveTroopBonusConfig(bonusData: Omit<TropaBonusContrincant
         });
         revalidatePath('/admin/panel/bonus');
         return { success: true };
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error(e);
         return { error: "Error al guardar la configuración de bonus." };
     }

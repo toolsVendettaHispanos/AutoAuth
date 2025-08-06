@@ -84,10 +84,6 @@ function SimulatorColumn({ title, state, setState, troopConfigs, trainingConfigs
         setState(prev => ({ ...prev, [section]: { ...prev[section], [id]: value } }));
     };
 
-    const handleGeneralValueChange = (field: 'buildingsLevel' | 'propertyCount', value: number) => {
-         setState(prev => ({ ...prev, [field]: value }));
-    }
-
     const handleClear = () => setState({ troops: {}, trainings: {}, defenses: {}, buildingsLevel: 1, propertyCount: 1 });
     
     const troopsToShow = isDefender ? troopConfigs : troopConfigs.filter(t => t.tipo !== 'DEFENSA');

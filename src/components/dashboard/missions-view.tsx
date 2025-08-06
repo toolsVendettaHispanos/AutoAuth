@@ -58,7 +58,7 @@ function formatNumber(num: number): string {
     return num.toLocaleString('de-DE');
 }
 
-export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, troopConfigs: FullConfiguracionTropa[] }) {
+export function MissionsView({ troopConfigs }: { user: UserWithProgress, troopConfigs: FullConfiguracionTropa[] }) {
     const { selectedProperty } = useProperty();
     const { toast } = useToast();
     const searchParams = useSearchParams();
@@ -136,7 +136,7 @@ export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, t
             edificio: parseInt(coordinates.edificio, 10),
         });
         const distancia = calcularDistancia(origenCoords, destinoCoords);
-        const duracion = calcularDuracionViaje(distancia, velocidad, activeTroops.map(t => t.id));
+        const duracion = calcularDuracionViaje(distancia, velocidad);
 
         const tropasConSalario = activeTroops.map((t: TroopInput) => {
             const config = troopConfigsMap.get(t.id);

@@ -1,9 +1,9 @@
 
 'use client'
 
-import { useState, useTransition, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { UserWithProgress, FullTropaUsuario, FullConfiguracionTropa } from "@/lib/types";
+import { useMemo } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import type { UserWithProgress, FullConfiguracionTropa } from "@/lib/types";
 import { useProperty } from "@/contexts/property-context";
 import { SecuritySummary } from "./security/security-summary";
 import { SecurityTroopManager } from "./security/security-troop-manager";
@@ -21,7 +21,7 @@ type SecurityViewProps = {
     user: UserWithProgress;
 }
 
-export function SecurityView({ user, defenseTroops }: SecurityViewProps) {
+export function SecurityView({ defenseTroops }: SecurityViewProps) {
   const { selectedProperty } = useProperty();
 
   const troopsData = useMemo(() => {
@@ -55,7 +55,7 @@ export function SecurityView({ user, defenseTroops }: SecurityViewProps) {
     )
   }
 
-  const allAssignedTroops = user.propiedades.flatMap(p => p.TropaSeguridadUsuario);
+  const allAssignedTroops = selectedProperty.TropaSeguridadUsuario;
   const totalDefensePower = allAssignedTroops.reduce((acc, tropa) => {
     const config = defenseTroops.find(c => c.id === tropa.configuracionTropaId);
     return acc + ((config?.defensaActual || 0) * tropa.cantidad);

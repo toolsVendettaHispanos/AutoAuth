@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '../ui/scroll-area';
 import { Button } from '../ui/button';
-import type { FullConfiguracionEntrenamiento, UserWithProgress } from '@/lib/types';
+import type { FullConfiguracionEntrenamiento } from '@/lib/types';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 

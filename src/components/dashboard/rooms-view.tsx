@@ -1,5 +1,6 @@
 
 
+
 'use client'
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -15,12 +16,11 @@ import { ID_OFICINA_JEFE, MAX_CONSTRUCTION_QUEUE_SIZE, ROOM_ORDER } from "@/lib/
 import { RoomCard } from "./room-card"
 
 type RoomsViewProps = {
-    user: UserWithProgress;
     allRoomConfigs: FullConfiguracionHabitacion[];
     initialProperty?: FullPropiedad;
 }
 
-export function RoomsView({ user, allRoomConfigs, initialProperty }: RoomsViewProps) {
+export function RoomsView({ allRoomConfigs, initialProperty }: RoomsViewProps) {
     const router = useRouter();
     const { selectedProperty: contextSelectedProperty } = useProperty();
     const [isSubmitting, setIsSubmitting] = useState<string | null>(null);

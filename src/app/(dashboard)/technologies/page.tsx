@@ -54,7 +54,7 @@ export default async function TechnologiesPage() {
             </div>
             <Suspense fallback={<TechnologiesLoading />}>
                 <TechnologyTreeView
-                    user={user as UserWithProgress}
+                    user={user}
                     rooms={rooms}
                     trainings={trainings}
                     troops={troops}
