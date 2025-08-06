@@ -1,15 +1,15 @@
 
-'use client'
+'use client';
 
 import { useState, useMemo } from "react";
-import { calcularProduccionTotalPorSegundo } from "@/lib/formulas/room-formulas";
+import { calcularProduccionTotalPorSegundo, calculateStorageCapacity, calculateSafeStorage } from "@/lib/formulas/room-formulas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import type { UserWithProgress, FullPropiedad } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { resourceIcons } from "@/lib/constants";
-
+import { cn } from "@/lib/utils";
 
 const resourceNames: { [key: string]: string } = {
     armas: "Armas",
@@ -24,56 +24,11 @@ function formatNumber(num: number): string {
 
 function formatProduction(num: number): string {
     const sign = num >= 0 ? '+' : '';
-    return `${sign}${formatNumber(num)}/h`;
+    return `${sign}${formatNumber(num)}`;
 }
 
 interface ResourcesViewProps {
     user: UserWithProgress;
-}
-
-function ResourceCard({ resourceKey, name, icon, productionPerHour }: { resourceKey: string, name: string, icon: string, productionPerHour: number }) {
-    
-    const projectionData = useMemo(() => {
-        return [
-            { interval: "1 Hora", gain: productionPerHour },
-            { interval: "8 Horas", gain: productionPerHour * 8 },
-            { interval: "1 Día", gain: productionPerHour * 24 },
-            { interval: "1 Semana", gain: productionPerHour * 24 * 7 },
-        ];
-    }, [productionPerHour]);
-
-    return (
-        <Card>
-            <CardHeader>
-                <div className="flex items-center gap-3">
-                    <Image src={icon} alt={name} width={32} height={32} />
-                    <CardTitle>{name}</CardTitle>
-                </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <p className={`text-3xl font-bold font-mono ${productionPerHour >= 0 ? 'text-green-400' : 'text-destructive'}`}>{formatProduction(productionPerHour)}</p>
-                
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Intervalo</TableHead>
-                            <TableHead className="text-right">Ganancia Proyectada</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {projectionData.map(item => (
-                            <TableRow key={item.interval}>
-                                <TableCell className="font-medium">{item.interval}</TableCell>
-                                <TableCell className={`text-right font-mono ${item.gain >= 0 ? 'text-green-500/90' : 'text-destructive/90'}`}>
-                                    {item.gain >= 0 ? '+' : ''}{formatNumber(item.gain)}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
-    )
 }
 
 export function ResourcesView({ user }: ResourcesViewProps) {
@@ -84,23 +39,63 @@ export function ResourcesView({ user }: ResourcesViewProps) {
             ? user.propiedades
             : user.propiedades.filter((p: FullPropiedad) => p.id === selectedPropertyId);
         
-        const totals = propertiesToCalc.reduce((acc, propiedad) => {
+        return propertiesToCalc.reduce((acc, propiedad) => {
             const prod = calcularProduccionTotalPorSegundo(propiedad);
-            acc.armas += prod.armas.produccionNeta * 3600;
-            acc.municion += prod.municion.produccionNeta * 3600;
-            acc.alcohol += prod.alcohol.produccionNeta * 3600;
-            acc.dolares += prod.dolares.produccionNeta * 3600;
+            acc.armas += prod.armas.produccionNeta;
+            acc.municion += prod.municion.produccionNeta;
+            acc.alcohol += prod.alcohol.produccionNeta;
+            acc.dolares += prod.dolares.produccionNeta;
             return acc;
         }, { armas: 0, municion: 0, alcohol: 0, dolares: 0 });
 
-        return Object.keys(totals).map(key => ({
-            key,
-            name: resourceNames[key],
-            icon: resourceIcons[key],
-            perHour: totals[key as keyof typeof totals],
-        }));
-
     }, [user.propiedades, selectedPropertyId]);
+
+    const storageData = useMemo(() => {
+        const propertiesToCalc = selectedPropertyId === 'all'
+            ? user.propiedades
+            : user.propiedades.filter((p: FullPropiedad) => p.id === selectedPropertyId);
+
+        if (propertiesToCalc.length === 0) {
+            return {
+                armas: { capacidad: 0, seguro: 0 },
+                municion: { capacidad: 0, seguro: 0 },
+                alcohol: { capacidad: 0, seguro: 0 },
+                dolares: { capacidad: 0, seguro: 0 }
+            };
+        }
+
+        return propertiesToCalc.reduce((acc, prop) => {
+            const capacity = calculateStorageCapacity(prop);
+            const safe = calculateSafeStorage(prop);
+            acc.armas.capacidad += capacity.armas;
+            acc.armas.seguro += safe.armas;
+            acc.municion.capacidad += capacity.municion;
+            acc.municion.seguro += safe.municion;
+            acc.alcohol.capacidad += capacity.alcohol;
+            acc.alcohol.seguro += safe.alcohol;
+            acc.dolares.capacidad += capacity.dolares;
+            acc.dolares.seguro += safe.dolares;
+            return acc;
+        }, {
+            armas: { capacidad: 0, seguro: 0 },
+            municion: { capacidad: 0, seguro: 0 },
+            alcohol: { capacidad: 0, seguro: 0 },
+            dolares: { capacidad: 0, seguro: 0 }
+        });
+    }, [user.propiedades, selectedPropertyId]);
+
+    const productionTableRows = [
+        { label: "Total por hora", multiplier: 1 },
+        { label: "Total por día", multiplier: 24 },
+        { label: "Total por semana", multiplier: 24 * 7 },
+    ];
+    
+    const storageCards = [
+        { title: "Almacén de Armas", resourceKey: "armas" },
+        { title: "Depósito", resourceKey: "municion" },
+        { title: "Almacén de Alcohol", resourceKey: "alcohol" },
+        { title: "Caja Fuerte", resourceKey: "dolares" },
+    ];
 
     return (
         <div className="space-y-4 mt-4">
@@ -115,17 +110,65 @@ export function ResourcesView({ user }: ResourcesViewProps) {
                     ))}
                 </SelectContent>
             </Select>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {productionData.map((res, index) => (
-                    <div key={res.key} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms`}}>
-                        <ResourceCard
-                            resourceKey={res.key}
-                            name={res.name}
-                            icon={res.icon}
-                            productionPerHour={res.perHour}
-                        />
-                    </div>
-                ))}
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Resumen de Producción</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[150px]"></TableHead>
+                                {Object.keys(resourceNames).map(key => (
+                                    <TableHead key={key} className="text-right flex items-center justify-end gap-2">
+                                        <Image src={resourceIcons[key]} alt={resourceNames[key]} width={16} height={16} />
+                                        {resourceNames[key]}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {productionTableRows.map(row => (
+                                <TableRow key={row.label}>
+                                    <TableCell className="font-medium">{row.label}</TableCell>
+                                    {Object.keys(productionData).map(key => {
+                                        const value = productionData[key as keyof typeof productionData] * row.multiplier;
+                                        return (
+                                            <TableCell key={key} className={cn("text-right font-mono", value >= 0 ? 'text-green-400' : 'text-destructive')}>
+                                                {formatProduction(value)}
+                                            </TableCell>
+                                        )
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                 {storageCards.map((card, index) => {
+                     const data = storageData[card.resourceKey as keyof typeof storageData];
+                     return (
+                        <Card key={card.title} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms`}}>
+                             <CardHeader className="flex-row items-center gap-3">
+                                <Image src={resourceIcons[card.resourceKey]} alt={card.title} width={32} height={32} />
+                                <CardTitle>{card.title}</CardTitle>
+                             </CardHeader>
+                            <CardContent className="space-y-2">
+                                <div className="flex justify-between items-baseline">
+                                    <span className="text-muted-foreground">Capacidad:</span>
+                                    <span className="font-bold text-lg font-mono">{formatNumber(data.capacidad)}</span>
+                                </div>
+                                 <div className="flex justify-between items-baseline">
+                                    <span className="text-muted-foreground">Seguro:</span>
+                                    <span className="font-bold text-lg font-mono">{formatNumber(data.seguro)}</span>
+                                </div>
+                            </CardContent>
+                        </Card>
+                     )
+                 })}
             </div>
         </div>
     );
