@@ -13,6 +13,7 @@ export type ColaMisiones = PrismaColaMisiones & { recursos?: ResourceCost | null
 export type ConfiguracionTropa = PrismaConfiguracionTropa & { requisitos: string[] };
 export type { ColaConstruccion };
 export type { ResourceCost };
+export type { EspionageReportDetails };
 
 
 export type PropertyWithOwner = Propiedad & { 
