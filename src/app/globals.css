@@ -1,65 +1,23 @@
+
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
-
+ 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 0 100% 27%; /* Carmesí profundo */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    --accent: 56 38% 58%; /* Amarillo desaturado */
-    --accent-foreground: 240 6% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 142.1 76.2% 36.3%;
-    --success-border: 142.1 76.2% 26.3%;
-    --error: 0 84.2% 60.2%;
-    --error-border: 0 84.2% 50.2%;
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 0 100% 27%;
-    --radius: 0.5rem;
-
-    --content-background: 55 100% 93%;
-    --content-border: 1 58% 31%;
-
-    --map-player: 120 60% 50%;
-    --map-family: 60 100% 50%;
-    --map-enemy: 0 100% 50%;
-
-    --sidebar-background: 240 6% 10%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 100% 27%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 5% 15%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 5% 20%;
-    --sidebar-ring: 0 100% 27%;
-  }
-
-  .dark {
-    --background: 0 0% 7%; /* Gris muy oscuro */
+    --background: 0 0% 11%;
     --foreground: 45 33% 91%;
     --card: 0 0% 14%;
     --card-foreground: 45 33% 91%;
     --popover: 0 0% 14%;
     --popover-foreground: 45 33% 91%;
-    --primary: 0 100% 27%; /* Carmesí profundo */
+    --primary: 359 70% 35%;
     --primary-foreground: 0 86% 97%;
     --secondary: 101 12% 31%;
     --secondary-foreground: 45 33% 91%;
     --muted: 45 11% 40%;
     --muted-foreground: 45 33% 74%;
-    --accent: 56 38% 58%; /* Amarillo desaturado */
+    --accent: 28 41% 28%;
     --accent-foreground: 45 33% 91%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
@@ -69,26 +27,22 @@
     --error-border: 0 100% 34%;
     --border: 28 41% 28%;
     --input: 0 0% 16%;
-    --ring: 0 100% 27%;
-
-    --content-background: 28 41% 15%;
-    --content-border: 28 41% 35%;
-
+    --ring: 359 70% 35%;
     --map-player: 120 60% 50%;
     --map-family: 60 100% 50%;
     --map-enemy: 0 100% 50%;
 
     --sidebar-background: 0 0% 7%;
     --sidebar-foreground: 45 33% 74%;
-    --sidebar-primary: 0 100% 27%;
+    --sidebar-primary: 359 70% 35%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 0 0% 25%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 0 100% 27%;
+    --sidebar-ring: 359 70% 35%;
   }
 }
-
+ 
 @layer base {
   * {
     @apply border-border transition-all duration-200;
@@ -97,23 +51,11 @@
     @apply font-sans;
   }
   body {
-    @apply bg-background text-foreground bg-[url('/img/general/fondo.jpg')] bg-repeat;
+    @apply bg-background text-foreground bg-[url('/img/general/paper-texture.png')] bg-repeat;
   }
   
-  h1 {
-    @apply font-heading text-4xl font-extrabold tracking-tight lg:text-5xl;
-  }
-  h2 {
-    @apply font-heading text-3xl font-semibold tracking-tight;
-  }
-  h3 {
-    @apply font-heading text-2xl font-semibold tracking-tight;
-  }
-  h4 {
-    @apply font-heading text-xl font-semibold tracking-tight;
-  }
-  p {
-    @apply leading-7;
+  h1, h2, h3, h4 {
+    @apply font-heading;
   }
 
   table {
@@ -136,7 +78,7 @@
       @apply bg-error border-b-4 border-error-border text-center font-bold p-2 mb-4;
     }
      .content_box {
-      @apply bg-content border-b-4 border-content-border mb-4 p-1;
+      @apply bg-[#FFFCDB] border-b-4 border-[#7D2221] mb-4 p-1;
     }
     .room-card {
       @apply flex flex-col transition-all duration-300 ease-in-out border-accent/50;
@@ -157,3 +99,5 @@
       @apply -translate-y-1 shadow-lg shadow-primary/20 border-primary;
     }
 }
+
+    
