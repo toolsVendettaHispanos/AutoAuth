@@ -6,10 +6,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Home, Settings, Bell, UserRound, LogOut, ShieldCheck } from "lucide-react";
 import Link from 'next/link';
 
 export default function OverviewPage() {
+  const userProperties = [
+    { property: "Username", value: "bomberox" },
+    { property: "Role", value: "Administrator" },
+    { property: "Status", value: "Active" },
+    { property: "Last Login", value: new Date().toLocaleString() },
+  ];
+
   return (
     <div className="flex min-h-screen w-full bg-background">
       <aside className="w-64 border-r bg-card p-6 hidden lg:flex flex-col">
@@ -85,6 +100,31 @@ export default function OverviewPage() {
                                 This is your secure area. You are logged in as <span className="font-semibold text-primary">bomberox</span>. From here you can manage your account and settings.
                             </p>
                         </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>User Properties</CardTitle>
+                        <CardDescription>Details for the currently logged-in user.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Property</TableHead>
+                                    <TableHead>Value</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {userProperties.map((item) => (
+                                    <TableRow key={item.property}>
+                                        <TableCell className="font-medium">{item.property}</TableCell>
+                                        <TableCell>{item.value}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </CardContent>
                 </Card>
             </div>
