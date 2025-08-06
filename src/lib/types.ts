@@ -1,8 +1,8 @@
 
-import type { User, HabitacionUsuario, EntrenamientoUsuario, TropaUsuario, TropaSeguridadUsuario, ConfiguracionHabitacion, ConfiguracionEntrenamiento, ColaConstruccion, ColaReclutamiento, ConfiguracionTropa as PrismaConfiguracionTropa, Propiedad, PuntuacionUsuario, ColaMisiones as PrismaColaMisiones, Family, FamilyMember, TrainingRequirement, RoomRequirement, TropaBonusContrincante, Message, BattleReport as PrismaBattleReport, ColaEntrenamiento, FamilyInvitation, IncomingAttack as PrismaIncomingAttack, FamilyAnnouncement, EspionageReport as PrismaEspionageReport } from '@prisma/client/edge'
+import type { User, HabitacionUsuario, EntrenamientoUsuario, TropaUsuario, TropaSeguridadUsuario, ConfiguracionHabitacion, ConfiguracionEntrenamiento, ColaConstruccion, ColaReclutamiento, ConfiguracionTropa as PrismaConfiguracionTropa, Propiedad, PuntuacionUsuario, ColaMisiones as PrismaColaMisiones, Family, FamilyMember, TrainingRequirement, RoomRequirement, TropaBonusContrincante, Message, BattleReport as PrismaBattleReport, Prisma, ColaEntrenamiento, FamilyInvitation, IncomingAttack as PrismaIncomingAttack, FamilyAnnouncement, EspionageReport as PrismaEspionageReport } from '@prisma/client/edge'
 import { BattleReport, EspionageReportDetails, ResourceCost } from './types/simulation.types';
 
-export type PageProps<T extends Record<string, string> = Record<string, unknown>> = {
+export type PageProps<T extends Record<string, string> = Record<string, never>> = {
     params: T;
     searchParams?: { [key: string]: string | string[] | undefined };
 };
