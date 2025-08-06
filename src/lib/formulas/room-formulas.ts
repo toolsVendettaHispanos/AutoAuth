@@ -232,35 +232,12 @@ export function calculateSafeStorage(propiedad: FullPropiedad): { armas: number,
      if (!propiedad || !propiedad.habitaciones) {
         return { armas: 0, municion: 0, alcohol: 0, dolares: 0 };
     }
-    let safeArmas = 0;
-    let safeMunicion = 0;
-    let safeAlcohol = 0;
-    let safeDolares = 0;
-
-    const almacenArmas = propiedad.habitaciones.find(h => h.configuracionHabitacionId === 'almacen_de_armas');
-    if (almacenArmas) {
-        safeArmas = BASE_STORAGE_CAPACITY + (almacenArmas.nivel * STORAGE_CAPACITY_PER_LEVEL);
-    }
-
-    const depositoMunicion = propiedad.habitaciones.find(h => h.configuracionHabitacionId === 'deposito_de_municion');
-    if (depositoMunicion) {
-        safeMunicion = BASE_STORAGE_CAPACITY + (depositoMunicion.nivel * STORAGE_CAPACITY_PER_LEVEL);
-    }
-
-    const almacenAlcohol = propiedad.habitaciones.find(h => h.configuracionHabitacionId === 'almacen_de_alcohol');
-    if (almacenAlcohol) {
-        safeAlcohol = BASE_STORAGE_CAPACITY + (almacenAlcohol.nivel * STORAGE_CAPACITY_PER_LEVEL);
-    }
-
-    const cajaFuerte = propiedad.habitaciones.find(h => h.configuracionHabitacionId === 'caja_fuerte');
-    if (cajaFuerte) {
-        safeDolares = BASE_STORAGE_CAPACITY + (cajaFuerte.nivel * STORAGE_CAPACITY_PER_LEVEL);
-    }
+    const capacity = calculateStorageCapacity(propiedad);
 
     return {
-        armas: Math.floor(safeArmas),
-        municion: Math.floor(safeMunicion),
-        alcohol: Math.floor(safeAlcohol),
-        dolares: Math.floor(safeDolares),
+        armas: Math.floor(capacity.armas * 0.1),
+        municion: Math.floor(capacity.municion * 0.1),
+        alcohol: Math.floor(capacity.alcohol * 0.1),
+        dolares: Math.floor(capacity.dolares * 0.1),
     };
 }
