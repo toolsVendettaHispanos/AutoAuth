@@ -7,7 +7,7 @@ import prisma from "../prisma/prisma";
 import { getSessionUser } from "../auth";
 import { calcularCostosNivel, calcularTiempoConstruccion } from "../formulas/room-formulas";
 import { ID_OFICINA_JEFE, MAX_CONSTRUCTION_QUEUE_SIZE } from "../constants";
-import type { FullConfiguracionHabitacion, FullHabitacionUsuario, FullPropiedad, UserWithProgress } from "../types";
+import type { ColaConstruccion, FullConfiguracionHabitacion, FullHabitacionUsuario, FullPropiedad, UserWithProgress } from "../types";
 
 export async function iniciarAmpliacion(propiedadId: string, habitacionId: string) {
     const user = await getSessionUser();
@@ -39,7 +39,7 @@ export async function iniciarAmpliacion(propiedadId: string, habitacionId: strin
     }
     
     const nivelBase = habitacionUsuario.nivel;
-    const mejorasEnCola = construccionesEnCola.filter(c => c.habitacionId === habitacionId).length;
+    const mejorasEnCola = construccionesEnCola.filter((c: ColaConstruccion) => c.habitacionId === habitacionId).length;
     const nivelSiguiente = nivelBase + mejorasEnCola + 1;
 
     const nivelOficinaJefe = propiedadActual.habitaciones.find((h: FullHabitacionUsuario) => h.configuracionHabitacionId === ID_OFICINA_JEFE)?.nivel || 1;
