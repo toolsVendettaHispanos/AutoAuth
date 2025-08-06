@@ -20,6 +20,7 @@ import { LogOut, Swords } from "lucide-react"
 import type { UserWithProgress } from "@/lib/types"
 import { logout } from "@/lib/actions/auth.actions";
 import { useRouter } from "next/navigation"
+import React from "react";
 
 export function DashboardClientLayout({
     user,
@@ -70,18 +71,24 @@ export function DashboardClientLayout({
       </Sidebar>
       <SidebarInset className="flex flex-col">
         {/* Main Header */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:h-16 sm:px-6">
-            <div className="flex items-center gap-2 md:hidden">
-                <Link href="/overview" className="flex items-center gap-2">
-                    <Swords className="h-6 w-6 text-primary" />
-                    <span className="font-semibold text-lg">Vendetta</span>
-                </Link>
-            </div>
-             <div className="flex-1" />
-            <SidebarTrigger className="md:hidden" />
-        </header>
-        {resourceBar}
-        {children}
+        <React.Fragment key="header">
+          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:h-16 sm:px-6">
+              <div className="flex items-center gap-2 md:hidden">
+                  <Link href="/overview" className="flex items-center gap-2">
+                      <Swords className="h-6 w-6 text-primary" />
+                      <span className="font-semibold text-lg">Vendetta</span>
+                  </Link>
+              </div>
+              <div className="flex-1" />
+              <SidebarTrigger className="md:hidden" />
+          </header>
+        </React.Fragment>
+        <React.Fragment key="resource-bar">
+          {resourceBar}
+        </React.Fragment>
+        <React.Fragment key="children">
+          {children}
+        </React.Fragment>
       </SidebarInset>
     </SidebarProvider>
   )
