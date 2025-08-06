@@ -38,10 +38,10 @@ const StatCard = ({ label, value, subtext, href }: StatCardProps) => (
 
 export function GlobalStats({ stats }: GlobalStatsProps) {
     const statItems = [
-        { label: "Puntos Entrenamiento", value: stats.puntosEntrenamiento },
-        { label: "Puntos Edificios", value: stats.puntosEdificios },
-        { label: "Puntos Tropas", value: stats.puntosTropas },
-        { label: "Puntos Totales", value: stats.puntosTotales },
+        { label: "Puntos Entrenamiento", value: Math.floor(stats.puntosEntrenamiento) },
+        { label: "Puntos Edificios", value: Math.floor(stats.puntosEdificios) },
+        { label: "Puntos Tropas", value: Math.floor(stats.puntosTropas) },
+        { label: "Puntos Totales", value: Math.floor(stats.puntosTotales) },
         { label: "Propiedades", value: stats.propiedades },
         { label: "Lealtad", value: `${Math.round(stats.lealtad)}%`, subtext: "Ver honor", href: "/powerattack" }
     ];

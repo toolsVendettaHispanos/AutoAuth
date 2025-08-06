@@ -7,19 +7,24 @@ import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTroopConfigurations, getTrainingConfigurations, getRoomConfigurations } from "@/lib/data";
 import { SimulatorView } from "@/components/dashboard/simulator-view";
-import { BattleReportDisplay } from "@/components/dashboard/brawls/battle-report-display";
 import type { BattleReport } from '@/lib/types/simulation.types';
 import type { UserWithProgress, FullConfiguracionTropa, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion } from "@/lib/types";
 
 function SimulatorLoading() {
     return (
         <div className="space-y-4">
-            <Skeleton className="h-8 w-48 mb-4" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Skeleton className="h-96 w-full" />
-                <Skeleton className="h-96 w-full" />
+            <div className="flex justify-between items-center">
+                <div className="space-y-2">
+                    <Skeleton className="h-8 w-64" />
+                    <Skeleton className="h-4 w-80" />
+                </div>
+                <Skeleton className="h-10 w-32" />
             </div>
-            <Skeleton className="h-10 w-full mt-4" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Skeleton className="h-[70vh] w-full" />
+                <Skeleton className="h-[70vh] w-full" />
+            </div>
+            <Skeleton className="h-12 w-full mt-4" />
         </div>
     )
 }
@@ -30,7 +35,6 @@ export default function SimulatorPage() {
     const [trainingConfigs, setTrainingConfigs] = useState<FullConfiguracionEntrenamiento[]>([]);
     const [defenseConfigs, setDefenseConfigs] = useState<FullConfiguracionHabitacion[]>([]);
     const [loading, setLoading] = useState(true);
-    const [battleReport, setBattleReport] = useState<BattleReport | null>(null);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -72,9 +76,7 @@ export default function SimulatorPage() {
                     troopConfigs={troopConfigs}
                     trainingConfigs={trainingConfigs}
                     defenseConfigs={defenseConfigs}
-                    onSimulationComplete={setBattleReport}
                 />
-                {battleReport && <BattleReportDisplay report={battleReport} />}
             </Suspense>
         </div>
     );

@@ -22,8 +22,8 @@ const config: Config = {
         '17': 'repeat(17, minmax(0, 1fr))',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'Tahoma', 'Arial', 'Helvetica', 'sans-serif'],
-        heading: ['var(--font-bebas-neue)', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Tahoma', 'Arial', 'Helvetica', 'sans-serif'],
+        heading: ['var(--font-heading)', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

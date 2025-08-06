@@ -107,4 +107,3 @@ export function BuildingsView({ initialProperties }: BuildingsViewProps) {
         </Card>
     );
 }
-

@@ -40,9 +40,9 @@ function formatNumber(num: number): string {
 const getWinnerBadgeVariant = (winner: 'attacker' | 'defender' | 'draw') => {
     switch (winner) {
         case 'attacker':
-            return 'destructive';
+            return 'default';
         case 'defender':
-            return 'secondary';
+            return 'destructive';
         case 'draw':
         default:
             return 'outline';
@@ -144,7 +144,7 @@ export function BattleReportDisplay({ report }: BattleReportDisplayProps) {
     }
 
     return (
-        <Card className="mt-6">
+        <Card className="mt-6 animate-fade-in">
             <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                     <span>Reporte de Batalla</span>

@@ -4,8 +4,9 @@
 import type { IncomingAttack } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Swords, Users } from "lucide-react";
+import { Swords, Users, ShieldAlert } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { cn } from "@/lib/utils";
 
 type IncomingAttacksProps = {
     attacks: IncomingAttack[];
@@ -23,6 +24,7 @@ function formatTime(totalSeconds: number): string {
 
 function CountdownTimer({ label, endDate, onFinish }: {label: string, endDate: string | Date, onFinish: () => void}) {
     const [timeLeft, setTimeLeft] = useState('');
+    const [isImminent, setIsImminent] = useState(false);
 
     useEffect(() => {
         const end = new Date(endDate).getTime();
@@ -36,12 +38,14 @@ function CountdownTimer({ label, endDate, onFinish }: {label: string, endDate: s
                 onFinish();
             } else {
                 setTimeLeft(formatTime(difference));
+                setIsImminent(difference < 300); // 5 minutes
             }
         }, 1000);
         
         const now = new Date().getTime();
         const difference = Math.floor((end - now) / 1000);
         setTimeLeft(formatTime(difference > 0 ? difference : 0));
+        setIsImminent(difference < 300);
 
         return () => clearInterval(intervalId);
     }, [endDate, onFinish]);
@@ -49,7 +53,7 @@ function CountdownTimer({ label, endDate, onFinish }: {label: string, endDate: s
     return (
         <div className="flex justify-between items-center text-sm">
             <span>{label}</span>
-            <span className="font-mono text-destructive">{timeLeft}</span>
+            <span className={cn("font-mono text-destructive", isImminent && "animate-pulse")}>{timeLeft}</span>
         </div>
     );
 }
@@ -64,12 +68,14 @@ export function IncomingAttacks({ attacks }: IncomingAttacksProps) {
     const handleRefresh = () => {
         router.refresh();
     };
+    
+    const isAnyAttackImminent = attacks.some(attack => (new Date(attack.arrivalTime).getTime() - new Date().getTime()) < 300000);
 
     return (
-        <Card className="border-destructive/50">
+        <Card className={cn("border-destructive/80 bg-destructive/10", isAnyAttackImminent && "animate-pulse")}>
             <CardHeader className="flex-row items-center space-x-3 space-y-0 p-4 bg-destructive/20 text-destructive-foreground">
-                <Swords className="h-6 w-6 text-destructive"/>
-                <CardTitle className="font-heading tracking-wider">ATAQUES ENTRANTES ({attacks.length})</CardTitle>
+                <ShieldAlert className="h-6 w-6 text-destructive"/>
+                <CardTitle className="font-heading tracking-wider text-red-400">¡ATAQUES ENTRANTES DETECTADOS! ({attacks.length})</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
                  <div className="bg-card text-card-foreground px-4 py-3 rounded-b-md space-y-2">
