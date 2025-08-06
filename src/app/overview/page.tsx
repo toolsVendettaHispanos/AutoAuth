@@ -82,7 +82,7 @@ export default function OverviewPage() {
                     <CardContent>
                         <div className="p-6 border rounded-lg bg-primary/5 text-sm">
                             <p className="text-foreground">
-                                This is your secure area. From here you can manage your account and settings.
+                                This is your secure area. You are logged in as <span className="font-semibold text-primary">bomberox</span>. From here you can manage your account and settings.
                             </p>
                         </div>
                     </CardContent>
