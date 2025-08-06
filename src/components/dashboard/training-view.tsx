@@ -21,6 +21,7 @@ import { Terminal } from "lucide-react"
 import { Dialog, DialogTrigger } from "../ui/dialog"
 import { TrainingDetailsModal } from "./training-details-modal"
 import { cn } from "@/lib/utils"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 
 function formatNumber(num: number): string {
     return num.toLocaleString('de-DE');
@@ -83,7 +84,6 @@ function TrainingQueueAlert({ user }: { user: UserWithProgress }) {
     )
 }
 
-
 function TrainingForm({ 
     training,
     propertyId,
@@ -108,31 +108,40 @@ function TrainingForm({
             if (result.error) {
                 toast({ variant: 'destructive', title: 'Error', description: result.error });
             } else if (result.success) {
-                toast({ title: 'Éxito', description: result.success });
+                toast({ title: '¡Éxito!', description: result.success });
             }
         });
     }
     
     const isDisabled = isPending || !meetsRequirements || isTrainingInQueue || isPropertyBusy;
 
+    const buttonContent = () => {
+        if (isPending) return <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Enviando...</>;
+        if (isTrainingInQueue) return <><Hourglass className="mr-2 h-4 w-4 text-amber-500" />En cola</>;
+        if (isPropertyBusy) return <><Ban className="mr-2 h-4 w-4"/>Ocupado</>;
+        return <><BrainCircuit className="mr-2 h-4 w-4" />Entrenar</>;
+    };
+
     return (
         <form action={handleAction}>
              {meetsRequirements ? (
-                 <Button 
-                    type="submit" 
-                    variant="outline" 
-                    size="sm" 
-                    disabled={isDisabled}
-                >
-                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                    {!isPending && (isTrainingInQueue ? <Hourglass className="mr-2 h-4 w-4 text-amber-500" /> : isPropertyBusy ? <Ban className="mr-2 h-4 w-4"/> : <BrainCircuit className="mr-2 h-4 w-4" />)}
-                    {isPending ? 'Enviando...' : isTrainingInQueue ? 'En cola' : isPropertyBusy ? 'Ocupado' : 'Entrenar'}
+                 <Button type="submit" variant="outline" size="sm" disabled={isDisabled}>
+                    {buttonContent()}
                 </Button>
             ) : (
-                 <div className="text-xs text-destructive text-center p-2 bg-destructive/10 rounded-md">
-                    <p className="font-bold">Requisitos no cumplidos:</p>
-                    <p>{requirementsText}</p>
-                </div>
+                 <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                             <div className="text-xs text-destructive text-center p-2 bg-destructive/10 rounded-md cursor-help">
+                                Requisitos no cumplidos
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                           <p className="text-sm font-bold">Necesitas:</p>
+                           <p>{requirementsText}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                 </TooltipProvider>
             )}
         </form>
     )
@@ -187,9 +196,20 @@ export function TrainingView({ user, trainingsData }: TrainingViewProps) {
                 }
 
                 const isTrainingInQueue = user.colaEntrenamientos.some(c => c.entrenamientoId === training.id);
+                const isMaxLevel = training.nivel >= 20; // Assuming max level is 20
+                const isAvailable = training.meetsRequirements && !isMaxLevel;
+                const cardState = isTrainingInQueue ? 'in-progress' : isMaxLevel ? 'completed' : isAvailable ? 'available' : 'locked';
+
                 return (
                   <Dialog key={training.id}>
-                    <Card className="training-card animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                    <Card className={cn("training-card animate-fade-in-up", 
+                        cardState === 'in-progress' && 'border-amber-500',
+                        cardState === 'available' && 'border-primary/50 animate-pulse-slow',
+                        cardState === 'completed' && 'border-green-500/50',
+                        cardState === 'locked' && 'opacity-60 grayscale'
+                        )} 
+                        style={{ animationDelay: `${index * 50}ms` }}
+                    >
                         <CardHeader className="flex-row items-start gap-4">
                             <div className="w-20 h-16 relative rounded-md overflow-hidden border flex-shrink-0">
                                 <Image
@@ -211,32 +231,40 @@ export function TrainingView({ user, trainingsData }: TrainingViewProps) {
                             <p className="text-sm text-muted-foreground min-h-[40px] line-clamp-2">
                                 Mejora de {training.nombre.toLowerCase()} para desbloquear nuevas capacidades.
                             </p>
-                            <div className="text-sm font-semibold">Mejora a Nivel: {training.nivel + 1}</div>
-                            <div className="grid grid-cols-3 gap-x-3 text-sm">
-                                {training.costos.armas > 0 && <div className="flex items-center gap-1.5" title={`${training.costos.armas.toLocaleString('de-DE')} Armas`}><Image src="/img/recursos/armas.svg" alt="Armas" width={16} height={16} /><span>{formatNumber(training.costos.armas)}</span></div>}
-                                {training.costos.municion > 0 && <div className="flex items-center gap-1.5" title={`${training.costos.municion.toLocaleString('de-DE')} Munición`}><Image src="/img/recursos/municion.svg" alt="Munición" width={16} height={16} /><span>{formatNumber(training.costos.municion)}</span></div>}
-                                {training.costos.dolares > 0 && <div className="flex items-center gap-1.5" title={`${training.costos.dolares.toLocaleString('de-DE')} Dólares`}><Image src="/img/recursos/dolares.svg" alt="Dólares" width={16} height={16} /><span>{formatNumber(training.costos.dolares)}</span></div>}
-                            </div>
+                            {!isMaxLevel && (
+                                <>
+                                 <div className="text-sm font-semibold">Mejora a Nivel: {training.nivel + 1}</div>
+                                    <div className="grid grid-cols-3 gap-x-3 text-sm">
+                                        {training.costos.armas > 0 && <div className="flex items-center gap-1.5" title={`${training.costos.armas.toLocaleString('de-DE')} Armas`}><Image src="/img/recursos/armas.svg" alt="Armas" width={16} height={16} /><span>{formatNumber(training.costos.armas)}</span></div>}
+                                        {training.costos.municion > 0 && <div className="flex items-center gap-1.5" title={`${training.costos.municion.toLocaleString('de-DE')} Munición`}><Image src="/img/recursos/municion.svg" alt="Munición" width={16} height={16} /><span>{formatNumber(training.costos.municion)}</span></div>}
+                                        {training.costos.dolares > 0 && <div className="flex items-center gap-1.5" title={`${training.costos.dolares.toLocaleString('de-DE')} Dólares`}><Image src="/img/recursos/dolares.svg" alt="Dólares" width={16} height={16} /><span>{formatNumber(training.costos.dolares)}</span></div>}
+                                    </div>
+                                </>
+                            )}
                         </CardContent>
                         <CardFooter className="flex items-center justify-between">
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                <Clock className="h-3 w-3" />
-                                <span>{formatDuration(training.tiempo)}</span>
-                            </div>
+                            {!isMaxLevel && (
+                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                    <Clock className="h-3 w-3" />
+                                    <span>{formatDuration(training.tiempo)}</span>
+                                </div>
+                            )}
                              <div className="flex items-center gap-2">
                                 <DialogTrigger asChild>
                                     <Button variant="ghost" size="icon" className="h-9 w-9">
                                         <Info className="h-5 w-5" />
                                     </Button>
                                 </DialogTrigger>
-                                <TrainingForm 
-                                    training={training}
-                                    propertyId={selectedProperty.id}
-                                    meetsRequirements={training.meetsRequirements}
-                                    requirementsText={training.requirementsText}
-                                    isTrainingInQueue={isTrainingInQueue}
-                                    isPropertyBusy={isPropertyBusy}
-                                />
+                                {!isMaxLevel && (
+                                    <TrainingForm 
+                                        training={training}
+                                        propertyId={selectedProperty.id}
+                                        meetsRequirements={training.meetsRequirements}
+                                        requirementsText={training.requirementsText}
+                                        isTrainingInQueue={isTrainingInQueue}
+                                        isPropertyBusy={isPropertyBusy}
+                                    />
+                                )}
                             </div>
                         </CardFooter>
                     </Card>
