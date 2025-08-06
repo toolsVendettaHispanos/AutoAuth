@@ -81,6 +81,20 @@ export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, t
     
     const troopConfigsMap = useMemo(() => new Map(troopConfigs.map(t => [t.id, t])), [troopConfigs]);
 
+    const debouncedFetchOwner = useCallback(
+        debounce(async (ciudad: number, barrio: number, edificio: number) => {
+            if (!ciudad || !barrio || !edificio) {
+                setTargetOwner(undefined);
+                setIsLoadingTarget(false);
+                return;
+            };
+            const owner = await getPropertyOwner({ ciudad, barrio, edificio });
+            setTargetOwner(owner);
+            setIsLoadingTarget(false);
+        }, 500),
+        []
+    );
+
     useEffect(() => {
         const ciudad = searchParams.get('ciudad');
         const barrio = searchParams.get('barrio');
@@ -99,20 +113,6 @@ export function MissionsView({ user, troopConfigs }: { user: UserWithProgress, t
         }
 
     }, [searchParams, selectedProperty, debouncedFetchOwner]);
-
-    const debouncedFetchOwner = useCallback(
-        debounce(async (ciudad: number, barrio: number, edificio: number) => {
-            if (!ciudad || !barrio || !edificio) {
-                setTargetOwner(undefined);
-                setIsLoadingTarget(false);
-                return;
-            };
-            const owner = await getPropertyOwner({ ciudad, barrio, edificio });
-            setTargetOwner(owner);
-            setIsLoadingTarget(false);
-        }, 500),
-        []
-    );
 
     const calculateTravelInfo = useCallback(() => {
         if (!selectedProperty || tropas.length === 0 || !coordinates.ciudad || !coordinates.barrio || !coordinates.edificio) {
