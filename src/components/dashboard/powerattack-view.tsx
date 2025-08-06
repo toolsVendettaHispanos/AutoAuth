@@ -67,7 +67,7 @@ export function PowerAttackView({ user }: PowerAttackViewProps) {
 
             <Card className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
                 <CardContent className="p-0">
-                    <ScrollArea className="h-[70vh] w-full whitespace-nowrap rounded-md border">
+                    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
                         <Table className="min-w-full">
                             <TableHeader>
                                 <TableRow>
@@ -75,7 +75,7 @@ export function PowerAttackView({ user }: PowerAttackViewProps) {
                                         <TableHead 
                                             key={header} 
                                             className={cn(
-                                                "sticky top-0 z-20 bg-muted/95 backdrop-blur-sm", 
+                                                "sticky top-0 z-20 bg-muted/95 backdrop-blur-sm p-2 text-center", 
                                                 index === 0 && "sticky left-0 z-30",
                                                 (index - 1) === userHonorLevel && "bg-primary/30 text-primary-foreground"
                                             )}
