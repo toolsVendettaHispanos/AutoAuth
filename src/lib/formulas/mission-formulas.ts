@@ -1,4 +1,5 @@
 
+
 import type { ConfiguracionTropa } from "@prisma/client";
 
 interface Coordenadas {

@@ -1,11 +1,12 @@
 
 
+
 'use server';
 
 import { getTrainingConfigurations, getTroopConfigurations } from '../data';
 import { calcularPoderAtaque } from '../formulas/score-formulas';
 import { calcularStatsTropaConBonus } from '../formulas/troop-formulas';
-import type { ConfiguracionTropa, TropaBonusContrincante } from '@prisma/client';
+import type { ConfiguracionTropa } from '@prisma/client';
 import type { ArmyUnit, BattleReport, CombatStats, ResourceCost, SimulationInput, TroopData } from '../types/simulation.types';
 
 
@@ -37,7 +38,7 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
             configuracion: trainingConfigsMap.get(t.id)!
         }));
 
-        return (simInput.troops as any[]).map((troop: TroopData & {cantidad?: number}) => {
+        return (simInput.troops as (TroopData & {cantidad?: number})[]).map((troop) => {
             const config = troopConfigsMap.get(troop.id);
             if (!config) return null;
             const { ataqueActual, defensaActual } = calcularStatsTropaConBonus(config, userTrainings as any);
@@ -52,10 +53,10 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
         }).filter((u): u is ArmyUnit => u !== null && u.quantity > 0);
     };
 
-    let attackerArmy = buildArmy(attacker);
-    let defenderArmy = buildArmy(defender);
+    const attackerArmy = buildArmy(attacker);
+    const defenderArmy = buildArmy(defender);
     
-    const bigIntReplacer = (key: any, value: any) => typeof value === 'bigint' ? value.toString() : value;
+    const bigIntReplacer = (key: string, value: unknown) => typeof value === 'bigint' ? value.toString() : value;
 
     const initialAttackerArmy = JSON.parse(JSON.stringify(attackerArmy, bigIntReplacer));
     const initialDefenderArmy = JSON.parse(JSON.stringify(defenderArmy, bigIntReplacer));
@@ -70,8 +71,8 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
     let finalMessage = "";
     
     for (let i = 1; i <= 5; i++) {
-        let attackerTroopCount = attackerArmy.reduce((sum, u) => sum + u.quantity, 0);
-        let defenderTroopCount = defenderArmy.reduce((sum, u) => sum + u.quantity, 0);
+        const attackerTroopCount = attackerArmy.reduce((sum, u) => sum + u.quantity, 0);
+        const defenderTroopCount = defenderArmy.reduce((sum, u) => sum + u.quantity, 0);
 
         if (attackerTroopCount === 0 || defenderTroopCount === 0) break;
 
@@ -86,8 +87,8 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
         const attackerTotalAttackConBonus = attackerTotalAttackBase * (poderAtaqueAtacantePercent / 100);
         const defenderTotalAttackConBonus = defenderTotalAttackBase * (poderAtaqueDefensorPercent / 100);
 
-        let attackerTotalDefense = attackerArmy.reduce((sum, u) => sum + u.defense * u.quantity, 0) * (poderAtaqueAtacantePercent / 100);
-        let defenderTotalDefense = defenderArmy.reduce((sum, u) => sum + u.defense * u.quantity, 0) * (poderAtaqueDefensorPercent / 100);
+        const attackerTotalDefense = attackerArmy.reduce((sum, u) => sum + u.defense * u.quantity, 0) * (poderAtaqueAtacantePercent / 100);
+        const defenderTotalDefense = defenderArmy.reduce((sum, u) => sum + u.defense * u.quantity, 0) * (poderAtaqueDefensorPercent / 100);
 
         const attackerLossRatio = defenderTotalAttackConBonus > attackerTotalDefense ? 1 : defenderTotalAttackConBonus / (attackerTotalDefense || 1);
         const defenderLossRatio = attackerTotalAttackConBonus > defenderTotalDefense ? 1 : attackerTotalAttackConBonus / (defenderTotalDefense || 1);

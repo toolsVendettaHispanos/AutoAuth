@@ -1,11 +1,12 @@
 
 
+
 'use server'
 
 import prisma from "../prisma/prisma";
 import { runBattleSimulation } from "./simulation.actions";
 import { ColaMisiones, MessageCategory } from "@prisma/client";
-import type { SimulationInput, BattleReport, ResourceCost } from "../types/simulation.types";
+import type { SimulationInput, BattleReport, ResourceCost, MisionTropas } from "../types";
 import { getTroopConfigurations } from "../data";
 import { calculateSafeStorage } from "../formulas/room-formulas";
 import { FullPropiedad } from "../types";
@@ -78,7 +79,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
         return;
     }
     
-    const attackerTroops = (mision.tropas as { id: string; cantidad: number }[]).map(t => ({ id: t.id, quantity: t.cantidad }));
+    const attackerTroops = (mision.tropas as MisionTropas).map(t => ({ id: t.id, quantity: t.cantidad }));
 
     const attackerInput: SimulationInput = {
         troops: attackerTroops,
@@ -106,7 +107,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
             .map(t => ({ id: t.id, cantidad: t.initialQuantity - t.lostQuantity }))
             .filter(t => t.cantidad > 0);
     } else {
-        tropaRegreso = (mision.tropas as { id: string; cantidad: number }[]).map(t => ({ id: t.id, cantidad: t.cantidad }));
+        tropaRegreso = (mision.tropas as MisionTropas).map(t => ({ id: t.id, cantidad: t.cantidad }));
     }
     
     if (report.winner === 'attacker') {
@@ -150,7 +151,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
     }
 
 
-    const bigIntReplacer = (key: any, value: any) => typeof value === 'bigint' ? value.toString() : value;
+    const bigIntReplacer = (key: string, value: unknown) => typeof value === 'bigint' ? value.toString() : value;
     const serializableReport = JSON.parse(JSON.stringify(report, bigIntReplacer)) as BattleReport;
 
     const honorGanadoAtacante = report.finalStats.defender.pointsLost;
