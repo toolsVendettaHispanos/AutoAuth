@@ -340,7 +340,7 @@ export async function updateMemberRole(memberId: string, familyId: string, newRo
         });
         revalidatePath('/family/management');
         return { success: "Rango actualizado correctamente." };
-    } catch (e: unknown) {
+    } catch {
         return { error: "Error al actualizar el rango." };
     }
 }
@@ -364,7 +364,7 @@ export async function transferLeadership(newLeaderId: string, familyId: string) 
         revalidatePath('/family/management');
         revalidatePath('/family');
         return { success: "Liderazgo transferido con éxito." };
-    } catch (e: unknown) {
+    } catch {
         return { error: "Error al transferir el liderazgo." };
     }
 }
@@ -380,7 +380,7 @@ export async function expelMember(memberId: string, familyId: string) {
         });
         revalidatePath('/family/management');
         return { success: "Miembro expulsado." };
-    } catch (e: unknown) {
+    } catch {
         return { error: "Error al expulsar al miembro." };
     }
 }

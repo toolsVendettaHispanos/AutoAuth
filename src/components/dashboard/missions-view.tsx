@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { getPropertyOwner } from '@/lib/data';
-import type { FullConfiguracionTropa, FullTropaUsuario } from '@/lib/types';
+import type { FullConfiguracionTropa, FullTropaUsuario, MissionInput } from '@/lib/types';
 import { debounce } from 'lodash';
 import { Loader2, User, UserX, Clock, Send, Users, Package, PlaneTakeoff, Minus, Plus, DollarSign } from 'lucide-react';
 import Image from 'next/image';

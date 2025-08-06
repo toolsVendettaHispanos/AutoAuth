@@ -165,4 +165,3 @@ export function RoomsView({ allRoomConfigs, initialProperty }: RoomsViewProps) {
         </div>
     )
 }
-

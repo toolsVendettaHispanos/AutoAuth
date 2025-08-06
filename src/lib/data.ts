@@ -1,12 +1,13 @@
 
 
+
 "use server"
 
-import { Prisma, PrismaClient } from '@prisma/client/edge'
+import { Prisma, PrismaClient, ColaMisiones } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { cache } from 'react';
 import { calculateStorageCapacity } from './formulas/room-formulas';
-import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport, IncomingAttack, ColaMisiones } from './types';
+import type { FullPropiedad, UserWithProgress, FullBattleReport, FullFamily, FullFamilyInvitation, FullConfiguracionEntrenamiento, FullConfiguracionHabitacion, FullConfiguracionTropa, UserForRanking, UserProfileData, FullMessage, PropertyWithOwner, FullEspionageReport, IncomingAttack } from './types';
 
 
 const prisma = new PrismaClient().$extends(withAccelerate())
@@ -331,7 +332,7 @@ export const getPropertyOwner = cache(async (coords: { ciudad: number, barrio: n
             }
         });
         return property?.user as UserProfileData | null;
-    } catch(e) {
+    } catch {
         return null;
     }
 });
