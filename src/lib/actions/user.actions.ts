@@ -12,6 +12,7 @@ import { handleAttackMission } from "./brawl.actions";
 import { handleEspionageMission } from "./espionage.actions";
 import { ResourceCost } from "../types";
 import { Prisma } from "@prisma/client/edge";
+import { shouldUpdateUserState, recordUserStateUpdate } from "../cache";
 
 interface UserSettings {
     name?: string;
@@ -20,6 +21,10 @@ interface UserSettings {
 }
 
 export async function actualizarEstadoCompletoDelJuego(sessionUser: UserWithProgress): Promise<UserWithProgress> {
+    if (!shouldUpdateUserState(sessionUser.id)) {
+        return sessionUser;
+    }
+
     const [userAfterConstructionCheck, userAfterRecruitmentCheck, userAfterMissionCheck, userAfterTrainingCheck] = await Promise.all([
       verificarYFinalizarConstruccion(sessionUser),
       verificarYFinalizarReclutamiento(sessionUser),
@@ -31,6 +36,8 @@ export async function actualizarEstadoCompletoDelJuego(sessionUser: UserWithProg
   
     const userWithUpdatedProgress = await obtenerEstadoJuegoActualizado(combinedUser);
     const finalUser = await actualizarPuntuacionUsuario(userWithUpdatedProgress);
+
+    recordUserStateUpdate(sessionUser.id);
 
     return finalUser;
 }
