@@ -112,16 +112,14 @@ export type FullConfiguracionHabitacion = ConfiguracionHabitacion & {
   };
 
   export type UserProfileData = User & {
-      puntuacion: PuntuacionUsuario | null;
-      propiedades: {
-          id: string;
-          nombre: string;
-          ciudad: number;
-          barrio: number;
-          edificio: number;
-      }[];
-      familyMember: (FamilyMember & { family: Family }) | null;
-  }
+    puntuacion: PuntuacionUsuario | null;
+    propiedades: (Propiedad & {
+        habitaciones: (HabitacionUsuario & { configuracionHabitacion: ConfiguracionHabitacion })[],
+        TropaUsuario: (TropaUsuario & { configuracionTropa: ConfiguracionTropa })[],
+        TropaSeguridadUsuario: (TropaSeguridadUsuario & { configuracionTropa: ConfiguracionTropa })[]
+    })[];
+    familyMember: (FamilyMember & { family: Family }) | null;
+}
 
   export type UserForRanking = User & {
       puntuacion: PuntuacionUsuario | null;
