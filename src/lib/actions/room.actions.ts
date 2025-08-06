@@ -7,7 +7,7 @@ import prisma from "../prisma/prisma";
 import { getSessionUser } from "../auth";
 import { calcularCostosNivel, calcularTiempoConstruccion } from "../formulas/room-formulas";
 import { ID_OFICINA_JEFE, MAX_CONSTRUCTION_QUEUE_SIZE } from "../constants";
-import type { FullConfiguracionHabitacion } from "../types";
+import type { FullConfiguracionHabitacion, FullHabitacionUsuario, FullPropiedad, UserWithProgress } from "../types";
 
 export async function iniciarAmpliacion(propiedadId: string, habitacionId: string) {
     const user = await getSessionUser();
@@ -16,7 +16,7 @@ export async function iniciarAmpliacion(propiedadId: string, habitacionId: strin
       return { error: 'Usuario no autenticado.' };
     }
     
-    const propiedadActual = user.propiedades.find(p => p.id === propiedadId);
+    const propiedadActual = user.propiedades.find((p: FullPropiedad) => p.id === propiedadId);
     if (!propiedadActual) {
         return { error: 'Propiedad no encontrada para este usuario.' };
     }
@@ -27,7 +27,7 @@ export async function iniciarAmpliacion(propiedadId: string, habitacionId: strin
         return { error: `La cola de construcción está llena (máximo ${MAX_CONSTRUCTION_QUEUE_SIZE}).` };
     }
 
-    const habitacionUsuario = propiedadActual.habitaciones.find(h => h.configuracionHabitacionId === habitacionId);
+    const habitacionUsuario = propiedadActual.habitaciones.find((h: FullHabitacionUsuario) => h.configuracionHabitacionId === habitacionId);
 
     if (!habitacionUsuario) {
          return { error: 'Configuración de habitación de usuario no encontrada.' };
@@ -42,7 +42,7 @@ export async function iniciarAmpliacion(propiedadId: string, habitacionId: strin
     const mejorasEnCola = construccionesEnCola.filter(c => c.habitacionId === habitacionId).length;
     const nivelSiguiente = nivelBase + mejorasEnCola + 1;
 
-    const nivelOficinaJefe = propiedadActual.habitaciones.find(h => h.configuracionHabitacionId === ID_OFICINA_JEFE)?.nivel || 1;
+    const nivelOficinaJefe = propiedadActual.habitaciones.find((h: FullHabitacionUsuario) => h.configuracionHabitacionId === ID_OFICINA_JEFE)?.nivel || 1;
   
     const costos = calcularCostosNivel(nivelSiguiente, config as FullConfiguracionHabitacion);
   
@@ -134,12 +134,12 @@ export async function cancelarConstruccion(colaId: string) {
         return { error: 'Elemento de la cola no encontrado o no te pertenece.' };
     }
     
-    const configHabitacion = itemCola.propiedad.habitaciones.find(h => h.configuracionHabitacionId === itemCola.habitacionId)?.configuracionHabitacion;
+    const configHabitacion = (itemCola.propiedad.habitaciones as FullHabitacionUsuario[]).find(h => h.configuracionHabitacionId === itemCola.habitacionId)?.configuracionHabitacion;
     if (!configHabitacion) {
          return { error: 'Configuración de habitación no encontrada para el reembolso.' };
     }
 
-    const nivelOficinaJefe = itemCola.propiedad.habitaciones.find(h => h.configuracionHabitacionId === ID_OFICINA_JEFE)?.nivel || 1;
+    const nivelOficinaJefe = (itemCola.propiedad.habitaciones as FullHabitacionUsuario[]).find(h => h.configuracionHabitacionId === ID_OFICINA_JEFE)?.nivel || 1;
     const costos = calcularCostosNivel(itemCola.nivelDestino, configHabitacion as FullConfiguracionHabitacion);
 
     try {
