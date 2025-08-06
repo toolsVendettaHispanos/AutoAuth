@@ -1,0 +1,93 @@
+'use client'
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import type { FullFamily } from "@/lib/types";
+import { Users } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
+interface FamilyCardProps {
+    family?: FullFamily | null;
+}
+
+function formatPoints(points: number | null | undefined): string {
+    if (points === null || points === undefined) return "0";
+    return Math.floor(points).toLocaleString('de-DE');
+}
+
+export function FamilyCard({ family }: FamilyCardProps) {
+    if (!family) {
+        return (
+            <Card className="h-full flex flex-col items-center justify-center p-6 text-center">
+                <Users className="h-16 w-16 text-muted-foreground mb-4" />
+                <h3 className="text-xl font-bold">Sin Familia</h3>
+                <p className="text-muted-foreground mb-4">No perteneces a ninguna familia. ¡Crea o únete a una!</p>
+                <Button asChild>
+                    <Link href="/family">
+                        Ir a Familia
+                    </Link>
+                </Button>
+            </Card>
+        );
+    }
+
+    const topMembers = family.members
+      .sort((a, b) => (b.user.puntuacion?.puntosHonorTotales || 0) - (a.user.puntuacion?.puntosHonorTotales || 0))
+      .slice(0, 3);
+
+
+    return (
+        <Card className="group relative overflow-hidden h-full flex flex-col">
+             <Image 
+                src="/nuevas/vendettasilueta.jpg" 
+                alt="Family background"
+                fill
+                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                data-ai-hint="dark meeting room"
+            />
+            <div className="absolute inset-0 bg-black/70" />
+            <div className="relative flex flex-col flex-grow">
+                <CardHeader className="flex flex-row items-center gap-4 text-white">
+                    <Avatar className="h-16 w-16 border-2 border-white/20">
+                        <AvatarImage src={family.avatarUrl || ''} />
+                        <AvatarFallback>{family.tag}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <CardTitle className="text-2xl font-bold tracking-wider [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">[{family.tag}] {family.name}</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent className="text-white flex-grow">
+                    <div className="flex items-center gap-2 bg-black/30 p-2 rounded-md mb-4">
+                        <Users className="h-5 w-5" />
+                        <span className="font-semibold">{family.members.length} Miembros</span>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold mb-2">Top 3 Miembros (Honor)</h4>
+                        <div className="space-y-2">
+                             {topMembers.map(member => (
+                                <div key={member.userId} className="flex items-center gap-3 text-sm bg-black/20 p-2 rounded-md">
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarImage src={member.user.avatarUrl || ''} />
+                                        <AvatarFallback>{member.user.name ? member.user.name.charAt(0) : 'U'}</AvatarFallback>
+                                    </Avatar>
+                                    <span className="font-medium flex-grow truncate">{member.user.name || 'Usuario desconocido'}</span>
+                                    <span className="font-mono text-amber-400">{formatPoints(member.user.puntuacion?.puntosHonorTotales)}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter className="mt-auto">
+                    <Button asChild className="w-full" variant="outline">
+                        <Link href={`/family/members?id=${family.id}`}>
+                            Ver Detalles de Familia
+                        </Link>
+                    </Button>
+                </CardFooter>
+            </div>
+        </Card>
+    );
+}

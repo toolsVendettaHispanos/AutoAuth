@@ -12,7 +12,7 @@ const AlertDialogTrigger = AlertDialogPrimitive.Trigger
 
 const AlertDialogPortal = AlertDialogPrimitive.Portal
 
-const AlertDialogOverlay = React.forwardRef<
+const AlertDialogOverlay = React.memo(React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
@@ -24,10 +24,10 @@ const AlertDialogOverlay = React.forwardRef<
     {...props}
     ref={ref}
   />
-))
+)))
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
 
-const AlertDialogContent = React.forwardRef<
+const AlertDialogContent = React.memo(React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
 >(({ className, ...props }, ref) => (
@@ -42,7 +42,7 @@ const AlertDialogContent = React.forwardRef<
       {...props}
     />
   </AlertDialogPortal>
-))
+)))
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
 
 const AlertDialogHeader = ({
@@ -73,7 +73,7 @@ const AlertDialogFooter = ({
 )
 AlertDialogFooter.displayName = "AlertDialogFooter"
 
-const AlertDialogTitle = React.forwardRef<
+const AlertDialogTitle = React.memo(React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
@@ -82,10 +82,10 @@ const AlertDialogTitle = React.forwardRef<
     className={cn("text-lg font-semibold", className)}
     {...props}
   />
-))
+)))
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName
 
-const AlertDialogDescription = React.forwardRef<
+const AlertDialogDescription = React.memo(React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
@@ -94,11 +94,11 @@ const AlertDialogDescription = React.forwardRef<
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
-))
+)))
 AlertDialogDescription.displayName =
   AlertDialogPrimitive.Description.displayName
 
-const AlertDialogAction = React.forwardRef<
+const AlertDialogAction = React.memo(React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
 >(({ className, ...props }, ref) => (
@@ -107,10 +107,10 @@ const AlertDialogAction = React.forwardRef<
     className={cn(buttonVariants(), className)}
     {...props}
   />
-))
+)))
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName
 
-const AlertDialogCancel = React.forwardRef<
+const AlertDialogCancel = React.memo(React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
 >(({ className, ...props }, ref) => (
@@ -123,7 +123,7 @@ const AlertDialogCancel = React.forwardRef<
     )}
     {...props}
   />
-))
+)))
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName
 
 export {
