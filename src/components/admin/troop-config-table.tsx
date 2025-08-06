@@ -1,8 +1,6 @@
 
 
-
 'use client';
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
@@ -18,7 +16,7 @@ interface TroopConfigTableProps {
     tiposTropa: string[];
 }
 
-export function TroopConfigTable({ initialData, }: TroopConfigTableProps) {
+export function TroopConfigTable({ initialData }: TroopConfigTableProps) {
     
     return (
         <Card>

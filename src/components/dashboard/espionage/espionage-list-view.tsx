@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from '@/lib/utils';
-import { Eye, ChevronsRight, CheckCircle, XCircle } from "lucide-react";
+import { ChevronsRight, CheckCircle, XCircle } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import type { FullEspionageReport } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';

@@ -44,7 +44,7 @@ const StatLossBar = ({ label, attackerValue, defenderValue }: { label: string, a
     )
 }
 
-export function BrawlDetail({ report, currentUserId }: BrawlDetailProps) {
+export function BrawlDetail({ report }: BrawlDetailProps) {
     const router = useRouter();
     if (!report.details) return null;
     
