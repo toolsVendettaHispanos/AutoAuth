@@ -54,12 +54,16 @@ function getLastSeenStatus(lastSeen: Date | null): { text: string; isOnline: boo
 
 
 export function FamilyMembersView({ family }: FamilyMembersViewProps) {
-    const [, setTick] = useState(0);
+    const [isClient, setIsClient] = useState(false);
     const [sortKey, setSortKey] = useState<SortKey>('points');
     const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
     useEffect(() => {
-        const timer = setInterval(() => setTick(t => t + 1), 60000); 
+        setIsClient(true);
+        const timer = setInterval(() => {
+            // The purpose of the timer is just to force a re-render periodically
+            // to update the "last seen" status, so we don't need to manage state here.
+        }, 60000);
         return () => clearInterval(timer);
     }, []);
 
@@ -73,8 +77,8 @@ export function FamilyMembersView({ family }: FamilyMembersViewProps) {
     }
     
     const sortedMembers = [...family.members].sort((a, b) => {
-        const statusA = getLastSeenStatus(a.user.lastSeen);
-        const statusB = getLastSeenStatus(b.user.lastSeen);
+        const statusA = isClient ? getLastSeenStatus(a.user.lastSeen) : { minutesAgo: Infinity };
+        const statusB = isClient ? getLastSeenStatus(b.user.lastSeen) : { minutesAgo: Infinity };
 
         let compareA: string | number;
         let compareB: string | number;
@@ -138,7 +142,7 @@ export function FamilyMembersView({ family }: FamilyMembersViewProps) {
                         </TableHeader>
                         <TableBody>
                             {sortedMembers.map((member, index) => {
-                                const status = getLastSeenStatus(member.user.lastSeen);
+                                const status = isClient ? getLastSeenStatus(member.user.lastSeen) : null;
                                 return (
                                     <TableRow key={member.user.id}>
                                         <TableCell className="font-medium text-muted-foreground">{index + 1}</TableCell>
@@ -153,12 +157,16 @@ export function FamilyMembersView({ family }: FamilyMembersViewProps) {
                                         </TableCell>
                                         <TableCell className="text-right font-mono">{formatPoints(member.user.puntuacion?.puntosTotales)}</TableCell>
                                         <TableCell className="text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <div className={cn("h-2.5 w-2.5 rounded-full", status.isOnline ? "bg-green-500" : "bg-muted")} />
-                                                <span className={cn("font-mono text-sm", status.isOnline ? "text-green-400" : "text-muted-foreground")}>
-                                                    {status.text}
-                                                </span>
-                                            </div>
+                                            {isClient && status ? (
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <div className={cn("h-2.5 w-2.5 rounded-full", status.isOnline ? "bg-green-500" : "bg-muted")} />
+                                                    <span className={cn("font-mono text-sm", status.isOnline ? "text-green-400" : "text-muted-foreground")}>
+                                                        {status.text}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-sm text-muted-foreground">...</span>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 )
@@ -168,7 +176,7 @@ export function FamilyMembersView({ family }: FamilyMembersViewProps) {
                      {/* Mobile Cards */}
                     <div className="md:hidden p-2 space-y-2">
                         {sortedMembers.map((member, index) => {
-                             const status = getLastSeenStatus(member.user.lastSeen);
+                             const status = isClient ? getLastSeenStatus(member.user.lastSeen) : null;
                              return (
                                 <Card key={member.user.id} className="p-4">
                                     <div className="flex items-start justify-between">
@@ -182,10 +190,14 @@ export function FamilyMembersView({ family }: FamilyMembersViewProps) {
                                                 </div>
                                             </div>
                                         </div>
-                                         <div className={cn("text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1.5", status.isOnline ? "bg-green-500/20 text-green-400" : "bg-muted")}>
-                                             <div className={cn("h-2 w-2 rounded-full", status.isOnline ? "bg-green-500" : "bg-muted-foreground")} />
-                                            {status.text}
-                                        </div>
+                                        {isClient && status ? (
+                                            <div className={cn("text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1.5", status.isOnline ? "bg-green-500/20 text-green-400" : "bg-muted")}>
+                                                <div className={cn("h-2 w-2 rounded-full", status.isOnline ? "bg-green-500" : "bg-muted-foreground")} />
+                                                {status.text}
+                                            </div>
+                                        ) : (
+                                            <div className="text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1.5 bg-muted">...</div>
+                                        )}
                                     </div>
                                     <Separator className="my-3"/>
                                     <div className="text-center">

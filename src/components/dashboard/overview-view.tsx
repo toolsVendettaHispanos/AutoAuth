@@ -84,13 +84,6 @@ export function OverviewView({ user, allRooms, allTroops }: OverviewViewProps) {
 
     const { puntuacion, familyMember } = user;
     const unreadMessages = user._count?.receivedMessages || 0;
-    
-    const membersOnline = familyMember?.family?.members?.filter((m: FullFamilyMember) => {
-        if (!m.user.lastSeen) return false;
-        const lastSeen = new Date(m.user.lastSeen).getTime();
-        const now = new Date().getTime();
-        return (now - lastSeen) < 5 * 60 * 1000; // 5 minutes threshold
-    }).length || 0;
 
     return (
          <div className="flex-grow space-y-4 animate-fade-in">
