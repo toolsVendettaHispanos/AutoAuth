@@ -29,7 +29,8 @@ function SimulatorLoading() {
     )
 }
 
-export default function SimulatorPage() {
+// Este componente ahora es necesario para poder usar Suspense
+const SimulatorPageContent = () => {
     const [user, setUser] = useState<UserWithProgress | null>(null);
     const [troopConfigs, setTroopConfigs] = useState<FullConfiguracionTropa[]>([]);
     const [trainingConfigs, setTrainingConfigs] = useState<FullConfiguracionEntrenamiento[]>([]);
@@ -67,16 +68,22 @@ export default function SimulatorPage() {
     if (!user) {
         return null; // or a redirect, handled by useEffect
     }
+    
+    return (
+        <SimulatorView 
+            user={user}
+            troopConfigs={troopConfigs}
+            trainingConfigs={trainingConfigs}
+            defenseConfigs={defenseConfigs}
+        />
+    )
+}
 
+export default function SimulatorPage() {
     return (
         <div className="main-view">
             <Suspense fallback={<SimulatorLoading />}>
-                <SimulatorView 
-                    user={user}
-                    troopConfigs={troopConfigs}
-                    trainingConfigs={trainingConfigs}
-                    defenseConfigs={defenseConfigs}
-                />
+                <SimulatorPageContent />
             </Suspense>
         </div>
     );

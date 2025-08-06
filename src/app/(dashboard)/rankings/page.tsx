@@ -31,11 +31,7 @@ function RankingsLoading() {
 
 const PAGE_SIZE = 100;
 
-export default async function RankingsPage({
-    searchParams
-}: {
-    searchParams?: { type?: string, range?: string }
-}) {
+async function RankingsContent({ searchParams }: { searchParams?: { type?: string, range?: string }}) {
     const user = await getSessionUser();
     if (!user) {
         redirect('/');
@@ -51,6 +47,21 @@ export default async function RankingsPage({
     const recentBattles = rankingType === '3' ? await getRecentBattleReports() : [];
 
     return (
+        <>
+            {rankingType === '0' && <PlayerRankingsView users={users} currentUserId={user.id} page={range} pageSize={PAGE_SIZE} />}
+            {rankingType === '1' && <FamilyRankingsView families={families} currentUserFamilyId={user.familyMember?.familyId} page={range} pageSize={PAGE_SIZE} />}
+            {rankingType === '2' && <HonorRankingsView users={honorUsers} currentUserId={user.id} page={range} pageSize={PAGE_SIZE} />}
+            {rankingType === '3' && <BattlesRankingsView reports={recentBattles} currentUserId={user.id} />}
+        </>
+    )
+}
+
+export default function RankingsPage({
+    searchParams
+}: {
+    searchParams?: { type?: string, range?: string }
+}) {
+    return (
         <div className="main-view">
             <div className="flex flex-col sm:flex-row gap-4 justify-between sm:items-center">
               <h2 className="text-3xl font-bold tracking-tight">Clasificaciones</h2>
@@ -59,10 +70,7 @@ export default async function RankingsPage({
                  <RankingTypeSelector />
             </div>
             <Suspense fallback={<RankingsLoading />}>
-                {rankingType === '0' && <PlayerRankingsView users={users} currentUserId={user.id} page={range} pageSize={PAGE_SIZE} />}
-                {rankingType === '1' && <FamilyRankingsView families={families} currentUserFamilyId={user.familyMember?.familyId} page={range} pageSize={PAGE_SIZE} />}
-                {rankingType === '2' && <HonorRankingsView users={honorUsers} currentUserId={user.id} page={range} pageSize={PAGE_SIZE} />}
-                {rankingType === '3' && <BattlesRankingsView reports={recentBattles} currentUserId={user.id} />}
+                <RankingsContent searchParams={searchParams} />
             </Suspense>
         </div>
     );

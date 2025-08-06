@@ -18,7 +18,29 @@ function MapLoading() {
     )
 }
 
-export default async function MapPage({
+async function MapPageContent({ searchParams }: { searchParams?: { ciudad?: string; barrio?: string; }}) {
+    const user = await getSessionUser();
+    if (!user) {
+        redirect('/');
+    }
+    
+    const initialCiudad = searchParams?.ciudad ? parseInt(searchParams.ciudad, 10) : user.propiedades?.[0]?.ciudad || 1;
+    const initialBarrio = searchParams?.barrio ? parseInt(searchParams.barrio, 10) : user.propiedades?.[0]?.barrio || 1;
+
+    const properties = await getPropertiesByLocation(initialCiudad, initialBarrio);
+
+    return (
+        <MapView 
+            initialCiudad={initialCiudad} 
+            initialBarrio={initialBarrio} 
+            initialProperties={properties} 
+            currentUser={user}
+        />
+    )
+}
+
+
+export default function MapPage({
     searchParams
 }: {
     searchParams?: {
@@ -26,27 +48,11 @@ export default async function MapPage({
         barrio?: string;
     };
 }) {
-    const user = await getSessionUser();
-    if (!user) {
-        redirect('/');
-    }
-    
-    // Si no hay params, usamos la ubicación de la primera propiedad del usuario
-    const initialCiudad = searchParams?.ciudad ? parseInt(searchParams.ciudad, 10) : user.propiedades?.[0]?.ciudad || 1;
-    const initialBarrio = searchParams?.barrio ? parseInt(searchParams.barrio, 10) : user.propiedades?.[0]?.barrio || 1;
-
-    const properties = await getPropertiesByLocation(initialCiudad, initialBarrio);
-
     return (
         <div className="main-view">
             <h2 className="text-3xl font-bold tracking-tight mb-4 text-center">Mapa de la Ciudad</h2>
             <Suspense fallback={<MapLoading />}>
-                <MapView 
-                    initialCiudad={initialCiudad} 
-                    initialBarrio={initialBarrio} 
-                    initialProperties={properties} 
-                    currentUser={user}
-                />
+                <MapPageContent searchParams={searchParams} />
             </Suspense>
         </div>
     );
