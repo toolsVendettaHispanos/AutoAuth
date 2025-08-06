@@ -89,11 +89,7 @@ export function ResourcesView({ user }: ResourcesViewProps) {
         });
     }, [user.propiedades, selectedPropertyId]);
 
-    const productionTableRows = [
-        { label: "Total por hora", multiplier: 1 },
-        { label: "Total por día", multiplier: 24 },
-        { label: "Total por semana", multiplier: 24 * 7 },
-    ];
+    const productionTableHeaders = ["Recurso", "Por Hora", "Por Día", "Por Semana"];
     
     const storageCards = [
         { title: "Almacén de Armas", resourceKey: "armas" },
@@ -121,34 +117,39 @@ export function ResourcesView({ user }: ResourcesViewProps) {
                     <CardTitle>Resumen de Producción</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[150px]"></TableHead>
-                                {Object.keys(resourceNames).map(key => (
-                                    <TableHead key={key} className="text-right flex items-center justify-end gap-2">
-                                        <Image src={resourceIcons[key]} alt={resourceNames[key]} width={16} height={16} />
-                                        {resourceNames[key]}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {productionTableRows.map(row => (
-                                <TableRow key={row.label} className="hover:bg-muted/50">
-                                    <TableCell className="font-medium">{row.label}</TableCell>
-                                    {Object.keys(productionData).map(key => {
-                                        const value = productionData[key as keyof typeof productionData] * row.multiplier;
-                                        return (
-                                            <TableCell key={key} className={cn("text-right font-mono", value >= 0 ? 'text-green-400' : 'text-destructive')}>
-                                                {formatProduction(value)}
-                                            </TableCell>
-                                        )
-                                    })}
+                     <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    {productionTableHeaders.map(header => (
+                                        <TableHead key={header} className={header !== "Recurso" ? "text-right" : ""}>{header}</TableHead>
+                                    ))}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {Object.keys(resourceNames).map(key => {
+                                    const valuePerHour = productionData[key as keyof typeof productionData];
+                                    return (
+                                    <TableRow key={key}>
+                                        <TableCell className="font-medium flex items-center gap-2">
+                                            <Image src={resourceIcons[key]} alt={resourceNames[key]} width={20} height={20} />
+                                            {resourceNames[key]}
+                                        </TableCell>
+                                        <TableCell className={cn("text-right font-mono", valuePerHour >= 0 ? 'text-green-400' : 'text-destructive')}>
+                                            {formatProduction(valuePerHour)}
+                                        </TableCell>
+                                        <TableCell className={cn("text-right font-mono", (valuePerHour * 24) >= 0 ? 'text-green-400' : 'text-destructive')}>
+                                            {formatProduction(valuePerHour * 24)}
+                                        </TableCell>
+                                        <TableCell className={cn("text-right font-mono", (valuePerHour * 24 * 7) >= 0 ? 'text-green-400' : 'text-destructive')}>
+                                            {formatProduction(valuePerHour * 24 * 7)}
+                                        </TableCell>
+                                    </TableRow>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 
