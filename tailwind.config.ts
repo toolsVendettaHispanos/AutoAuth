@@ -22,7 +22,7 @@ const config: Config = {
         '17': 'repeat(17, minmax(0, 1fr))',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'Tahoma', 'Arial', 'Helvetica', 'sans-serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
         heading: ['var(--font-bebas-neue)', 'sans-serif'],
       },
       colors: {

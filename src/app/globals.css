@@ -5,41 +5,42 @@
  
 @layer base {
   :root {
-    --background: 0 0% 11%;
-    --foreground: 45 33% 91%;
-    --card: 0 0% 14%;
-    --card-foreground: 45 33% 91%;
-    --popover: 0 0% 14%;
-    --popover-foreground: 45 33% 91%;
-    --primary: 359 70% 35%;
-    --primary-foreground: 0 86% 97%;
-    --secondary: 101 12% 31%;
-    --secondary-foreground: 45 33% 91%;
-    --muted: 45 11% 40%;
-    --muted-foreground: 45 33% 74%;
-    --accent: 28 41% 28%;
-    --accent-foreground: 45 33% 91%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 0 0% 98%;
-    --success: 86 100% 45%;
-    --success-border: 79 69% 45%;
-    --error: 0 100% 81%;
-    --error-border: 0 100% 34%;
-    --border: 28 41% 28%;
-    --input: 0 0% 16%;
-    --ring: 359 70% 35%;
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --success: 142.1 76.2% 36.3%;
+    --success-border: 142.1 76.2% 36.3%;
+    --error: 0 62.8% 30.6%;
+    --error-border: 0 62.8% 30.6%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 215 27.9% 16.9%;
     --map-player: 120 60% 50%;
     --map-family: 60 100% 50%;
     --map-enemy: 0 100% 50%;
+    --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 45 33% 74%;
-    --sidebar-primary: 359 70% 35%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 0 0% 25%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 359 70% 35%;
+    --sidebar-background: 224 71.4% 4.1%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 210 20% 98%;
+    --sidebar-primary-foreground: 220.9 39.3% 11%;
+    --sidebar-accent: 215 27.9% 16.9%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 215 27.9% 16.9%;
+    --sidebar-ring: 215 27.9% 16.9%;
   }
 }
  
@@ -54,7 +55,7 @@
     @apply bg-background text-foreground bg-[url('/img/general/paper-texture.png')] bg-repeat;
   }
   
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
   }
 
