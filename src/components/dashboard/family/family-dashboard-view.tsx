@@ -1,15 +1,14 @@
 
-
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { FullFamily, UserWithProgress } from "@/lib/types";
 import { FamilyRole } from "@prisma/client";
-import { Crown, Shield, User, Users, Loader2, UserPlus, MailPlus, HandMetal, Send, Settings2, AreaChart } from "lucide-react";
+import { Users, Loader2, HandMetal, Send, Settings2, AreaChart } from "lucide-react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -35,12 +34,6 @@ interface FamilyDashboardViewProps {
     currentUser: UserWithProgress;
     allUsers: { id: string; name: string; familyMember: { familyId: string; } | null; }[];
     pendingRequests: number;
-}
-
-const roleIcons: Record<FamilyRole, React.ReactNode> = {
-    [FamilyRole.LEADER]: <Crown className="h-4 w-4 text-amber-400" />,
-    [FamilyRole.CO_LEADER]: <Shield className="h-4 w-4 text-blue-400" />,
-    [FamilyRole.MEMBER]: <User className="h-4 w-4 text-muted-foreground" />,
 }
 
 function AnnouncementForm({ familyId }: { familyId: string }) {
