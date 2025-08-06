@@ -67,7 +67,7 @@ export async function handleEspionageMission(mision: ColaMisiones) {
         return;
     }
 
-    const attackerTroops = (mision.tropas as any[]).filter(t => t.id === ID_TROPA_ESPIA);
+    const attackerTroops = (mision.tropas as { id: string; cantidad: number }[]).filter(t => t.id === ID_TROPA_ESPIA);
     const defenderAllTroops = [...propiedadDefensora.TropaUsuario, ...propiedadDefensora.TropaSeguridadUsuario];
 
     const attackerInput: SimulationInput = {
@@ -109,12 +109,12 @@ export async function handleEspionageMission(mision: ColaMisiones) {
 
     const bigIntReplacer = (key: any, value: any) => typeof value === 'bigint' ? value.toString() : value;
     const serializableReportDetails: EspionageReportDetails = {
-        combat: JSON.parse(JSON.stringify(combatReport, bigIntReplacer)),
+        combat: JSON.parse(JSON.stringify(combatReport, bigIntReplacer)) as BattleReport,
         intel: intel
     };
     
     const survivingSpies = combatReport.rounds[combatReport.rounds.length - 1].attacker.troops.map(t => ({ id: t.id, cantidad: t.initialQuantity - t.lostQuantity })).filter(t => t.cantidad > 0);
-    const nonSpyTroops = (mision.tropas as any[]).filter(t => t.id !== ID_TROPA_ESPIA);
+    const nonSpyTroops = (mision.tropas as { id: string; cantidad: number }[]).filter(t => t.id !== ID_TROPA_ESPIA);
     const tropaRegreso = [...survivingSpies, ...nonSpyTroops];
 
     await prisma.$transaction(async (tx) => {
@@ -152,7 +152,7 @@ export async function handleEspionageMission(mision: ColaMisiones) {
             where: { id: mision.id },
             data: {
                 tipoMision: 'REGRESO',
-                tropas: tropaRegreso as any,
+                tropas: tropaRegreso,
                 fechaRegreso: new Date(new Date().getTime() + mision.duracionViaje * 1000)
             }
         });
