@@ -875,3 +875,25 @@ export const getMissionsData = cache(async (userId: string) => {
         },
     });
 });
+
+export const getGlobalStatsData = cache(async (userId: string) => {
+    return prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            puntuacion: true,
+            entrenamientos: {
+                where: {
+                    configuracionEntrenamientoId: 'honor'
+                },
+                select: {
+                    nivel: true
+                }
+            },
+            _count: {
+                select: {
+                    propiedades: true
+                }
+            }
+        }
+    });
+});

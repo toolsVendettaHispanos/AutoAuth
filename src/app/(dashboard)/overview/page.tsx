@@ -8,10 +8,12 @@ import { FamilyCardServer } from '@/components/dashboard/overview/family-card-se
 import { QueueStatusServer } from '@/components/dashboard/overview/queue-status-server';
 import { IncomingAttacksServer } from '@/components/dashboard/overview/incoming-attacks-server';
 import { MissionOverviewServer } from '@/components/dashboard/overview/mission-overview-server';
+import { GlobalStatsServer } from '@/components/dashboard/overview/global-stats-server';
 
 function OverviewLoading() {
   return (
     <div className="flex-grow p-4 md:p-6 space-y-4">
+      <Skeleton className="h-24 w-full rounded-lg" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Skeleton className="h-48 w-full rounded-lg" />
         <Skeleton className="h-48 w-full rounded-lg" />
@@ -35,6 +37,10 @@ export default async function OverviewPage() {
   return (
     <div className="main-view h-full space-y-4">
       <Suspense fallback={<OverviewLoading />}>
+        <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
+          <GlobalStatsServer userId={user.id} />
+        </Suspense>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
             <PlayerCardServer userId={user.id} />
