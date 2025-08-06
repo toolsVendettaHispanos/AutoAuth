@@ -709,6 +709,20 @@
               "type": "file"
             },
             {
+              "name": "security",
+              "type": "directory",
+              "children": [
+                {
+                  "name": "security-summary.tsx",
+                  "type": "file"
+                },
+                {
+                  "name": "security-troop-manager.tsx",
+                  "type": "file"
+                }
+              ]
+            },
+            {
               "name": "security-view.tsx",
               "type": "file"
             },
@@ -726,6 +740,14 @@
               "children": [
                 {
                   "name": "quick-report-view.tsx",
+                  "type": "file"
+                },
+                {
+                  "name": "simulation-report-display.tsx",
+                  "type": "file"
+                },
+                {
+                  "name": "simulation-setup.tsx",
                   "type": "file"
                 }
               ]
