@@ -1,45 +1,24 @@
 
-import { RoomsView } from "@/components/dashboard/rooms-view"
-import { Suspense } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { getSessionUser } from "@/lib/auth"
-import { getRoomConfigurations } from "@/lib/data"
-import { redirect } from "next/navigation"
-import { PropertyProvider } from "@/contexts/property-context"
+import { getSessionUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-function RoomsLoading() {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight font-heading"><Skeleton className="h-8 w-64 mb-2 shimmer" /></h2>
-            <Skeleton className="h-4 w-80 shimmer" />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(9)].map((_, i) => (
-                <Skeleton key={i} className="h-48 w-full shimmer" />
-            ))}
-        </div>
-      </div>
-    )
-  }
+export default async function RoomsRedirectPage() {
+    const user = await getSessionUser();
+    if(!user) {
+        redirect('/');
+    }
 
-export default async function RoomsPage() {
-  const user = await getSessionUser();
-  if (!user) {
-    redirect('/');
-  }
-
-  const allRoomConfigs = await getRoomConfigurations();
-
-  return (
-    <div className="main-view">
-        <PropertyProvider properties={user.propiedades}>
-            <Suspense fallback={<RoomsLoading />}>
-                <RoomsView user={user} allRoomConfigs={allRoomConfigs} />
-            </Suspense>
-        </PropertyProvider>
-    </div>
-  )
+    if (!user.propiedades || user.propiedades.length === 0) {
+        // This case should ideally not happen if a user always has a property,
+        // but it's good to handle it. Maybe redirect to a "create property" page.
+        // For now, redirecting to overview.
+        redirect('/overview');
+        return null;
+    }
+    
+    // Find the main property or default to the first one
+    const mainProperty = user.propiedades.find(p => p.nombre === 'Propiedad Principal') || user.propiedades[0];
+    
+    // Redirect to the dynamic route for that property
+    redirect(`/rooms/${mainProperty.ciudad}:${mainProperty.barrio}:${mainProperty.edificio}`);
 }

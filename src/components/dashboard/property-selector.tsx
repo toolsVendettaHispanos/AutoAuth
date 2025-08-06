@@ -15,12 +15,14 @@ import { Building, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { FullPropiedad } from '@/lib/types'
 import { useProperty } from '@/contexts/property-context'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 interface PropertySelectorProps {
   properties: FullPropiedad[]
 }
 
 export function PropertySelector({ properties }: PropertySelectorProps) {
+  const router = useRouter();
   const { selectedProperty, setSelectedPropertyById } = useProperty();
 
   const handlePropertyChange = (direction: 'next' | 'prev') => {
@@ -36,8 +38,14 @@ export function PropertySelector({ properties }: PropertySelectorProps) {
         nextIndex = (currentIndex - 1 + properties.length) % properties.length;
     }
     
-    const nextPropertyId = properties[nextIndex].id;
-    setSelectedPropertyById(nextPropertyId);
+    const nextProperty = properties[nextIndex];
+    setSelectedPropertyById(nextProperty.id);
+    router.push(`/rooms/${nextProperty.ciudad}:${nextProperty.barrio}:${nextProperty.edificio}`);
+  }
+  
+  const handleSelect = (property: FullPropiedad) => {
+    setSelectedPropertyById(property.id);
+    router.push(`/rooms/${property.ciudad}:${property.barrio}:${property.edificio}`);
   }
 
   if (!properties || properties.length === 0) {
@@ -84,7 +92,7 @@ export function PropertySelector({ properties }: PropertySelectorProps) {
           {properties.map((property) => (
             <DropdownMenuItem
               key={property.id}
-              onSelect={() => setSelectedPropertyById(property.id)}
+              onSelect={() => handleSelect(property)}
             >
               <Check
                 className={cn('mr-2 h-4 w-4',
@@ -103,4 +111,3 @@ export function PropertySelector({ properties }: PropertySelectorProps) {
     </div>
   )
 }
-

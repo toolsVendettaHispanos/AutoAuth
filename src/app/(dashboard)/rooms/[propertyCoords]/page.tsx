@@ -1,4 +1,5 @@
 
+
 import { RoomsView } from "@/components/dashboard/rooms-view"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -6,7 +7,6 @@ import { getSessionUser } from "@/lib/auth"
 import { getRoomConfigurations } from "@/lib/data"
 import { redirect } from "next/navigation"
 import { FullPropiedad, PageProps } from "@/lib/types"
-import { PropertyProvider } from "@/contexts/property-context"
 
 function RoomsLoading() {
     return (
@@ -17,19 +17,10 @@ function RoomsLoading() {
             <Skeleton className="h-4 w-80 shimmer" />
           </div>
         </div>
-        <div className="border rounded-lg p-0">
-            <div className="divide-y">
-                {[...Array(5)].map((_, i) => (
-                    <div key={i} className="p-4 flex items-center space-x-4">
-                        <Skeleton className="h-16 w-20 rounded-md shimmer" />
-                        <div className="space-y-2 flex-1">
-                            <Skeleton className="h-4 w-3/4 shimmer" />
-                            <Skeleton className="h-4 w-1/2 shimmer" />
-                        </div>
-                        <Skeleton className="h-10 w-24 rounded-md shimmer" />
-                    </div>
-                ))}
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(9)].map((_, i) => (
+                <Skeleton key={i} className="h-48 w-full shimmer" />
+            ))}
         </div>
       </div>
     )
@@ -57,15 +48,13 @@ export default async function RoomsByCoordsPage({ params }: PageProps<{ property
 
   return (
     <div className="main-view">
-        <PropertyProvider properties={user.propiedades}>
-            <Suspense fallback={<RoomsLoading />}>
-                <RoomsView 
-                    user={user} 
-                    allRoomConfigs={allRoomConfigs} 
-                    initialProperty={propertyFromCoords}
-                />
-            </Suspense>
-        </PropertyProvider>
+        <Suspense fallback={<RoomsLoading />}>
+            <RoomsView 
+                user={user} 
+                allRoomConfigs={allRoomConfigs} 
+                initialProperty={propertyFromCoords}
+            />
+        </Suspense>
     </div>
   )
 }

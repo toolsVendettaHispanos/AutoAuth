@@ -93,16 +93,11 @@ export function SidebarNav({ user }: SidebarNavProps) {
       {items.map((item) => {
         const isActive = pathname.startsWith(item.href);
         const params = new URLSearchParams(searchParams);
-        if (selectedProperty?.id) {
-            params.set('propertyId', selectedProperty.id);
-        } else {
-            params.delete('propertyId');
-        }
         
         let finalHref = item.href;
         if(item.href === '/rooms' && selectedProperty) {
             finalHref = `/rooms/${selectedProperty.ciudad}:${selectedProperty.barrio}:${selectedProperty.edificio}`;
-        } else {
+        } else if (item.href !== '/rooms') {
             finalHref = `${item.href}?${params.toString()}`;
         }
 

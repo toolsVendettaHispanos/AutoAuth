@@ -11,23 +11,33 @@ import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useProperty } from "@/contexts/property-context"
 import { calcularCostosNivel, calcularTiempoConstruccion } from "@/lib/formulas/room-formulas"
-import type { FullConfiguracionHabitacion, FullPropiedad } from "@/lib/types"
+import type { FullConfiguracionHabitacion, UserWithProgress, FullPropiedad } from "@/lib/types"
 import { ID_OFICINA_JEFE, MAX_CONSTRUCTION_QUEUE_SIZE, ROOM_ORDER } from "@/lib/constants"
 import { RoomCard } from "./room-card"
 
 type RoomsViewProps = {
+    user: UserWithProgress;
     allRoomConfigs: FullConfiguracionHabitacion[];
     initialProperty?: FullPropiedad;
 }
 
-export function RoomsView({ allRoomConfigs, initialProperty }: RoomsViewProps) {
+export function RoomsView({ user, allRoomConfigs, initialProperty }: RoomsViewProps) {
     const router = useRouter();
-    const { selectedProperty: contextSelectedProperty } = useProperty();
+    const { setSelectedPropertyById } = useProperty();
     const [isSubmitting, setIsSubmitting] = useState<string | null>(null);
     const { toast } = useToast();
     const [timers, setTimers] = useState<Record<string, number>>({});
+    
+    // Use the property from the URL as the source of truth
+    const selectedProperty = initialProperty;
 
-    const selectedProperty = initialProperty || contextSelectedProperty;
+    useEffect(() => {
+        // When the property from the URL changes, update the context
+        if (selectedProperty) {
+            setSelectedPropertyById(selectedProperty.id);
+        }
+    }, [selectedProperty, setSelectedPropertyById]);
+
 
     useEffect(() => {
         if (!selectedProperty) return;
@@ -44,7 +54,7 @@ export function RoomsView({ allRoomConfigs, initialProperty }: RoomsViewProps) {
                 const endTime = new Date(item.fechaFinalizacion!).getTime();
                 const newTimeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
                 newTimers[item.id] = newTimeLeft;
-                if (newTimeLeft === 0) {
+                if (newTimeLeft === 0 && timers[item.id] !== 0) { // Only refresh once
                     needsRefresh = true;
                 }
             });
@@ -57,7 +67,7 @@ export function RoomsView({ allRoomConfigs, initialProperty }: RoomsViewProps) {
         }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [selectedProperty, router]);
+    }, [selectedProperty, router, timers]);
 
     const roomsData = useMemo(() => {
         if (!selectedProperty) return [];
@@ -109,7 +119,7 @@ export function RoomsView({ allRoomConfigs, initialProperty }: RoomsViewProps) {
                 <h2 className="text-3xl font-bold tracking-tight">Gestión de Habitaciones</h2>
                 <Card>
                     <CardContent className="p-6">
-                        <p>Por favor, selecciona una propiedad para gestionar sus habitaciones.</p>
+                        <p>Cargando datos de la propiedad...</p>
                     </CardContent>
                 </Card>
             </div>
