@@ -8,10 +8,12 @@ export type PageProps<T extends Record<string, string> = Record<string, never>> 
 };
 
 export type IncomingAttack = PrismaIncomingAttack;
+export type MisionTropas = { id: string; cantidad: number }[];
 export type ColaMisiones = PrismaColaMisiones & { recursos?: ResourceCost | null };
 export type ConfiguracionTropa = PrismaConfiguracionTropa & { requisitos: string[] };
 export type { ColaConstruccion };
 export type { ResourceCost };
+export { EspionageReportDetails };
 
 
 export type PropertyWithOwner = Propiedad & {

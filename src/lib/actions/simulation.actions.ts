@@ -1,6 +1,5 @@
 
 
-
 'use server';
 
 import { getTrainingConfigurations, getTroopConfigurations } from '../data';
@@ -41,7 +40,7 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
         return (simInput.troops).map((troop: TroopData) => {
             const config = troopConfigsMap.get(troop.id);
             if (!config) return null;
-            const { ataqueActual, defensaActual } = calcularStatsTropaConBonus(config, userTrainings as any);
+            const { ataqueActual, defensaActual, capacidadActual } = calcularStatsTropaConBonus(config, userTrainings as any);
             return {
                 id: troop.id,
                 nombre: config.nombre,
@@ -49,12 +48,13 @@ export async function runBattleSimulation(attacker: SimulationInput, defender: S
                 quantity: troop.quantity,
                 attack: ataqueActual,
                 defense: defensaActual,
+                capacidad: capacidadActual
             };
         }).filter((u): u is ArmyUnit => u !== null && u.quantity > 0);
     };
 
-    const attackerArmy = buildArmy(attacker);
-    const defenderArmy = buildArmy(defender);
+    let attackerArmy = buildArmy(attacker);
+    let defenderArmy = buildArmy(defender);
     
     const bigIntReplacer = (key: string, value: unknown) => typeof value === 'bigint' ? value.toString() : value;
 

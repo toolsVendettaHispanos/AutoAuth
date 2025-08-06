@@ -5,8 +5,9 @@
 import prisma from "../prisma/prisma";
 import { runBattleSimulation } from "./simulation.actions";
 import { ColaMisiones, MessageCategory } from "@prisma/client";
-import type { SimulationInput, EspionageReportDetails, MisionTropas } from "../types";
+import type { SimulationInput, BattleReport } from "../types/simulation.types";
 import { ID_TROPA_ESPIA } from "../constants";
+import { EspionageReportDetails, MisionTropas } from "../types";
 
 export async function handleEspionageMission(mision: ColaMisiones) {
     const atacante = await prisma.user.findUnique({ 
@@ -67,11 +68,11 @@ export async function handleEspionageMission(mision: ColaMisiones) {
         return;
     }
 
-    const attackerTroops = (mision.tropas as MisionTropas).filter(t => t.id === ID_TROPA_ESPIA);
+    const attackerTroops = (mision.tropas as MisionTropas).filter((t: {id: string}) => t.id === ID_TROPA_ESPIA);
     const defenderAllTroops = [...propiedadDefensora.TropaUsuario, ...propiedadDefensora.TropaSeguridadUsuario];
 
     const attackerInput: SimulationInput = {
-        troops: attackerTroops.map(t => ({ id: t.id, quantity: t.cantidad })),
+        troops: attackerTroops.map((t: {id: string, cantidad: number}) => ({ id: t.id, quantity: t.cantidad })),
         trainings: atacante.entrenamientos.map(t => ({ id: t.configuracionEntrenamientoId, level: t.nivel })),
         defenses: [],
         buildingsLevel: 1, 
@@ -107,7 +108,7 @@ export async function handleEspionageMission(mision: ColaMisiones) {
         }
     }
 
-    const bigIntReplacer = (key: string, value: unknown) => typeof value === 'bigint' ? value.toString() : value;
+    const bigIntReplacer = (key: any, value: any) => typeof value === 'bigint' ? value.toString() : value;
     const serializableReportDetails: EspionageReportDetails = {
         combat: JSON.parse(JSON.stringify(combatReport, bigIntReplacer)),
         intel: intel
@@ -120,7 +121,7 @@ export async function handleEspionageMission(mision: ColaMisiones) {
             .filter(t => t.cantidad > 0);
     }
     
-    const nonSpyTroops = (mision.tropas as MisionTropas).filter(t => t.id !== ID_TROPA_ESPIA);
+    const nonSpyTroops = (mision.tropas as MisionTropas).filter((t: {id: string}) => t.id !== ID_TROPA_ESPIA);
     const tropaRegreso = [...survivingSpies, ...nonSpyTroops];
 
     await prisma.$transaction(async (tx) => {
@@ -137,7 +138,7 @@ export async function handleEspionageMission(mision: ColaMisiones) {
             data: {
                 recipientId: atacante.id,
                 subject: `Informe de Espionaje en ${mision.destinoCiudad}:${mision.destinoBarrio}`,
-                content: spiesSurvived ? `Tus espías han tenido éxito y han vuelto con informaci\u00f3n.` : `Tus espías han sido descubiertos y eliminados.`,
+                content: spiesSurvived ? `Tus espías han tenido éxito y han vuelto con información.` : `Tus espías han sido descubiertos y eliminados.`,
                 category: MessageCategory.ESPIONAJE,
                 espionageReportId: espionageReport.id,
             }
