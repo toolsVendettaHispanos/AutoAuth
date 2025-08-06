@@ -1,5 +1,4 @@
 
-
 'use server';
 
 import prisma from "../prisma/prisma";
@@ -12,6 +11,7 @@ import { getUserWithProgressByUsername } from "../data";
 import { handleAttackMission } from "./brawl.actions"; 
 import { handleEspionageMission } from "./espionage.actions";
 import { ResourceCost } from "../types";
+import { Prisma } from "@prisma/client/edge";
 
 interface UserSettings {
     name?: string;
@@ -459,7 +459,7 @@ export async function verificarYFinalizarMisiones(user: UserWithProgress): Promi
             try {
                 await prisma.colaMisiones.delete({ where: { id: mision.id } });
             } catch (error) {
-                if (error instanceof prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+                if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
                     // Record not found, it was likely already processed and deleted.
                     console.log(`Mission ${mision.id} already deleted, skipping.`);
                 } else {
@@ -514,5 +514,4 @@ export async function actualizarPuntuacionUsuario(user: UserWithProgress): Promi
   }
 }
 
-
-
+    
