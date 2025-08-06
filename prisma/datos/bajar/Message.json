@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cme005txm002rd8jcr7gnhfka",
+    "senderId": null,
+    "recipientId": "4",
+    "subject": "¡Ataque Inminente!",
+    "content": "Una flota de ataque de bomberox se dirige a tu propiedad en [1:1:5]. Llegará aproximadamente a las 14:55:19.",
+    "isRead": false,
+    "category": "BATALLA",
+    "createdAt": "2025-08-06T13:27:14.890Z",
+    "battleReportId": null,
+    "espionageReportId": null
+  },
+  {
+    "id": "cme03b7l1000rczjad6ujrfir",
+    "senderId": null,
+    "recipientId": "1",
+    "subject": "Resultado de la batalla en 1:1",
+    "content": "Tu ataque contra pruebas ha concluido. Revisa tus informes de batalla para ver los detalles.",
+    "isRead": false,
+    "category": "BATALLA",
+    "createdAt": "2025-08-06T14:55:24.710Z",
+    "battleReportId": "cme03b6gf000lczja5cpm0r3r",
+    "espionageReportId": null
+  },
+  {
+    "id": "cme03b7t2000tczjat1agbaja",
+    "senderId": null,
+    "recipientId": "4",
+    "subject": "Has sido atacado en 1:1",
+    "content": "Has sido atacado por bomberox. Revisa tus informes de batalla para ver los detalles.",
+    "isRead": false,
+    "category": "BATALLA",
+    "createdAt": "2025-08-06T14:55:24.999Z",
+    "battleReportId": "cme03b6gf000lczja5cpm0r3r",
+    "espionageReportId": null
+  },
+  {
+    "id": "cme058a35001fetlg1r2csf51",
+    "senderId": null,
+    "recipientId": "4",
+    "subject": "¡Ataque Inminente!",
+    "content": "Una flota de ataque de bomberox se dirige a tu propiedad en [1:1:5]. Llegará aproximadamente a las 15:50:36.",
+    "isRead": false,
+    "category": "BATALLA",
+    "createdAt": "2025-08-06T15:49:07.217Z",
+    "battleReportId": null,
+    "espionageReportId": null
+  },
+  {
+    "id": "cme05bvy2001tetlgzzxqooo7",
+    "senderId": null,
+    "recipientId": "1",
+    "subject": "Resultado de la batalla en 1:1",
+    "content": "Tu ataque contra pruebas ha concluido. Revisa tus informes de batalla para ver los detalles.",
+    "isRead": false,
+    "category": "BATALLA",
+    "createdAt": "2025-08-06T15:51:55.515Z",
+    "battleReportId": "cme05bura001netlgi3qlh46e",
+    "espionageReportId": null
+  },
+  {
+    "id": "cme05bw6w001vetlgpcgmr9kf",
+    "senderId": null,
+    "recipientId": "4",
+    "subject": "Has sido atacado en 1:1",
+    "content": "Has sido atacado por bomberox. Revisa tus informes de batalla para ver los detalles.",
+    "isRead": false,
+    "category": "BATALLA",
+    "createdAt": "2025-08-06T15:51:55.832Z",
+    "battleReportId": "cme05bura001netlgi3qlh46e",
+    "espionageReportId": null
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "cmdzywl4q000nd8jc795r87p7",
+    "propiedadId": "1",
+    "habitacionId": "almacen_de_municion",
+    "nivelDestino": 101,
+    "duracion": 30300,
+    "fechaInicio": "2025-08-06T12:52:03.785Z",
+    "fechaFinalizacion": "2025-08-06T21:17:03.785Z",
+    "createdAt": "2025-08-06T12:52:03.960Z"
+  },
+  {
+    "id": "cme0c178r003rc7ly3e6sa2qx",
+    "propiedadId": "1",
+    "habitacionId": "almacen_de_municion",
+    "nivelDestino": 102,
+    "duracion": 30902,
+    "fechaInicio": "2025-08-06T21:17:04.785Z",
+    "fechaFinalizacion": "2025-08-07T05:52:06.785Z",
+    "createdAt": "2025-08-06T18:59:34.249Z"
+  },
+  {
+    "id": "cme0c5z8k003xc7lytuu5kb24",
+    "propiedadId": "1",
+    "habitacionId": "almacen_de_municion",
+    "nivelDestino": 103,
+    "duracion": 31511,
+    "fechaInicio": "2025-08-07T05:52:07.785Z",
+    "fechaFinalizacion": "2025-08-07T14:37:18.785Z",
+    "createdAt": "2025-08-06T19:03:17.154Z"
+  },
+  {
+    "id": "cme0extmh00alc7lyyva3fra9",
+    "propiedadId": "cme0al5d3001zc7lym7kcqi3e",
+    "habitacionId": "armeria",
+    "nivelDestino": 4,
+    "duracion": 40,
+    "fechaInicio": "2025-08-06T20:21:27.441Z",
+    "fechaFinalizacion": "2025-08-06T20:22:07.441Z",
+    "createdAt": "2025-08-06T20:20:55.480Z"
+  },
+  {
+    "id": "cme0ey1ta00arc7lyfbol9nsh",
+    "propiedadId": "cme0al5d3001zc7lym7kcqi3e",
+    "habitacionId": "deposito_de_municion",
+    "nivelDestino": 2,
+    "duracion": 54,
+    "fechaInicio": "2025-08-06T20:22:08.441Z",
+    "fechaFinalizacion": "2025-08-06T20:23:02.441Z",
+    "createdAt": "2025-08-06T20:21:06.092Z"
+  },
+  {
+    "id": "cme0eyrd900azc7lyqm3z2eb7",
+    "propiedadId": "cme0al5d3001zc7lym7kcqi3e",
+    "habitacionId": "armeria",
+    "nivelDestino": 5,
+    "duracion": 62,
+    "fechaInicio": "2025-08-06T20:23:03.441Z",
+    "fechaFinalizacion": "2025-08-06T20:24:05.441Z",
+    "createdAt": "2025-08-06T20:21:39.210Z"
+  },
+  {
+    "id": "cme0ez3gt00b3c7ly3e33tyl5",
+    "propiedadId": "cme0al5d3001zc7lym7kcqi3e",
+    "habitacionId": "armeria",
+    "nivelDestino": 6,
+    "duracion": 90,
+    "fechaInicio": "2025-08-06T20:24:06.441Z",
+    "fechaFinalizacion": "2025-08-06T20:25:36.441Z",
+    "createdAt": "2025-08-06T20:21:54.891Z"
+  }
+]
