@@ -15,6 +15,7 @@ export default async function DashboardLayout({
     redirect('/');
   }
 
+  // This function call is heavy and will be addressed in a future refactor.
   user = await actualizarEstadoCompletoDelJuego(user);
 
   return (

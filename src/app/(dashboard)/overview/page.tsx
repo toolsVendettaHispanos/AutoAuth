@@ -1,4 +1,5 @@
 
+
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getSessionUser } from "@/lib/auth";
@@ -32,6 +33,8 @@ export default async function OverviewPage() {
         redirect('/');
     }
 
+    // Although these are fetched here, OverviewView still uses the large `user` object.
+    // This will be refactored in the next step to use more granular components.
     const [allRooms, allTroops] = await Promise.all([
         getRoomConfigurations(),
         getTroopConfigurations()
