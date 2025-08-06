@@ -39,9 +39,9 @@ export default async function OverviewPage() {
   return (
     <div className="main-view h-full">
       <Suspense fallback={<OverviewLoading />}>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           
-          <div className="lg:col-span-4">
+          <div className="md:col-span-2 lg:col-span-4">
             <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
               <IncomingAttacksServer userId={user.id} />
             </Suspense>
@@ -78,7 +78,7 @@ export default async function OverviewPage() {
           </div>
           
            {/* Fila Inferior */}
-           <div className="lg:col-span-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+           <div className="md:col-span-2 lg:col-span-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
                  <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
                     <GlobalStatsServer userId={user.id} />
                 </Suspense>

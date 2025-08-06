@@ -36,7 +36,7 @@ export function PlayerCard({ user }: PlayerCardProps) {
                     data-ai-hint="dark office interior"
                 />
             </div>
-            <div className="relative z-10 flex items-center gap-4 w-full">
+            <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4 w-full text-center sm:text-left">
                 <Avatar className="h-24 w-24 border-4 border-primary/50 shadow-lg shrink-0">
                     <AvatarImage src={user.avatarUrl || ''} alt={user.name} data-ai-hint="mafia boss" />
                     <AvatarFallback className="text-4xl">{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
@@ -45,7 +45,7 @@ export function PlayerCard({ user }: PlayerCardProps) {
                      <CardTitle className="text-2xl font-bold tracking-wider text-white [text-shadow:0_2px_4px_rgb(0_0_0_/_0.8)]">{user.name}</CardTitle>
                     <p className="text-md text-white/80 [text-shadow:0_1px_2px_rgb(0_0_0_/_0.8)] mb-2">{user.title || 'Nuevo Jefe'}</p>
                      {user.familyMember && (
-                         <Link href={`/family/members?id=${user.familyMember.family.id}`} className="hover:underline flex items-center gap-2 text-sm text-primary-foreground/80">
+                         <Link href={`/family/members?id=${user.familyMember.family.id}`} className="hover:underline flex items-center justify-center sm:justify-start gap-2 text-sm text-primary-foreground/80">
                              <Avatar className="h-6 w-6 border">
                                 <AvatarImage src={user.familyMember.family.avatarUrl || ''} />
                                 <AvatarFallback className="text-xs">{user.familyMember.family.tag.charAt(0)}</AvatarFallback>

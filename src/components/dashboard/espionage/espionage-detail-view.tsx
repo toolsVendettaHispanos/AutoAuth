@@ -83,7 +83,7 @@ export function EspionageDetailView({ report }: EspionageDetailViewProps) {
                                                 <Image src={resourceIcons[key]} alt={key} width={24} height={24} />
                                                 <div>
                                                     <p className="text-xs capitalize text-muted-foreground">{key}</p>
-                                                    <p className="font-bold font-mono text-lg">{formatNumber(value)}</p>
+                                                    <p className="font-bold font-mono text-lg">{formatNumber(Number(value))}</p>
                                                 </div>
                                             </div>
                                         ))}
