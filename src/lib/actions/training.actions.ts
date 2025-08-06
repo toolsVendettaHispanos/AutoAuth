@@ -8,6 +8,8 @@ import { getSessionUser } from "../auth";
 import { getTrainingConfigurations } from "../data";
 import { calcularCostosEntrenamiento, calcularTiempoEntrenamiento } from "../formulas/training-formulas";
 import { ID_ESCUELA_ESPECIALIZACION } from "../constants";
+import type { FullConfiguracionEntrenamiento, UserWithProgress, FullPropiedad, FullHabitacionUsuario } from '../types';
+import { EntrenamientoUsuario, ConfiguracionEntrenamiento } from "@prisma/client";
 
 export async function iniciarEntrenamiento(trainingId: string, propertyId: string) {
     const user = await getSessionUser();
@@ -16,7 +18,7 @@ export async function iniciarEntrenamiento(trainingId: string, propertyId: strin
       return { error: 'Usuario no autenticado.' };
     }
     
-    const propiedadActual = user.propiedades.find(p => p.id === propertyId);
+    const propiedadActual = user.propiedades.find((p: FullPropiedad) => p.id === propertyId);
     if (!propiedadActual) {
         return { error: 'Propiedad no encontrada para este usuario.' };
     }
@@ -38,7 +40,7 @@ export async function iniciarEntrenamiento(trainingId: string, propertyId: strin
         return { error: 'Configuración de entrenamiento no encontrada.'}
     }
 
-    const userTraining = user.entrenamientos.find(t => t.configuracionEntrenamientoId === trainingId);
+    const userTraining = user.entrenamientos.find((t: EntrenamientoUsuario & { configuracionEntrenamiento: ConfiguracionEntrenamiento }) => t.configuracionEntrenamientoId === trainingId);
     
     const nivelActual = userTraining ? userTraining.nivel : 0;
     const nivelSiguiente = nivelActual + 1;
@@ -53,7 +55,7 @@ export async function iniciarEntrenamiento(trainingId: string, propertyId: strin
       return { error: 'No tienes suficientes recursos en esta propiedad para el entrenamiento.' };
     }
 
-    const nivelEscuela = propiedadActual.habitaciones.find(h => h.configuracionHabitacionId === ID_ESCUELA_ESPECIALIZACION)?.nivel || 0;
+    const nivelEscuela = propiedadActual.habitaciones.find((h: FullHabitacionUsuario) => h.configuracionHabitacionId === ID_ESCUELA_ESPECIALIZACION)?.nivel || 0;
     const duracion = calcularTiempoEntrenamiento(nivelSiguiente, config, nivelEscuela);
 
     const fechaInicio = new Date();
