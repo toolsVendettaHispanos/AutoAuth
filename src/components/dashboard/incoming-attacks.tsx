@@ -4,7 +4,7 @@
 import type { IncomingAttack } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Swords, Users, ShieldAlert } from "lucide-react";
+import { Users, ShieldAlert } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { cn } from "@/lib/utils";
 

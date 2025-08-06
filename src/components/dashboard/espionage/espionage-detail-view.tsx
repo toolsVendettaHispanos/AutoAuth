@@ -27,7 +27,6 @@ function formatNumber(num: number): string {
 export function EspionageDetailView({ report }: EspionageDetailViewProps) {
     const router = useRouter();
     const details = report.details as EspionageReportDetails;
-    const combat = details.combat;
     const intel = details.intel;
 
     const sortedBuildings = useMemo(() => {

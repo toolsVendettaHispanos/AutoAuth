@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label";
 import { updatePropertyDetails } from "@/lib/actions/user.actions";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 type PropertyWithPoints = FullPropiedad & { puntos: number };
 

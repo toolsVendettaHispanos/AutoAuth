@@ -1,5 +1,5 @@
 
-import { getGlobalStatistics, getMaximumResourceCapacity, UserWithProgress } from "@/lib/data";
+import { getGlobalStatistics, getMaximumResourceCapacity } from "@/lib/data";
 import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";

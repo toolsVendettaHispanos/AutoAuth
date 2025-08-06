@@ -4,14 +4,13 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { FullFamily, FullFamilyInvitation } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { applyToFamily, cancelInvitation, rejectInvitation } from "@/lib/actions/family.actions";
+import { applyToFamily, rejectInvitation } from "@/lib/actions/family.actions";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useTransition } from "react";
 import { Check, Hourglass, Loader2, Send, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { InvitationStatus, InvitationType } from "@prisma/client";
+import { InvitationType } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -22,11 +21,6 @@ interface FindFamilyViewProps {
     families: FullFamily[];
     userInvitations: FullFamilyInvitation[];
     currentUserId: string;
-}
-
-function formatPoints(points: number | null | undefined): string {
-    if (points === null || points === undefined) return "0";
-    return Math.floor(points).toLocaleString('de-DE');
 }
 
 function ActionButton({ familyId, userInvitations }: { familyId: string, userInvitations: FullFamilyInvitation[] }) {
@@ -63,7 +57,7 @@ function ActionButton({ familyId, userInvitations }: { familyId: string, userInv
     )
 }
 
-export function FindFamilyView({ families, userInvitations, currentUserId }: FindFamilyViewProps) {
+export function FindFamilyView({ families, userInvitations }: FindFamilyViewProps) {
     const [searchTerm, setSearchTerm] = useState("");
     const { toast } = useToast();
     const [isPending, startTransition] = useTransition();

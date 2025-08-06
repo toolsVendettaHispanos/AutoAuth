@@ -2,9 +2,9 @@
 
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { FullFamily, FullFamilyMember } from "@/lib/types";
+import type { FullFamily } from "@/lib/types";
 import { FamilyRole } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";

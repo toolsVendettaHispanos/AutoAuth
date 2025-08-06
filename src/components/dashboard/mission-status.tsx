@@ -6,14 +6,13 @@ import { useEffect, useState, useTransition } from "react";
 import { ArrowLeftRight, Check, Shield, Swords, Undo2, X, Loader2 } from "lucide-react";
 import { cancelarMision } from "@/lib/actions/cancel-mission.action";
 import { useToast } from "@/hooks/use-toast";
-import { IncomingAttack, ColaMisiones, FullConfiguracionTropa as ConfiguracionTropa } from "@/lib/types";
+import { IncomingAttack, ColaMisiones } from "@/lib/types";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 
 type MissionStatusProps = {
     missions: ColaMisiones[];
     incomingAttacks: IncomingAttack[];
-    allTroops: ConfiguracionTropa[];
 };
 
 const missionIcons: { [key: string]: React.ReactNode } = {
@@ -68,7 +67,7 @@ function CountdownTimer({ label, endDate, onFinish, className }: {label: string,
     );
 }
 
-function OutgoingMission({ mission, allTroops }: { mission: ColaMisiones, allTroops: ConfiguracionTropa[] }) {
+function OutgoingMission({ mission }: { mission: ColaMisiones }) {
     const router = useRouter();
     const { toast } = useToast();
     const [isPending, startTransition] = useTransition();
@@ -181,7 +180,7 @@ const getMovementArrival = (movement: ColaMisiones | IncomingAttack): Date => {
     return movement.arrivalTime;
 }
 
-export function MissionStatus({ missions, incomingAttacks, allTroops }: MissionStatusProps) {
+export function MissionStatus({ missions, incomingAttacks }: MissionStatusProps) {
     const router = useRouter();
     const allMovements = [
         ...missions,
@@ -193,7 +192,7 @@ export function MissionStatus({ missions, incomingAttacks, allTroops }: MissionS
             {allMovements.length > 0 ? (
                 allMovements.map(movement => {
                     if ('userId' in movement) { // Es una ColaMisiones (saliente o de regreso)
-                        return <OutgoingMission key={movement.id} mission={movement} allTroops={allTroops} />
+                        return <OutgoingMission key={movement.id} mission={movement} />
                     } else { // Es un IncomingAttack
                         return (
                              <div key={movement.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm text-destructive">

@@ -6,7 +6,6 @@ import { getTroopConfigurations } from "@/lib/data"
 import { getSessionUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { calcularStatsTropaConBonus } from "@/lib/formulas/troop-formulas"
-import type { UserWithProgress } from "@/lib/types"
 
 function RecruitmentLoading() {
     return (

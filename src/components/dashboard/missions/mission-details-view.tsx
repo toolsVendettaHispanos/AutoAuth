@@ -1,13 +1,12 @@
 
 'use client'
 
-import { useState, useEffect, useMemo, useTransition } from "react";
+import { useMemo, useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import type { ColaMisiones, IncomingAttack, FullConfiguracionTropa } from "@/lib/types";
 import { ArrowLeftRight, Check, Loader2, Shield, Swords, Undo2, Users, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { cancelarMision } from "@/lib/actions/cancel-mission.action";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";

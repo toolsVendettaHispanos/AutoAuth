@@ -2,8 +2,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Hammer, Inbox, Settings, Shield, Users, Eye } from "lucide-react";
+import { Inbox, Settings, Shield, Users, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const folders = [
