@@ -33,17 +33,15 @@ function BrawlsLoading() {
     );
 }
 
-async function BrawlsPageContent() {
+// Este nuevo componente obtiene los datos y los pasa a BrawlsView
+async function BrawlsContent() {
     const user = await getSessionUser();
     if (!user) {
         redirect('/');
     }
 
     const reports = await getBattleReportsForUser(user.id);
-
-    return (
-        <BrawlsView initialReports={reports} currentUserId={user.id} />
-    )
+    return <BrawlsView initialReports={reports} currentUserId={user.id} />;
 }
 
 export default function BrawlsPage() {
@@ -58,7 +56,7 @@ export default function BrawlsPage() {
                 </div>
             </div>
             <Suspense fallback={<BrawlsLoading />}>
-                <BrawlsPageContent />
+                <BrawlsContent />
             </Suspense>
         </div>
     );
