@@ -9,3 +9,5 @@ export default async function ProfilePage() {
     }
     
     // Redirect from the generic /profile to the specific user's profile
+    redirect(`/profile/${user.id}`);
+}

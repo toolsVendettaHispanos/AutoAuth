@@ -57,4 +57,8 @@ export default async function RecruitmentPage() {
   return (
     <div className="main-view">
       <Suspense fallback={<RecruitmentLoading />}>
-          <RecruitmentView user={user} troopConfigsWith
+          <RecruitmentView user={user} troopConfigsWithStats={troopsWithStats} />
+      </Suspense>
+    </div>
+  )
+}
