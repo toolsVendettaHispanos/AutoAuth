@@ -1,5 +1,4 @@
 
-
 import { RoomsView } from "@/components/dashboard/rooms-view"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -26,35 +25,39 @@ function RoomsLoading() {
     )
   }
 
-export default async function RoomsByCoordsPage({ params }: PageProps<{ propertyCoords: string }>) {
-  const user = await getSessionUser();
-  if (!user) {
-    redirect('/');
-  }
-
-  const allRoomConfigs = await getRoomConfigurations();
-
-  if (!user.propiedades || user.propiedades.length === 0) {
+async function RoomsPageContent({ params }: PageProps<{ propertyCoords: string }>) {
+    const user = await getSessionUser();
+    if (!user) {
+      redirect('/');
+    }
+  
+    const allRoomConfigs = await getRoomConfigurations();
+  
+    if (!user.propiedades || user.propiedades.length === 0) {
+      return (
+        <div className="main-view">
+           <h2 className="text-3xl font-bold tracking-tight">Gestión de Habitaciones</h2>
+           <p>No tienes propiedades para gestionar.</p>
+        </div>
+      )
+    }
+  
+    const [ciudad, barrio, edificio] = params.propertyCoords.split(':').map(Number);
+    const propertyFromCoords = user.propiedades.find((p: FullPropiedad) => p.ciudad === ciudad && p.barrio === barrio && p.edificio === edificio);
+  
     return (
       <div className="main-view">
-         <h2 className="text-3xl font-bold tracking-tight">Gestión de Habitaciones</h2>
-         <p>No tienes propiedades para gestionar.</p>
+          <Suspense fallback={<RoomsLoading />}>
+              <RoomsView 
+                  user={user} 
+                  allRoomConfigs={allRoomConfigs} 
+                  initialProperty={propertyFromCoords}
+              />
+          </Suspense>
       </div>
     )
-  }
+}
 
-  const [ciudad, barrio, edificio] = params.propertyCoords.split(':').map(Number);
-  const propertyFromCoords = user.propiedades.find((p: FullPropiedad) => p.ciudad === ciudad && p.barrio === barrio && p.edificio === edificio);
-
-  return (
-    <div className="main-view">
-        <Suspense fallback={<RoomsLoading />}>
-            <RoomsView 
-                user={user} 
-                allRoomConfigs={allRoomConfigs} 
-                initialProperty={propertyFromCoords}
-            />
-        </Suspense>
-    </div>
-  )
+export default async function RoomsByCoordsPage({ params }: PageProps<{ propertyCoords: string }>) {
+    return <RoomsPageContent params={params} />;
 }
