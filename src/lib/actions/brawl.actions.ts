@@ -208,7 +208,7 @@ export async function handleAttackMission(mision: ColaMisiones) {
             data: {
                 tipoMision: 'REGRESO',
                 tropas: tropaRegreso,
-                recursos: recursosSaqueados,
+                recursos: recursosSaqueados || undefined,
                 fechaRegreso: new Date(new Date().getTime() + mision.duracionViaje * 1000)
             }
         });
