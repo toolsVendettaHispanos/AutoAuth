@@ -1,4 +1,4 @@
-
+// src/components/lab/battle-report-display.tsx
 'use client';
 
 import type { BattleReport, BattleRound, CombatStats } from '@/lib/types/simulation.types';
@@ -119,7 +119,7 @@ const RoundDetails = ({ round }: { round: BattleRound }) => {
                                 <TableCell className="text-center font-mono">{formatNumber(t.defenderInitial)}</TableCell>
                                 <TableCell className="text-center font-mono text-destructive">{formatNumber(t.defenderLost)}</TableCell>
                             </TableRow>
-                        ))})}
+                        ))}
                     </TableBody>
                 </Table>
             </div>
