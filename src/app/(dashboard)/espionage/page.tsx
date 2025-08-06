@@ -33,14 +33,17 @@ function EspionageLoading() {
     );
 }
 
-export default async function EspionagePage() {
+// Este nuevo componente obtiene los datos y los pasa a EspionageListView
+async function EspionageContent() {
     const user = await getSessionUser();
     if (!user) {
         redirect('/');
     }
-
     const reports = await getEspionageReportsForUser(user.id);
-    
+    return <EspionageListView initialReports={reports} currentUserId={user.id} />;
+}
+
+export default function EspionagePage() {
     return (
         <div className="main-view">
             <div className="flex items-center justify-between">
@@ -52,7 +55,7 @@ export default async function EspionagePage() {
                 </div>
             </div>
             <Suspense fallback={<EspionageLoading />}>
-                <EspionageListView initialReports={reports} currentUserId={user.id} />
+                <EspionageContent />
             </Suspense>
         </div>
     );
