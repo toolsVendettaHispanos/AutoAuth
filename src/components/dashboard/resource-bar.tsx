@@ -1,6 +1,4 @@
 
-
-
 'use client'
 
 import { LiveClock } from "./live-clock";
@@ -8,6 +6,7 @@ import type { UserWithProgress } from '@/lib/types';
 import { useProperty } from '@/contexts/property-context';
 import Image from "next/image";
 import { calculateStorageCapacity, calcularProduccionTotalPorSegundo, ProductionData } from "@/lib/formulas/room-formulas";
+import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -83,7 +82,7 @@ interface ResourceBarProps {
     user: UserWithProgress | null;
 }
 
-const ResourceTooltipContent = ({ resource, capacity, production, safeStorage }: { resource: {name: string, value: bigint}, capacity: number, production: ProductionData, safeStorage: number }) => {
+const ResourceTooltipContent = ({ resource, capacity, production, safeStorage }: { resource: any, capacity: number, production: ProductionData, safeStorage: number }) => {
     const timeToFill = production.produccionNeta > 0 ? (capacity - Number(resource.value)) / (production.produccionNeta / 3600) : Infinity;
 
     return (
@@ -151,9 +150,9 @@ export function ResourceBar({ user }: ResourceBarProps) {
     ];
 
     return (
-        <header className="w-full bg-black/50 backdrop-blur-md text-white shadow-md z-20 border-b border-white/10" suppressHydrationWarning>
+        <header className="w-full bg-black/50 backdrop-blur-md text-white shadow-md z-20 border-b border-white/10">
             <div className="container mx-auto flex h-full items-center justify-between p-2">
-                <div className="grid grid-cols-2 md:grid-cols-4 items-center justify-around gap-x-2 sm:gap-x-4 gap-y-2 w-full">
+                <div className="grid grid-cols-2 md:grid-cols-4 items-center justify-around gap-x-4 gap-y-2 w-full">
                     {resources.map((res) => {
                          const resourceName = res.name.charAt(0) + res.name.slice(1).toLowerCase();
                          const percentage = res.capacity > 0 ? (Number(res.value) / res.capacity) * 100 : 0;
@@ -161,11 +160,11 @@ export function ResourceBar({ user }: ResourceBarProps) {
                          
                          const trigger = (
                              <div className="flex flex-col items-center gap-0.5 w-full">
-                                <div className="flex items-center gap-1 sm:gap-2">
+                                <div className="flex items-center gap-2">
                                      <Image src={res.icon} alt={res.name} width={16} height={16} className="h-4 w-4" />
                                      <span className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">{res.name}</span>
                                  </div>
-                                <span className="text-lg sm:text-xl font-bold tabular-nums text-foreground font-mono">
+                                <span className="text-xl font-bold tabular-nums text-foreground font-mono">
                                      <AnimatedNumber value={Number(res.value)} />
                                 </span>
                                 <Progress value={percentage} className="h-1 mt-1 bg-muted/50" indicatorClassName={progressColor} />
@@ -216,3 +215,4 @@ export function ResourceBar({ user }: ResourceBarProps) {
         </header>
     );
 }
+
