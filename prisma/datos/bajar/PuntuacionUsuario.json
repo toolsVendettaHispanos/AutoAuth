@@ -1,0 +1,50 @@
+[
+  {
+    "id": "cmdo1nfbg000bapnf0my8wsst",
+    "userId": "2",
+    "puntosHabitaciones": 537.6600000000001,
+    "puntosTropas": 0,
+    "puntosEntrenamientos": 0,
+    "puntosTotales": 537.6600000000001,
+    "puntosHonorAtacante": 0,
+    "puntosHonorDefensor": 0,
+    "puntosHonorTotales": 0,
+    "updatedAt": "2025-07-29T16:41:20.504Z"
+  },
+  {
+    "id": "cmdo1pd58000kapnfpihn5r00",
+    "userId": "3",
+    "puntosHabitaciones": 537.6600000000001,
+    "puntosTropas": 0,
+    "puntosEntrenamientos": 0,
+    "puntosTotales": 537.6600000000001,
+    "puntosHonorAtacante": 0,
+    "puntosHonorDefensor": 0,
+    "puntosHonorTotales": 0,
+    "updatedAt": "2025-07-29T20:51:16.188Z"
+  },
+  {
+    "id": "cmdo1qf5t000tapnfe3ufwyee",
+    "userId": "4",
+    "puntosHabitaciones": 537.6600000000001,
+    "puntosTropas": 0,
+    "puntosEntrenamientos": 0,
+    "puntosTotales": 537.6600000000001,
+    "puntosHonorAtacante": 0,
+    "puntosHonorDefensor": 77625,
+    "puntosHonorTotales": 77625,
+    "updatedAt": "2025-08-06T20:40:40.720Z"
+  },
+  {
+    "id": "cmdo1lt3y0002apnf3bnxxfmd",
+    "userId": "1",
+    "puntosHabitaciones": 52100.9,
+    "puntosTropas": 35216240,
+    "puntosEntrenamientos": 822.5,
+    "puntosTotales": 35269163.4,
+    "puntosHonorAtacante": 279888,
+    "puntosHonorDefensor": 0,
+    "puntosHonorTotales": 279888,
+    "updatedAt": "2025-08-06T21:21:55.107Z"
+  }
+]

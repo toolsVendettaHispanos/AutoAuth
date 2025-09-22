@@ -1,0 +1,213 @@
+[
+  {
+    "id": "cme03b6gf000lczja5cpm0r3r",
+    "attackerId": "1",
+    "defenderId": "4",
+    "winner": "attacker",
+    "details": {
+      "rounds": [
+        {
+          "round": 0,
+          "attacker": {
+            "troops": [
+              {
+                "id": "portero",
+                "nombre": "Portero",
+                "lostQuantity": 0,
+                "initialQuantity": 1
+              }
+            ],
+            "totalAttack": 0,
+            "totalDefense": 0,
+            "poderAtaquePercent": 100,
+            "totalAttackConBonus": 0
+          },
+          "defender": {
+            "troops": [],
+            "totalAttack": 0,
+            "totalDefense": 0,
+            "poderAtaquePercent": 100,
+            "totalAttackConBonus": 0
+          }
+        }
+      ],
+      "winner": "attacker",
+      "finalStats": {
+        "attacker": {
+          "pointsLost": 0,
+          "troopsLost": 0,
+          "resourcesLost": {
+            "armas": 0,
+            "alcohol": 0,
+            "dolares": 0,
+            "municion": 0
+          },
+          "lootedResources": {
+            "armas": 0,
+            "alcohol": 0,
+            "dolares": 0,
+            "municion": 0
+          }
+        },
+        "defender": {
+          "pointsLost": 0,
+          "troopsLost": 0,
+          "resourcesLost": {
+            "armas": 0,
+            "alcohol": 0,
+            "dolares": 0,
+            "municion": 0
+          }
+        }
+      },
+      "finalMessage": "El atacante ha ganado la batalla."
+    },
+    "ciudad": 1,
+    "barrio": 1,
+    "edificio": 5,
+    "createdAt": "2025-08-06T14:55:23.247Z"
+  },
+  {
+    "id": "cme05bura001netlgi3qlh46e",
+    "attackerId": "1",
+    "defenderId": "4",
+    "winner": "attacker",
+    "details": {
+      "rounds": [
+        {
+          "round": 0,
+          "attacker": {
+            "troops": [
+              {
+                "id": "mercenario",
+                "nombre": "Mercenario",
+                "lostQuantity": 0,
+                "initialQuantity": 29971
+              }
+            ],
+            "totalAttack": 0,
+            "totalDefense": 0,
+            "poderAtaquePercent": 100,
+            "totalAttackConBonus": 0
+          },
+          "defender": {
+            "troops": [],
+            "totalAttack": 0,
+            "totalDefense": 0,
+            "poderAtaquePercent": 100,
+            "totalAttackConBonus": 0
+          }
+        }
+      ],
+      "winner": "attacker",
+      "finalStats": {
+        "attacker": {
+          "pointsLost": 0,
+          "troopsLost": 0,
+          "resourcesLost": {
+            "armas": 0,
+            "alcohol": 0,
+            "dolares": 0,
+            "municion": 0
+          },
+          "lootedResources": {
+            "armas": 0,
+            "alcohol": 0,
+            "dolares": 0,
+            "municion": 0
+          }
+        },
+        "defender": {
+          "pointsLost": 0,
+          "troopsLost": 0,
+          "resourcesLost": {
+            "armas": 0,
+            "alcohol": 0,
+            "dolares": 0,
+            "municion": 0
+          }
+        }
+      },
+      "finalMessage": "El atacante ha ganado la batalla."
+    },
+    "ciudad": 1,
+    "barrio": 1,
+    "edificio": 5,
+    "createdAt": "2025-08-06T15:51:53.974Z"
+  },
+  {
+    "id": "cme0fn6u100dpc7lyqz5642g4",
+    "attackerId": "1",
+    "defenderId": "4",
+    "winner": "attacker",
+    "details": {
+      "rounds": [
+        {
+          "round": 1,
+          "attacker": {
+            "troops": [
+              {
+                "id": "mercenario",
+                "nombre": "Mercenario",
+                "lostQuantity": 28,
+                "initialQuantity": 29971
+              }
+            ],
+            "totalAttack": 43877544,
+            "totalDefense": 105348054.4651946,
+            "poderAtaquePercent": 99.99999000000099,
+            "totalAttackConBonus": 43877539.61224604
+          },
+          "defender": {
+            "troops": [
+              {
+                "id": "mercenario",
+                "nombre": "Mercenario",
+                "lostQuantity": 100,
+                "initialQuantity": 100
+              }
+            ],
+            "totalAttack": 100000,
+            "totalDefense": 240000,
+            "poderAtaquePercent": 100,
+            "totalAttackConBonus": 100000
+          }
+        }
+      ],
+      "winner": "attacker",
+      "finalStats": {
+        "attacker": {
+          "pointsLost": 32928,
+          "troopsLost": 28,
+          "resourcesLost": {
+            "armas": 2240000,
+            "alcohol": 0,
+            "dolares": 1400000,
+            "municion": 3360000
+          },
+          "lootedResources": {
+            "armas": 0,
+            "alcohol": 0,
+            "dolares": 0,
+            "municion": 0
+          }
+        },
+        "defender": {
+          "pointsLost": 117600,
+          "troopsLost": 100,
+          "resourcesLost": {
+            "armas": 8000000,
+            "alcohol": 0,
+            "dolares": 5000000,
+            "municion": 12000000
+          }
+        }
+      },
+      "finalMessage": "El atacante ha ganado la batalla."
+    },
+    "ciudad": 1,
+    "barrio": 1,
+    "edificio": 5,
+    "createdAt": "2025-08-06T20:40:39.001Z"
+  }
+]

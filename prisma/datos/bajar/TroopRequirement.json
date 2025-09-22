@@ -1,0 +1,142 @@
+[
+  {
+    "troopId": "mercenario",
+    "requiredTrainingId": "combate",
+    "requiredLevel": 9
+  },
+  {
+    "troopId": "mercenario",
+    "requiredTrainingId": "guerrilla",
+    "requiredLevel": 9
+  },
+  {
+    "troopId": "mercenario",
+    "requiredTrainingId": "proteccion",
+    "requiredLevel": 9
+  },
+  {
+    "troopId": "portero",
+    "requiredTrainingId": "extorsion",
+    "requiredLevel": 2
+  },
+  {
+    "troopId": "acuchillador",
+    "requiredTrainingId": "extorsion",
+    "requiredLevel": 4
+  },
+  {
+    "troopId": "pistolero",
+    "requiredTrainingId": "tiro",
+    "requiredLevel": 2
+  },
+  {
+    "troopId": "ocupacion",
+    "requiredTrainingId": "rutas",
+    "requiredLevel": 5
+  },
+  {
+    "troopId": "espia",
+    "requiredTrainingId": "espionaje",
+    "requiredLevel": 2
+  },
+  {
+    "troopId": "cia",
+    "requiredTrainingId": "guerrilla",
+    "requiredLevel": 3
+  },
+  {
+    "troopId": "cia",
+    "requiredTrainingId": "encargos",
+    "requiredLevel": 3
+  },
+  {
+    "troopId": "fbi",
+    "requiredTrainingId": "tiro",
+    "requiredLevel": 2
+  },
+  {
+    "troopId": "transportista",
+    "requiredTrainingId": "psicologico",
+    "requiredLevel": 4
+  },
+  {
+    "troopId": "tactico",
+    "requiredTrainingId": "tiro",
+    "requiredLevel": 5
+  },
+  {
+    "troopId": "tactico",
+    "requiredTrainingId": "quimico",
+    "requiredLevel": 3
+  },
+  {
+    "troopId": "francotirador",
+    "requiredTrainingId": "psicologico",
+    "requiredLevel": 5
+  },
+  {
+    "troopId": "francotirador",
+    "requiredTrainingId": "guerrilla",
+    "requiredLevel": 5
+  },
+  {
+    "troopId": "asesino",
+    "requiredTrainingId": "psicologico",
+    "requiredLevel": 7
+  },
+  {
+    "troopId": "asesino",
+    "requiredTrainingId": "proteccion",
+    "requiredLevel": 7
+  },
+  {
+    "troopId": "ninja",
+    "requiredTrainingId": "guerrilla",
+    "requiredLevel": 8
+  },
+  {
+    "troopId": "demoliciones",
+    "requiredTrainingId": "explosivos",
+    "requiredLevel": 6
+  },
+  {
+    "troopId": "demoliciones",
+    "requiredTrainingId": "quimico",
+    "requiredLevel": 8
+  },
+  {
+    "troopId": "centinela",
+    "requiredTrainingId": "seguridad",
+    "requiredLevel": 2
+  },
+  {
+    "troopId": "policia",
+    "requiredTrainingId": "combate",
+    "requiredLevel": 4
+  },
+  {
+    "troopId": "policia",
+    "requiredTrainingId": "tiro",
+    "requiredLevel": 4
+  },
+  {
+    "troopId": "guardaespaldas",
+    "requiredTrainingId": "proteccion",
+    "requiredLevel": 6
+  },
+  {
+    "troopId": "guardaespaldas",
+    "requiredTrainingId": "combate",
+    "requiredLevel": 5
+  },
+  {
+    "troopId": "guardia_de_honor",
+    "requiredTrainingId": "guerrilla",
+    "requiredLevel": 8
+  },
+  {
+    "troopId": "guardia_de_honor",
+    "requiredTrainingId": "psicologico",
+    "requiredLevel": 6
+  }
+]
