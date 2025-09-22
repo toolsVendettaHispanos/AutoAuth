@@ -1,5 +1,3 @@
-
-
 "use client"
 
 import Link from "next/link"
@@ -103,7 +101,11 @@ export function SidebarNav({ user }: SidebarNavProps) {
               as={Link}
               href={finalHref}
               isActive={isActive}
-              tooltip={item.label}
+              tooltip={{
+                children: item.label,
+                side: "right",
+                align: "center",
+              }}
               onClick={handleClick}
               className={cn("h-11 text-base hover:pl-4 relative [&>svg]:size-5", 
               isActive && "bg-primary/20 text-primary hover:bg-primary/30 border-l-4 border-primary"
