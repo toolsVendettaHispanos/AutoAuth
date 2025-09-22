@@ -152,7 +152,7 @@ export function ResourceBar({ user }: ResourceBarProps) {
     return (
         <header className="w-full bg-black/50 backdrop-blur-md text-white shadow-md z-20 border-b border-white/10">
             <div className="container mx-auto flex h-full items-center justify-between p-2">
-                <div className="grid grid-cols-2 md:grid-cols-4 items-center justify-around gap-x-4 gap-y-2 w-full">
+                <div className="grid grid-cols-4 items-center justify-around gap-x-2 w-full">
                     {resources.map((res) => {
                          const resourceName = res.name.charAt(0) + res.name.slice(1).toLowerCase();
                          const percentage = res.capacity > 0 ? (Number(res.value) / res.capacity) * 100 : 0;
@@ -160,14 +160,14 @@ export function ResourceBar({ user }: ResourceBarProps) {
                          
                          const trigger = (
                              <div className="flex flex-col items-center gap-0.5 w-full">
-                                <div className="flex items-center gap-2">
-                                     <Image src={res.icon} alt={res.name} width={16} height={16} className="h-4 w-4" />
-                                     <span className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">{res.name}</span>
+                                <div className="flex items-center gap-1.5">
+                                     <Image src={res.icon} alt={res.name} width={16} height={16} className="h-3 w-3" />
+                                     <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground">{res.name}</span>
                                  </div>
-                                <span className="text-xl font-bold tabular-nums text-foreground font-mono">
+                                <span className="text-base font-bold tabular-nums text-foreground font-mono">
                                      <AnimatedNumber value={Number(res.value)} />
                                 </span>
-                                <Progress value={percentage} className="h-1 mt-1 bg-muted/50" indicatorClassName={progressColor} />
+                                <Progress value={percentage} className="h-1 w-full mt-1 bg-muted/50" indicatorClassName={progressColor} />
                              </div>
                         );
 
