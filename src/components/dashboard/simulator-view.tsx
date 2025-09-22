@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -10,6 +9,8 @@ import { Loader2, Trash2 } from 'lucide-react';
 import { UserWithProgress } from '@/lib/types';
 import { SimulationSetup } from './simulator/simulation-setup';
 import { SimulationReportDisplay } from './simulator/simulation-report-display';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
 interface SimulatorViewProps {
     user: UserWithProgress;
@@ -39,6 +40,8 @@ export function SimulatorView({ user, troopConfigs, trainingConfigs, defenseConf
     const [attackerState, setAttackerState] = useState<SimulatorColumnState>(initialColumnState);
     const [defenderState, setDefenderState] = useState<SimulatorColumnState>(initialColumnState);
     const [battleReport, setBattleReport] = useState<BattleReport | null>(null);
+    const isMobile = useIsMobile();
+    const [activeTab, setActiveTab] = useState('setup');
 
     const formatSimulationInput = (state: SimulatorColumnState): SimulationInput => {
         return {
@@ -58,6 +61,9 @@ export function SimulatorView({ user, troopConfigs, trainingConfigs, defenseConf
         startTransition(async () => {
             const report = await runBattleSimulation(attackerInput, defenderInput);
             setBattleReport(report);
+            if (isMobile) {
+                setActiveTab('report');
+            }
         });
     };
     
@@ -65,6 +71,56 @@ export function SimulatorView({ user, troopConfigs, trainingConfigs, defenseConf
         setAttackerState(initialColumnState);
         setDefenderState(initialColumnState);
         setBattleReport(null);
+    }
+    
+    const renderContent = () => {
+        if (isMobile) {
+            return (
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="setup">Configuración</TabsTrigger>
+                        <TabsTrigger value="report">Informe</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="setup" className="mt-4">
+                        <SimulationSetup 
+                            user={user}
+                            attackerState={attackerState}
+                            setAttackerState={setAttackerState}
+                            defenderState={defenderState}
+                            setDefenderState={setDefenderState}
+                            troopConfigs={troopConfigs}
+                            trainingConfigs={trainingConfigs}
+                            defenseConfigs={defenseConfigs}
+                        />
+                    </TabsContent>
+                    <TabsContent value="report" className="mt-4">
+                        <SimulationReportDisplay 
+                            report={battleReport} 
+                            isSimulating={isPending} 
+                        />
+                    </TabsContent>
+                </Tabs>
+            )
+        }
+        
+        return (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+                 <SimulationSetup 
+                     user={user}
+                     attackerState={attackerState}
+                     setAttackerState={setAttackerState}
+                     defenderState={defenderState}
+                     setDefenderState={setDefenderState}
+                     troopConfigs={troopConfigs}
+                     trainingConfigs={trainingConfigs}
+                     defenseConfigs={defenseConfigs}
+                />
+                <SimulationReportDisplay 
+                    report={battleReport} 
+                    isSimulating={isPending} 
+                />
+            </div>
+        )
     }
 
     return (
@@ -81,21 +137,8 @@ export function SimulatorView({ user, troopConfigs, trainingConfigs, defenseConf
                     Reiniciar Simulador
                 </Button>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[75vh]">
-                <SimulationSetup 
-                     user={user}
-                     attackerState={attackerState}
-                     setAttackerState={setAttackerState}
-                     defenderState={defenderState}
-                     setDefenderState={setDefenderState}
-                     troopConfigs={troopConfigs}
-                     trainingConfigs={trainingConfigs}
-                     defenseConfigs={defenseConfigs}
-                />
-                <SimulationReportDisplay 
-                    report={battleReport} 
-                    isSimulating={isPending} 
-                />
+            <div className='min-h-[70vh]'>
+                {renderContent()}
             </div>
             <div className="mt-6">
                  <Button onClick={handleSimulate} disabled={isPending} size="lg" className="w-full">

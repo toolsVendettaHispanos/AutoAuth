@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +11,8 @@ import type { UserWithProgress } from '@/lib/types';
 import { useProperty } from '@/contexts/property-context';
 import type { SimulatorColumnState } from '../simulator-view';
 import type { ConfiguracionTropa, ConfiguracionEntrenamiento, ConfiguracionHabitacion } from '@prisma/client';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface SimulationSetupProps {
     user: UserWithProgress;
@@ -120,6 +121,7 @@ function SimulatorColumn({ title, state, setState, troopConfigs, trainingConfigs
 
 export function SimulationSetup({ user, attackerState, setAttackerState, defenderState, setDefenderState, troopConfigs, trainingConfigs, defenseConfigs }: SimulationSetupProps) {
     const { selectedProperty } = useProperty();
+    const isMobile = useIsMobile();
 
     const handleLoadUserData = (column: 'attacker' | 'defender') => {
         if (!selectedProperty) return;
@@ -139,28 +141,49 @@ export function SimulationSetup({ user, attackerState, setAttackerState, defende
         if (column === 'attacker') setAttackerState(newState);
         else setDefenderState(newState);
     };
+
+    const attackerColumn = (
+         <SimulatorColumn 
+            title="Atacante"
+            state={attackerState}
+            setState={setAttackerState}
+            troopConfigs={troopConfigs}
+            trainingConfigs={trainingConfigs}
+            defenseConfigs={defenseConfigs}
+            onLoadData={() => handleLoadUserData('attacker')}
+        />
+    );
+
+    const defenderColumn = (
+        <SimulatorColumn 
+            title="Defensor"
+            state={defenderState}
+            setState={setDefenderState}
+            troopConfigs={troopConfigs}
+            trainingConfigs={trainingConfigs}
+            defenseConfigs={defenseConfigs}
+            isDefender
+            onLoadData={() => handleLoadUserData('defender')}
+        />
+    );
+
+    if (isMobile) {
+        return (
+            <Tabs defaultValue="attacker" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="attacker">Atacante</TabsTrigger>
+                    <TabsTrigger value="defender">Defensor</TabsTrigger>
+                </TabsList>
+                <TabsContent value="attacker" className="mt-4">{attackerColumn}</TabsContent>
+                <TabsContent value="defender" className="mt-4">{defenderColumn}</TabsContent>
+            </Tabs>
+        )
+    }
     
     return (
         <div className="grid grid-cols-2 gap-4 h-full">
-            <SimulatorColumn 
-                title="Atacante"
-                state={attackerState}
-                setState={setAttackerState}
-                troopConfigs={troopConfigs}
-                trainingConfigs={trainingConfigs}
-                defenseConfigs={defenseConfigs}
-                onLoadData={() => handleLoadUserData('attacker')}
-            />
-            <SimulatorColumn 
-                title="Defensor"
-                state={defenderState}
-                setState={setDefenderState}
-                troopConfigs={troopConfigs}
-                trainingConfigs={trainingConfigs}
-                defenseConfigs={defenseConfigs}
-                isDefender
-                onLoadData={() => handleLoadUserData('defender')}
-            />
+            {attackerColumn}
+            {defenderColumn}
         </div>
     )
 }
