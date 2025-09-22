@@ -99,7 +99,7 @@ export function ConstructionQueue({ propiedad, allRooms }: ConstructionQueueProp
                     const timeLeft = timers[colaItem.id] ?? (colaItem.fechaFinalizacion ? Math.max(0, Math.floor((new Date(colaItem.fechaFinalizacion).getTime() - Date.now()) / 1000)) : colaItem.duracion);
                     
                     const esActiva = index === 0 && colaItem.fechaFinalizacion && new Date(colaItem.fechaFinalizacion) > new Date();
-                    const tooltipText = `${roomConfig?.nombre || 'Habitación'} (Nivel ${colaItem.nivelDestino}) ${colaItem.fechaFinalizacion ? ` - Finaliza a las: ${new Date(colaItem.fechaFinalizacion).toLocaleTimeString()}`: ''}`;
+                    const tooltipText = `${roomConfig?.nombre || 'Habitación'} (Nivel ${colaItem.nivelDestino}) ${colaItem.fechaFinalizacion ? `- Finaliza a las: ${new Date(colaItem.fechaFinalizacion).toLocaleTimeString()}`: ''}`;
 
                     return (
                         <div key={colaItem.id} className="group flex items-center gap-2 border rounded-full p-1 pr-2 bg-muted/50 hover:bg-muted transition-colors mb-2">
@@ -115,7 +115,7 @@ export function ConstructionQueue({ propiedad, allRooms }: ConstructionQueueProp
                                                     className="object-cover"
                                                 />
                                             </div>
-                                            <div className='flex flex-col items-start'>
+                                            <div className='flex items-baseline gap-2'>
                                                 <span className='text-xs font-semibold leading-tight'>{roomConfig?.nombre} (Nvl {colaItem.nivelDestino})</span>
                                                 <div className="flex items-center gap-1 font-mono text-sm font-semibold">
                                                     <Clock className={`h-4 w-4 ${esActiva ? 'text-green-500 animate-pulse' : 'text-amber-500'}`} />
