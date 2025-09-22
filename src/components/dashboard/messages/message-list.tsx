@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Inbox, Trash2, Shield, User, Swords, Eye, CheckCircle, XCircle } from "lucide-react";
@@ -11,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { FullMessage, FullBattleReport, FullEspionageReport } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
+import { folders } from "./message-folder-list"; // Import folders
 
 type FeedItem = (FullMessage & { type: 'message' }) 
                 | (FullBattleReport & { type: 'battle' }) 
@@ -21,9 +21,10 @@ interface MessageListProps {
     selectedItemId: string | null;
     onSelectItem: (item: FeedItem | null) => void;
     currentUserId: string;
+    selectedCategory: string; // Add selectedCategory prop
 }
 
-export function MessageList({ items, selectedItemId, onSelectItem, currentUserId }: MessageListProps) {
+export function MessageList({ items, selectedItemId, onSelectItem, currentUserId, selectedCategory }: MessageListProps) {
     const [isDeleting, startDeleteTransition] = useTransition();
     const { toast } = useToast();
 
@@ -48,6 +49,8 @@ export function MessageList({ items, selectedItemId, onSelectItem, currentUserId
             }
         });
     }
+
+    const folderName = folders.find(f => f.category === selectedCategory)?.name || "Notificaciones";
     
     const renderItem = (item: FeedItem) => {
         const isSelected = selectedItemId === item.id;
@@ -138,17 +141,22 @@ export function MessageList({ items, selectedItemId, onSelectItem, currentUserId
     }
 
     return (
-        <ScrollArea className="h-full">
-            <div className="p-2 space-y-1">
-                {items.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-8">
-                        <Inbox className="h-16 w-16" />
-                        <p className="mt-4 text-lg">No hay notificaciones</p>
-                    </div>
-                ) : (
-                    items.map(renderItem)
-                )}
+        <div className="flex flex-col h-full">
+            <div className="p-4 border-b">
+                <h3 className="text-lg font-semibold">{folderName}</h3>
             </div>
-        </ScrollArea>
+            <ScrollArea className="flex-grow">
+                <div className="p-2 space-y-1">
+                    {items.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-8 text-center">
+                            <Inbox className="h-16 w-16" />
+                            <p className="mt-4 text-lg">No hay notificaciones</p>
+                        </div>
+                    ) : (
+                        items.map(renderItem)
+                    )}
+                </div>
+            </ScrollArea>
+        </div>
     );
 }
