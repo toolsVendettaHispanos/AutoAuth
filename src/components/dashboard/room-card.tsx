@@ -1,4 +1,3 @@
-
 'use client'
 
 import Image from "next/image"
@@ -92,7 +91,7 @@ export function RoomCard({ room, timeLeft, isQueueFull, isSubmitting, onUpgrade,
                         </div>
                     )}
                     <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px]">{room.descripcion}</p>
-                    <div className="grid grid-cols-3 gap-x-3 text-sm">
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
                         {room.costos.armas > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.armas.toLocaleString('de-DE')} Armas`}><Image src="/img/recursos/armas.svg" alt="Armas" width={16} height={16} /><span>{formatNumber(room.costos.armas)}</span></div>}
                         {room.costos.municion > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.municion.toLocaleString('de-DE')} Munición`}><Image src="/img/recursos/municion.svg" alt="Munición" width={16} height={16} /><span>{formatNumber(room.costos.municion)}</span></div>}
                         {room.costos.dolares > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.dolares.toLocaleString('de-DE')} Dólares`}><Image src="/img/recursos/dolares.svg" alt="Dólares" width={16} height={16} /><span>{formatNumber(room.costos.dolares)}</span></div>}
