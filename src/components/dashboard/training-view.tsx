@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import Image from "next/image"
@@ -89,14 +90,12 @@ function TrainingForm({
     propertyId,
     meetsRequirements,
     requirementsText,
-    isTrainingInQueue,
     isPropertyBusy
 }: { 
     training: TrainingData,
     propertyId: string,
     meetsRequirements: boolean,
     requirementsText: string | null,
-    isTrainingInQueue: boolean,
     isPropertyBusy: boolean
 }) {
     const [isPending, startTransition] = useTransition();
@@ -113,12 +112,11 @@ function TrainingForm({
         });
     }
     
-    const isDisabled = isPending || !meetsRequirements || isTrainingInQueue || isPropertyBusy;
+    const isDisabled = isPending || !meetsRequirements || isPropertyBusy;
 
     const buttonContent = () => {
         if (isPending) return <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Enviando...</>;
-        if (isTrainingInQueue) return <><Hourglass className="mr-2 h-4 w-4 text-amber-500" />En cola</>;
-        if (isPropertyBusy) return <><Ban className="mr-2 h-4 w-4"/>Ocupado</>;
+        if (isPropertyBusy) return <><Hourglass className="mr-2 h-4 w-4 text-amber-500" />Ocupado</>;
         return <><BrainCircuit className="mr-2 h-4 w-4" />Entrenar</>;
     };
 
@@ -195,10 +193,9 @@ export function TrainingView({ user, trainingsData }: TrainingViewProps) {
                     return null;
                 }
 
-                const isTrainingInQueue = user.colaEntrenamientos.some(c => c.entrenamientoId === training.id);
                 const isMaxLevel = training.nivel >= 20; // Assuming max level is 20
                 const isAvailable = training.meetsRequirements && !isMaxLevel;
-                const cardState = isTrainingInQueue ? 'in-progress' : isMaxLevel ? 'completed' : isAvailable ? 'available' : 'locked';
+                const cardState = isPropertyBusy ? 'in-progress' : isMaxLevel ? 'completed' : isAvailable ? 'available' : 'locked';
 
                 return (
                   <Dialog key={training.id}>
@@ -261,7 +258,6 @@ export function TrainingView({ user, trainingsData }: TrainingViewProps) {
                                         propertyId={selectedProperty.id}
                                         meetsRequirements={training.meetsRequirements}
                                         requirementsText={training.requirementsText}
-                                        isTrainingInQueue={isTrainingInQueue}
                                         isPropertyBusy={isPropertyBusy}
                                     />
                                 )}
