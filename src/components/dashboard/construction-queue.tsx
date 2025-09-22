@@ -102,7 +102,7 @@ export function ConstructionQueue({ propiedad, allRooms }: ConstructionQueueProp
                     const tooltipText = `${roomConfig?.nombre || 'Habitación'} (Nivel ${colaItem.nivelDestino}) ${colaItem.fechaFinalizacion ? ` - Finaliza a las: ${new Date(colaItem.fechaFinalizacion).toLocaleTimeString()}`: ''}`;
 
                     return (
-                        <div key={colaItem.id} className="group flex items-center gap-2 border rounded-full p-1 pr-2 bg-muted/50 hover:bg-muted transition-colors">
+                        <div key={colaItem.id} className="group flex items-center gap-2 border rounded-full p-1 pr-2 bg-muted/50 hover:bg-muted transition-colors mb-2">
                             <TooltipProvider delayDuration={0}>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
