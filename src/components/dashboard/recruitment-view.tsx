@@ -24,6 +24,7 @@ import type { UserWithProgress, FullConfiguracionTropa, FullTropaUsuario } from 
 import { Slider } from "../ui/slider"
 import { useToast } from "@/hooks/use-toast"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 function formatNumber(num: number | bigint): string {
     const numberValue = Number(num);
@@ -125,7 +126,7 @@ function TroopForm({ troop, availableCount }: { troop: TroopWithStats, available
             if (result?.error) {
                 toast({ variant: 'destructive', title: 'Error', description: result.error });
             } else {
-                toast({ title: '\u00c9xito', description: `Reclutando ${cantidad} x ${troop.nombre}.` });
+                toast({ title: 'Éxito', description: `Reclutando ${cantidad} x ${troop.nombre}.` });
                 setCantidad(0);
             }
         });
@@ -159,8 +160,65 @@ function TroopForm({ troop, availableCount }: { troop: TroopWithStats, available
     )
 }
 
+const TroopCard = ({ troop, user, index }: { troop: any, user: UserWithProgress, index: number }) => (
+    <Dialog>
+        <Card className="troop-card animate-fade-in-up h-full flex flex-col" style={{ animationDelay: `${index * 50}ms`}}>
+            <CardHeader className="relative p-0 h-32 overflow-hidden">
+                <Image
+                    src={troop.urlImagen || "https://placehold.co/200x128.png"}
+                    alt={troop.nombre}
+                    fill
+                    className="object-contain"
+                    data-ai-hint="mafia character unit"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
+                    <CardTitle className="text-white [text-shadow:0_1px_3px_rgb(0_0_0_/_0.5)]">{troop.nombre}</CardTitle>
+                    <div className="text-sm text-primary-foreground/90 font-bold [text-shadow:0_1px_3px_rgb(0_0_0_/_0.5)]">
+                        Posees: <span className="text-primary-foreground">{troop.count}</span>
+                    </div>
+                </div>
+                <DialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 absolute top-2 right-2 text-white/80 hover:text-white hover:bg-white/20">
+                        <Info className="h-5 w-5" />
+                        <span className="sr-only">Detalles</span>
+                    </Button>
+                </DialogTrigger>
+            </CardHeader>
+
+            <CardContent className="flex-grow space-y-3 p-4">
+                <div className="grid grid-cols-3 gap-x-2 gap-y-1 text-center text-xs">
+                    <div title="Ataque"><Dumbbell className="h-3 w-3 mx-auto mb-1 text-red-500"/>{formatNumber(troop.ataqueActual)}</div>
+                    <div title="Defensa"><ShieldCheck className="h-3 w-3 mx-auto mb-1 text-blue-500"/>{formatNumber(troop.defensaActual)}</div>
+                    <div title="Capacidad de Carga"><Warehouse className="h-3 w-3 mx-auto mb-1 text-yellow-500"/>{formatNumber(troop.capacidadActual)}</div>
+                    <div title="Velocidad"><Wind className="h-3 w-3 mx-auto mb-1 text-green-500"/>{formatNumber(troop.velocidadActual)}</div>
+                    <div title="Salario"><DollarSign className="h-3 w-3 mx-auto mb-1 text-gray-400"/>{formatNumber(troop.salarioActual)}</div>
+                    <div title="Tiempo"><Clock className="h-3 w-3 mx-auto mb-1 text-gray-400" />{formatDuration(troop.duracion)}</div>
+                </div>
+                <div className="flex items-center justify-center gap-x-3 text-sm">
+                    {Number(troop.costoArmas) > 0 && <div className="flex items-center gap-1.5" title={`${Number(troop.costoArmas).toLocaleString('de-DE')} Armas`}><Image src="/img/recursos/armas.svg" alt="Armas" width={16} height={16} /><span>{formatNumber(troop.costoArmas)}</span></div>}
+                    {Number(troop.costoMunicion) > 0 && <div className="flex items-center gap-1.5" title={`${Number(troop.costoMunicion).toLocaleString('de-DE')} Munición`}><Image src="/img/recursos/municion.svg" alt="Munición" width={16} height={16} /><span>{formatNumber(troop.costoMunicion)}</span></div>}
+                    {Number(troop.costoDolares) > 0 && <div className="flex items-center gap-1.5" title={`${Number(troop.costoDolares).toLocaleString('de-DE')} Dólares`}><Image src="/img/recursos/dolares.svg" alt="Dólares" width={16} height={16} /><span>{formatNumber(troop.costoDolares)}</span></div>}
+                </div>
+            </CardContent>
+            <CardFooter className="p-4 pt-0">
+                <TroopForm troop={troop} availableCount={troop.count} />
+            </CardFooter>
+        </Card>
+        <TroopDetailsModal 
+            troop={troop}
+            user={user}
+            ataqueActual={troop.ataqueActual}
+            defensaActual={troop.defensaActual}
+            capacidadActual={troop.capacidadActual}
+            velocidadActual={troop.velocidadActual}
+            salarioActual={troop.salarioActual}
+        />
+    </Dialog>
+);
+
 export function RecruitmentView({ user, troopConfigsWithStats }: RecruitmentViewProps) {
   const { selectedProperty } = useProperty();
+  const isMobile = useIsMobile();
 
   if (!selectedProperty) {
     return (
@@ -213,74 +271,25 @@ export function RecruitmentView({ user, troopConfigsWithStats }: RecruitmentView
             </div>
        </div>
         <RecruitmentQueueAlert />
-        <Carousel
-        opts={{
-          align: "start",
-        }}
-        className="w-full"
-      >
-        <CarouselContent>
-              {sortedTroops.map((troop, index) => (
-                <CarouselItem key={troop.id} className="md:basis-1/2 lg:basis-1/3">
-                <Dialog>
-                    <Card className="troop-card animate-fade-in-up" style={{ animationDelay: `${index * 50}ms`}}>
-                        <CardHeader className="relative p-0 h-32 overflow-hidden">
-                           <Image
-                                src={troop.urlImagen || "https://placehold.co/200x128.png"}
-                                alt={troop.nombre}
-                                fill
-                                className="object-contain"
-                                data-ai-hint="mafia character unit"
-                            />
-                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
-                                <CardTitle className="text-white [text-shadow:0_1px_3px_rgb(0_0_0_/_0.5)]">{troop.nombre}</CardTitle>
-                                <div className="text-sm text-primary-foreground/90 font-bold [text-shadow:0_1px_3px_rgb(0_0_0_/_0.5)]">
-                                    Posees: <span className="text-primary-foreground">{troop.count}</span>
-                                </div>
-                            </div>
-                            <DialogTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 absolute top-2 right-2 text-white/80 hover:text-white hover:bg-white/20">
-                                    <Info className="h-5 w-5" />
-                                    <span className="sr-only">Detalles</span>
-                                </Button>
-                            </DialogTrigger>
-                        </CardHeader>
-
-                        <CardContent className="flex-grow space-y-3 p-4">
-                             <div className="grid grid-cols-3 gap-x-2 gap-y-1 text-center text-xs">
-                                <div title="Ataque"><Dumbbell className="h-3 w-3 mx-auto mb-1 text-red-500"/>{formatNumber(troop.ataqueActual)}</div>
-                                <div title="Defensa"><ShieldCheck className="h-3 w-3 mx-auto mb-1 text-blue-500"/>{formatNumber(troop.defensaActual)}</div>
-                                <div title="Capacidad de Carga"><Warehouse className="h-3 w-3 mx-auto mb-1 text-yellow-500"/>{formatNumber(troop.capacidadActual)}</div>
-                                <div title="Velocidad"><Wind className="h-3 w-3 mx-auto mb-1 text-green-500"/>{formatNumber(troop.velocidadActual)}</div>
-                                <div title="Salario"><DollarSign className="h-3 w-3 mx-auto mb-1 text-gray-400"/>{formatNumber(troop.salarioActual)}</div>
-                                <div title="Tiempo"><Clock className="h-3 w-3 mx-auto mb-1 text-gray-400" />{formatDuration(troop.duracion)}</div>
-                            </div>
-                            <div className="flex items-center justify-center gap-x-3 text-sm">
-                                {Number(troop.costoArmas) > 0 && <div className="flex items-center gap-1.5" title={`${Number(troop.costoArmas).toLocaleString('de-DE')} Armas`}><Image src="/img/recursos/armas.svg" alt="Armas" width={16} height={16} /><span>{formatNumber(troop.costoArmas)}</span></div>}
-                                {Number(troop.costoMunicion) > 0 && <div className="flex items-center gap-1.5" title={`${Number(troop.costoMunicion).toLocaleString('de-DE')} Munición`}><Image src="/img/recursos/municion.svg" alt="Munición" width={16} height={16} /><span>{formatNumber(troop.costoMunicion)}</span></div>}
-                                {Number(troop.costoDolares) > 0 && <div className="flex items-center gap-1.5" title={`${Number(troop.costoDolares).toLocaleString('de-DE')} Dólares`}><Image src="/img/recursos/dolares.svg" alt="Dólares" width={16} height={16} /><span>{formatNumber(troop.costoDolares)}</span></div>}
-                            </div>
-                        </CardContent>
-                        <CardFooter className="p-4 pt-0">
-                           <TroopForm troop={troop} availableCount={troop.count} />
-                        </CardFooter>
-                    </Card>
-                    <TroopDetailsModal 
-                        troop={troop}
-                        user={user}
-                        ataqueActual={troop.ataqueActual}
-                        defensaActual={troop.defensaActual}
-                        capacidadActual={troop.capacidadActual}
-                        velocidadActual={troop.velocidadActual}
-                        salarioActual={troop.salarioActual}
-                     />
-                </Dialog>
-                </CarouselItem>
-              ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+        {isMobile ? (
+            <Carousel opts={{ align: "start" }} className="w-full">
+                <CarouselContent>
+                    {sortedTroops.map((troop, index) => (
+                        <CarouselItem key={troop.id}>
+                            <TroopCard troop={troop} user={user} index={index} />
+                        </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+            </Carousel>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {sortedTroops.map((troop, index) => (
+                    <TroopCard key={troop.id} troop={troop} user={user} index={index} />
+                ))}
+            </div>
+        )}
     </div>
   )
 }
