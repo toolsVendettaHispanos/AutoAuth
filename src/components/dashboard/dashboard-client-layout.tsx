@@ -54,15 +54,17 @@ export function DashboardClientLayout({
         <Separator />
         <SidebarFooter>
           <div className="flex items-center gap-4 p-3">
-            <Avatar className="h-12 w-12 border-2 border-primary">
-              <AvatarImage src={user?.avatarUrl || "https://placehold.co/40x40.png"} alt={user?.name || "Boss"} data-ai-hint="mafia boss" />
-              <AvatarFallback>{user?.name?.charAt(0).toUpperCase() || 'V'}</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col truncate">
-                <span className="font-heading text-lg font-bold tracking-wide">{user?.name || "El Padrino"}</span>
-                <span className="text-xs text-muted-foreground">{user?.title || "Jefe"}</span>
-            </div>
-            <Button variant="ghost" size="icon" className="ml-auto hover:bg-destructive/20 hover:text-destructive" onClick={handleLogout}>
+             <Link href="/profile" className="flex items-center gap-4 flex-grow overflow-hidden">
+                <Avatar className="h-12 w-12 border-2 border-primary">
+                    <AvatarImage src={user?.avatarUrl || "https://placehold.co/40x40.png"} alt={user?.name || "Boss"} data-ai-hint="mafia boss" />
+                    <AvatarFallback>{user?.name?.charAt(0).toUpperCase() || 'V'}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col truncate">
+                    <span className="font-heading text-lg font-bold tracking-wide">{user?.name || "El Padrino"}</span>
+                    <span className="text-xs text-muted-foreground">{user?.title || "Jefe"}</span>
+                </div>
+            </Link>
+            <Button variant="ghost" size="icon" className="ml-auto hover:bg-destructive/20 hover:text-destructive flex-shrink-0" onClick={handleLogout}>
                 <LogOut />
                 <span className="sr-only">Cerrar Sesión</span>
             </Button>
