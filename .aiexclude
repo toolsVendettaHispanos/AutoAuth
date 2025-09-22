@@ -3,3 +3,4 @@ node_modules/
 prisma/datos/
 *.md
 *.py
+*.json
