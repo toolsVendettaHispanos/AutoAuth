@@ -1,3 +1,4 @@
+
 'use client'
 
 import Image from "next/image"
@@ -91,14 +92,16 @@ export function RoomCard({ room, timeLeft, isQueueFull, isSubmitting, onUpgrade,
                         </div>
                     )}
                     <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px]">{room.descripcion}</p>
-                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
-                        {room.costos.armas > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.armas.toLocaleString('de-DE')} Armas`}><Image src="/img/recursos/armas.svg" alt="Armas" width={16} height={16} /><span>{formatNumber(room.costos.armas)}</span></div>}
-                        {room.costos.municion > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.municion.toLocaleString('de-DE')} Munición`}><Image src="/img/recursos/municion.svg" alt="Munición" width={16} height={16} /><span>{formatNumber(room.costos.municion)}</span></div>}
-                        {room.costos.dolares > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.dolares.toLocaleString('de-DE')} Dólares`}><Image src="/img/recursos/dolares.svg" alt="Dólares" width={16} height={16} /><span>{formatNumber(room.costos.dolares)}</span></div>}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        <span>{formatDuration(room.tiempo)}</span>
+                    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-sm">
+                        <div className="flex items-center gap-x-3">
+                            {room.costos.armas > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.armas.toLocaleString('de-DE')} Armas`}><Image src="/img/recursos/armas.svg" alt="Armas" width={16} height={16} /><span>{formatNumber(room.costos.armas)}</span></div>}
+                            {room.costos.municion > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.municion.toLocaleString('de-DE')} Munición`}><Image src="/img/recursos/municion.svg" alt="Munición" width={16} height={16} /><span>{formatNumber(room.costos.municion)}</span></div>}
+                            {room.costos.dolares > 0 && <div className="flex items-center gap-1.5" title={`${room.costos.dolares.toLocaleString('de-DE')} Dólares`}><Image src="/img/recursos/dolares.svg" alt="Dólares" width={16} height={16} /><span>{formatNumber(room.costos.dolares)}</span></div>}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            <span>{formatDuration(room.tiempo)}</span>
+                        </div>
                     </div>
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
