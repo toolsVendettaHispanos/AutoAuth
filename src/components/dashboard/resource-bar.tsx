@@ -1,3 +1,4 @@
+
 'use client'
 
 import { LiveClock } from "./live-clock";
@@ -163,7 +164,7 @@ export function ResourceBar({ user }: ResourceBarProps) {
                                      <Image src={res.icon} alt={res.name} width={16} height={16} className="h-3 w-3" />
                                      <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground">{res.name}</span>
                                  </div>
-                                <span className="text-sm font-bold tabular-nums text-foreground font-mono">
+                                <span className="text-xs sm:text-sm lg:text-base font-bold tabular-nums text-foreground font-mono">
                                      <AnimatedNumber value={Number(res.value)} />
                                 </span>
                                 <Progress value={percentage} className="h-1 w-full mt-1 bg-muted/50" indicatorClassName={progressColor} />
