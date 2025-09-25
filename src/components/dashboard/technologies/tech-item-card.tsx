@@ -34,8 +34,8 @@ export function TechItemCard({ name, description, imageUrl, requirements, status
             status === 'locked' && "grayscale opacity-60",
             status === 'available' && "border-primary/50 shadow-lg shadow-primary/10",
         )}>
-            <CardHeader className="flex flex-row items-start gap-4">
-                <div className="w-20 h-16 relative rounded-md overflow-hidden border flex-shrink-0 group">
+            <CardHeader className="flex flex-col sm:flex-row items-start gap-4">
+                <div className="w-24 h-20 sm:w-20 sm:h-16 relative rounded-md overflow-hidden border flex-shrink-0 group">
                     <Image
                         src={imageUrl || "https://placehold.co/80x56.png"}
                         alt={name}

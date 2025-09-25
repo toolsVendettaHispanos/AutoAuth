@@ -34,11 +34,11 @@ export function SecurityView({ defenseTroops }: SecurityViewProps) {
         disponibles: defenseTroops.map(config => ({
             ...config,
             cantidad: tropasDisponibles.get(config.id) || 0,
-        })).filter(t => t.cantidad > 0),
+        })),
         asignadas: defenseTroops.map(config => ({
             ...config,
             cantidad: tropasAsignadas.get(config.id) || 0,
-        })).filter(t => t.cantidad > 0)
+        }))
     };
   }, [selectedProperty, defenseTroops]);
 
@@ -82,6 +82,7 @@ export function SecurityView({ defenseTroops }: SecurityViewProps) {
         />
        <SecurityTroopManager
             propertyId={selectedProperty.id}
+            allDefenseTroops={defenseTroops}
             availableTroops={troopsData.disponibles}
             assignedTroops={troopsData.asignadas}
        />

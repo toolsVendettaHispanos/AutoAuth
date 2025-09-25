@@ -1,107 +1,127 @@
 
 'use client';
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useTransition } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { assignTroopsToSecurity, withdrawTroopsFromSecurity } from "@/lib/actions/troop.actions";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Building, Shield } from "lucide-react";
 import Image from "next/image";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import type { FullConfiguracionTropa } from "@/lib/types";
+import { Separator } from "@/components/ui/separator";
 
 type TroopWithCount = FullConfiguracionTropa & { cantidad: number };
 
-interface TroopManagerCardProps {
-    title: string;
-    troops: TroopWithCount[];
-    action: (troopId: string, quantity: number) => void;
+interface TroopSecurityCardProps {
+    troop: TroopWithCount & { assigned: number };
+    onAssign: (troopId: string, quantity: number) => void;
+    onWithdraw: (troopId: string, quantity: number) => void;
     isPending: boolean;
-    buttonText: string;
-    buttonIcon: React.ReactNode;
 }
 
-const TroopManagerCard = ({ title, troops, action, isPending, buttonText, buttonIcon }: TroopManagerCardProps) => {
-    const [quantities, setQuantities] = useState<Record<string, number>>({});
+const TroopSecurityCard = ({ troop, onAssign, onWithdraw, isPending }: TroopSecurityCardProps) => {
+    const [assignQty, setAssignQty] = useState(0);
+    const [withdrawQty, setWithdrawQty] = useState(0);
 
-    const handleQuantityChange = (id: string, value: number, max: number) => {
-        setQuantities(prev => ({
-            ...prev,
-            [id]: Math.max(0, Math.min(value, max))
-        }));
-    }
-
-    const handleAction = (troopId: string) => {
-        const quantity = quantities[troopId];
-        if (quantity > 0) {
-            action(troopId, quantity);
-            setQuantities(prev => ({...prev, [troopId]: 0}));
+    const handleAssign = () => {
+        if (assignQty > 0) {
+            onAssign(troop.id, assignQty);
+            setAssignQty(0);
         }
-    }
+    };
+
+    const handleWithdraw = () => {
+        if (withdrawQty > 0) {
+            onWithdraw(troop.id, withdrawQty);
+            setWithdrawQty(0);
+        }
+    };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <ScrollArea className="h-96 pr-4">
-                    <div className="space-y-4">
-                        {troops.length > 0 ? troops.map(troop => (
-                             <div key={troop.id} className="p-3 border rounded-lg space-y-3">
-                                <div className="flex items-center gap-4">
-                                    <Image src={troop.urlImagen || ''} alt={troop.nombre} width={48} height={40} className="rounded-md border p-1" />
-                                    <div>
-                                        <p className="font-semibold">{troop.nombre}</p>
-                                        <p className="text-sm text-muted-foreground">Disponibles: {troop.cantidad.toLocaleString()}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                     <Slider
-                                        value={[quantities[troop.id] || 0]}
-                                        onValueChange={(val) => handleQuantityChange(troop.id, val[0], troop.cantidad)}
-                                        max={troop.cantidad}
-                                        step={1}
-                                        disabled={isPending}
-                                    />
-                                    <Input
-                                        type="number"
-                                        className="w-24 h-9 text-center"
-                                        value={quantities[troop.id] || 0}
-                                        onChange={(e) => handleQuantityChange(troop.id, parseInt(e.target.value, 10) || 0, troop.cantidad)}
-                                        disabled={isPending}
-                                    />
-                                </div>
-                                 <Button 
-                                    size="sm" 
-                                    className="w-full" 
-                                    onClick={() => handleAction(troop.id)}
-                                    disabled={isPending || !quantities[troop.id]}
-                                >
-                                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : buttonIcon}
-                                    {buttonText}
-                                </Button>
-                             </div>
-                        )) : (
-                            <p className="text-center text-muted-foreground py-8">No hay unidades disponibles.</p>
-                        )}
+        <Card className="overflow-hidden">
+            <div className="p-4 flex items-center gap-4 bg-muted/30">
+                 <Image src={troop.urlImagen || ''} alt={troop.nombre} width={64} height={56} className="rounded-md border p-1 bg-background" />
+                <div>
+                    <h4 className="font-bold text-lg">{troop.nombre}</h4>
+                     <p className="text-sm text-muted-foreground">{troop.descripcion}</p>
+                </div>
+            </div>
+             <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="p-4 space-y-3">
+                     <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Building className="h-4 w-4" />
+                            <span>En Propiedad</span>
+                        </div>
+                        <span className="font-bold font-mono text-lg">{troop.cantidad.toLocaleString()}</span>
+                     </div>
+                     <Slider
+                        value={[assignQty]}
+                        onValueChange={(val) => setAssignQty(val[0])}
+                        max={troop.cantidad}
+                        step={1}
+                        disabled={isPending}
+                    />
+                    <div className="flex items-center gap-2">
+                         <Input
+                            type="number"
+                            className="h-9 text-center"
+                            value={assignQty}
+                            onChange={(e) => setAssignQty(Math.max(0, Math.min(parseInt(e.target.value) || 0, troop.cantidad)))}
+                            disabled={isPending}
+                        />
+                         <Button onClick={handleAssign} disabled={isPending || assignQty === 0} className="w-full">
+                            {isPending ? <Loader2 className="h-4 w-4 animate-spin"/> : <ArrowRight className="h-4 w-4"/>}
+                            <span className="ml-2">Asignar</span>
+                        </Button>
                     </div>
-                </ScrollArea>
-            </CardContent>
+                </div>
+                 <div className="p-4 space-y-3 bg-muted/50 border-l">
+                     <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Shield className="h-4 w-4 text-primary" />
+                            <span>En Seguridad</span>
+                        </div>
+                        <span className="font-bold font-mono text-lg text-primary">{troop.assigned.toLocaleString()}</span>
+                     </div>
+                     <Slider
+                        value={[withdrawQty]}
+                        onValueChange={(val) => setWithdrawQty(val[0])}
+                        max={troop.assigned}
+                        step={1}
+                        disabled={isPending}
+                    />
+                     <div className="flex items-center gap-2">
+                         <Input
+                            type="number"
+                            className="h-9 text-center"
+                            value={withdrawQty}
+                            onChange={(e) => setWithdrawQty(Math.max(0, Math.min(parseInt(e.target.value) || 0, troop.assigned)))}
+                            disabled={isPending}
+                        />
+                        <Button onClick={handleWithdraw} disabled={isPending || withdrawQty === 0} className="w-full" variant="secondary">
+                             {isPending ? <Loader2 className="h-4 w-4 animate-spin"/> : <ArrowLeft className="h-4 w-4"/>}
+                            <span className="ml-2">Retirar</span>
+                        </Button>
+                    </div>
+                </div>
+             </div>
         </Card>
-    )
-}
+    );
+};
+
 
 interface SecurityTroopManagerProps {
     propertyId: string;
     availableTroops: TroopWithCount[];
     assignedTroops: TroopWithCount[];
+    allDefenseTroops: TroopWithCount[];
 }
 
-export function SecurityTroopManager({ propertyId, availableTroops, assignedTroops }: SecurityTroopManagerProps) {
+export function SecurityTroopManager({ propertyId, allDefenseTroops, availableTroops, assignedTroops }: SecurityTroopManagerProps) {
     const { toast } = useToast();
     const [isPending, startTransition] = useTransition();
 
@@ -109,7 +129,7 @@ export function SecurityTroopManager({ propertyId, availableTroops, assignedTroo
         startTransition(async () => {
             const result = await assignTroopsToSecurity(propertyId, troopId, quantity);
             if(result.error) toast({ variant: 'destructive', title: 'Error', description: result.error });
-            else toast({ title: 'Éxito', description: `${quantity} x ${troopId} asignadas a seguridad.`})
+            else toast({ title: 'Éxito', description: `Tropas asignadas a seguridad.`})
         });
     }
 
@@ -117,28 +137,37 @@ export function SecurityTroopManager({ propertyId, availableTroops, assignedTroo
          startTransition(async () => {
             const result = await withdrawTroopsFromSecurity(propertyId, troopId, quantity);
             if(result.error) toast({ variant: 'destructive', title: 'Error', description: result.error });
-            else toast({ title: 'Éxito', description: `${quantity} x ${troopId} retiradas de seguridad.`})
+            else toast({ title: 'Éxito', description: `Tropas retiradas de seguridad.`})
         });
     }
+    
+    const combinedTroops = allDefenseTroops.map(config => {
+        const available = availableTroops.find(t => t.id === config.id)?.cantidad || 0;
+        const assigned = assignedTroops.find(t => t.id === config.id)?.cantidad || 0;
+        return {
+            ...config,
+            cantidad: available,
+            assigned: assigned,
+        }
+    }).filter(t => t.cantidad > 0 || t.assigned > 0);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TroopManagerCard 
-                title="Unidades en la Propiedad"
-                troops={availableTroops}
-                action={handleAssign}
-                isPending={isPending}
-                buttonText="Asignar a Seguridad"
-                buttonIcon={<ArrowRight className="mr-2 h-4 w-4"/>}
-            />
-             <TroopManagerCard 
-                title="Tropas Asignadas a Seguridad"
-                troops={assignedTroops}
-                action={handleWithdraw}
-                isPending={isPending}
-                buttonText="Retirar de Seguridad"
-                buttonIcon={<ArrowLeft className="mr-2 h-4 w-4"/>}
-            />
+        <div className="space-y-4">
+            {combinedTroops.length > 0 ? combinedTroops.map(troop => (
+                <TroopSecurityCard 
+                    key={troop.id}
+                    troop={troop}
+                    onAssign={handleAssign}
+                    onWithdraw={handleWithdraw}
+                    isPending={isPending}
+                />
+            )) : (
+                <Card>
+                    <CardContent className="p-8 text-center text-muted-foreground">
+                        No tienes unidades defensivas en esta propiedad.
+                    </CardContent>
+                </Card>
+            )}
         </div>
     );
 }

@@ -12,6 +12,8 @@ import type { UserWithProgress } from '@/lib/types';
 import { useProperty } from '@/contexts/property-context';
 import type { SimulatorColumnState } from '../simulator-view';
 import type { ConfiguracionTropa, ConfiguracionEntrenamiento, ConfiguracionHabitacion } from '@prisma/client';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface SimulationSetupProps {
     user: UserWithProgress;
@@ -61,20 +63,12 @@ const InputRow = ({ label, value, onChange }: { label: string; value: number; on
     );
 };
 
-const Section = ({ title, children, value, icon }: { title: string; children: React.ReactNode; value: string; icon: React.ReactNode }) => (
-    <AccordionItem value={value}>
-        <AccordionTrigger className="text-base font-semibold hover:no-underline">
-            <div className="flex items-center gap-2">
-                {icon}
-                {title}
-            </div>
-        </AccordionTrigger>
-        <AccordionContent>
-            <div className="space-y-2 pt-2 border-t mt-2">
-                {children}
-            </div>
-        </AccordionContent>
-    </AccordionItem>
+const SectionContent = ({ children }: { children: React.ReactNode }) => (
+    <ScrollArea className="h-full">
+        <div className="space-y-2 p-1">
+            {children}
+        </div>
+    </ScrollArea>
 );
 
 
@@ -97,22 +91,31 @@ function SimulatorColumn({ title, state, setState, troopConfigs, trainingConfigs
                     <Button variant="ghost" size="icon" onClick={handleClear} className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>
                 </div>
             </CardHeader>
-            <CardContent className="flex-grow overflow-hidden">
-                <ScrollArea className="h-full pr-4">
-                    <Accordion type="multiple" defaultValue={['troops']} className="w-full">
-                        <Section title="Unidades" value="troops" icon={<Users className="h-5 w-5 text-primary" />}>
+            <CardContent className="flex-grow overflow-hidden flex flex-col">
+                 <Tabs defaultValue="troops" className="w-full flex-grow flex flex-col">
+                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-3">
+                        <TabsTrigger value="troops">Unidades</TabsTrigger>
+                        {isDefender && <TabsTrigger value="defenses">Defensas</TabsTrigger>}
+                        <TabsTrigger value="trainings">Investig.</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="troops" className="flex-grow mt-4">
+                        <SectionContent>
                              {troopsToShow.map(t => (<InputRow key={`${title}-troop-${t.id}`} label={t.nombre} value={state.troops[t.id] || 0} onChange={(val) => handleStateChange('troops', t.id, val)} />))}
-                        </Section>
-                        {isDefender && (
-                            <Section title="Defensas" value="defenses" icon={<Building className="h-5 w-5 text-primary" />}>
+                        </SectionContent>
+                    </TabsContent>
+                    {isDefender && (
+                         <TabsContent value="defenses" className="flex-grow mt-4">
+                            <SectionContent>
                                 {defenseConfigs.map(d => (<InputRow key={`${title}-defense-${d.id}`} label={d.nombre} value={state.defenses[d.id] || 0} onChange={(val) => handleStateChange('defenses', d.id, val)} />))}
-                            </Section>
-                        )}
-                        <Section title="Investigaciones" value="trainings" icon={<BrainCircuit className="h-5 w-5 text-primary" />}>
+                            </SectionContent>
+                        </TabsContent>
+                    )}
+                    <TabsContent value="trainings" className="flex-grow mt-4">
+                        <SectionContent>
                             {trainingConfigs.map(t => (<InputRow key={`${title}-training-${t.id}`} label={t.nombre} value={state.trainings[t.id] || 0} onChange={(val) => handleStateChange('trainings', t.id, val)} />))}
-                        </Section>
-                    </Accordion>
-                </ScrollArea>
+                        </SectionContent>
+                    </TabsContent>
+                </Tabs>
             </CardContent>
         </Card>
     );
@@ -120,6 +123,7 @@ function SimulatorColumn({ title, state, setState, troopConfigs, trainingConfigs
 
 export function SimulationSetup({ user, attackerState, setAttackerState, defenderState, setDefenderState, troopConfigs, trainingConfigs, defenseConfigs }: SimulationSetupProps) {
     const { selectedProperty } = useProperty();
+    const isMobile = useIsMobile();
 
     const handleLoadUserData = (column: 'attacker' | 'defender') => {
         if (!selectedProperty) return;
@@ -139,28 +143,49 @@ export function SimulationSetup({ user, attackerState, setAttackerState, defende
         if (column === 'attacker') setAttackerState(newState);
         else setDefenderState(newState);
     };
+
+    const attackerColumn = (
+         <SimulatorColumn 
+            title="Atacante"
+            state={attackerState}
+            setState={setAttackerState}
+            troopConfigs={troopConfigs}
+            trainingConfigs={trainingConfigs}
+            defenseConfigs={defenseConfigs}
+            onLoadData={() => handleLoadUserData('attacker')}
+        />
+    );
+
+    const defenderColumn = (
+        <SimulatorColumn 
+            title="Defensor"
+            state={defenderState}
+            setState={setDefenderState}
+            troopConfigs={troopConfigs}
+            trainingConfigs={trainingConfigs}
+            defenseConfigs={defenseConfigs}
+            isDefender
+            onLoadData={() => handleLoadUserData('defender')}
+        />
+    );
+
+    if (isMobile) {
+        return (
+            <Tabs defaultValue="attacker" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="attacker">Atacante</TabsTrigger>
+                    <TabsTrigger value="defender">Defensor</TabsTrigger>
+                </TabsList>
+                <TabsContent value="attacker" className="mt-4">{attackerColumn}</TabsContent>
+                <TabsContent value="defender" className="mt-4">{defenderColumn}</TabsContent>
+            </Tabs>
+        )
+    }
     
     return (
         <div className="grid grid-cols-2 gap-4 h-full">
-            <SimulatorColumn 
-                title="Atacante"
-                state={attackerState}
-                setState={setAttackerState}
-                troopConfigs={troopConfigs}
-                trainingConfigs={trainingConfigs}
-                defenseConfigs={defenseConfigs}
-                onLoadData={() => handleLoadUserData('attacker')}
-            />
-            <SimulatorColumn 
-                title="Defensor"
-                state={defenderState}
-                setState={setDefenderState}
-                troopConfigs={troopConfigs}
-                trainingConfigs={trainingConfigs}
-                defenseConfigs={defenseConfigs}
-                isDefender
-                onLoadData={() => handleLoadUserData('defender')}
-            />
+            {attackerColumn}
+            {defenderColumn}
         </div>
     )
 }

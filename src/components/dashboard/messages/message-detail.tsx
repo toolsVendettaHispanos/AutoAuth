@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +28,7 @@ export function MessageDetail({ item, onBack }: MessageDetailProps) {
     if (!item) {
         return (
             <div className="flex items-center justify-center h-full text-muted-foreground p-8 text-center">
-                <p>Selecciona una notificación para leerla.</p>
+                <p>Selecciona una notificación de la lista para leerla.</p>
             </div>
         )
     }
@@ -37,12 +36,12 @@ export function MessageDetail({ item, onBack }: MessageDetailProps) {
     if (item.type === 'message') {
         return (
             <div className="flex flex-col h-full">
-                <div className="p-4 border-b flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0 md:hidden" onClick={onBack}>
+                <div className="p-4 border-b flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={onBack}>
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
-                        <Avatar className="h-10 w-10">
+                        <Avatar className="h-10 w-10 flex-shrink-0">
                              {item.sender ? (
                                 <AvatarImage src={item.sender.avatarUrl || ''} />
                             ) : (
@@ -55,7 +54,7 @@ export function MessageDetail({ item, onBack }: MessageDetailProps) {
                             <p className="text-xs text-muted-foreground">Recibido: {new Date(item.createdAt).toLocaleString('es-ES')}</p>
                         </div>
                     </div>
-                     <div className="flex items-center gap-2">
+                     <div className="flex items-center gap-1 flex-shrink-0">
                         <Button variant="ghost" size="icon" className="h-8 w-8">
                             <Reply className="h-4 w-4" />
                             <span className="sr-only">Responder</span>
@@ -104,7 +103,7 @@ export function MessageDetail({ item, onBack }: MessageDetailProps) {
         <div className="flex flex-col h-full">
              <div className="p-4 border-b flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0 md:hidden" onClick={onBack}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={onBack}>
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     {item.type === 'battle' ? <Swords className="h-8 w-8 text-destructive"/> : <Eye className="h-8 w-8 text-blue-500"/>}

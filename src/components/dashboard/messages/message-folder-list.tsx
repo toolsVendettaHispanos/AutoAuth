@@ -1,11 +1,10 @@
-
 'use client';
 
 import { Button } from "@/components/ui/button";
 import { Inbox, Settings, Shield, Users, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-const folders = [
+export const folders = [
     { name: "Todas", category: "ALL", icon: <Inbox className="h-5 w-5" /> },
     { name: "Mensajes", category: "JUGADOR", icon: <Users className="h-5 w-5" /> },
     { name: "Batallas", category: "BATALLA", icon: <Shield className="h-5 w-5" /> },

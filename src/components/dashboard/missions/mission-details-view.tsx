@@ -12,6 +12,9 @@ import { cancelarMision } from "@/lib/actions/cancel-mission.action";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 interface MissionDetailsViewProps {
     missions: ColaMisiones[];
@@ -152,8 +155,79 @@ const MissionRow = ({ mission, type, troopConfigs }: { mission: ColaMisiones | I
 };
 
 
+const MissionCard = ({ mission, type, troopConfigs }: { mission: ColaMisiones | IncomingAttack, type: 'outgoing' | 'incoming' | 'returning', troopConfigs: FullConfiguracionTropa[] }) => {
+    const { toast } = useToast();
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
+
+    const handleCancel = (missionId: string) => {
+        startTransition(async () => {
+            const result = await cancelarMision(missionId);
+            if(result.error) toast({ variant: 'destructive', title: 'Error', description: result.error });
+            else toast({ title: 'Éxito', description: result.success });
+        })
+    }
+
+    const isOutgoing = 'userId' in mission;
+    const from = isOutgoing ? `${mission.origenCiudad}:${mission.origenBarrio}:${mission.origenEdificio}` : mission.attackerName;
+    const to = isOutgoing ? `${mission.destinoCiudad}:${mission.destinoBarrio}:${mission.destinoEdificio}` : mission.targetProperty;
+    const troopsCount = isOutgoing ? (mission.tropas as {id: string, cantidad: number}[]).reduce((sum, t) => sum + t.cantidad, 0) : mission.totalTroops;
+    const missionType = isOutgoing ? mission.tipoMision : "ATAQUE";
+    const arrivalDate = isOutgoing ? mission.fechaLlegada : mission.arrivalTime;
+    const returnDate = isOutgoing ? mission.fechaRegreso : null;
+    const finalDate = type === 'returning' && returnDate ? returnDate : arrivalDate;
+
+    return (
+        <Card>
+            <CardContent className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-3">
+                        {missionIcons[missionType]}
+                        <div>
+                            <p className="font-bold">{missionType}</p>
+                            <p className="text-xs text-muted-foreground">{isOutgoing ? `a ${to}` : `de ${from}`}</p>
+                        </div>
+                    </div>
+                     <div className="text-right">
+                        <p className="font-mono text-lg"><Countdown endDate={finalDate} onFinish={() => router.refresh()} /></p>
+                        <p className="text-xs text-muted-foreground">Tiempo Rest.</p>
+                    </div>
+                </div>
+                <Separator/>
+                <div className="flex justify-between items-center text-sm">
+                    <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-muted-foreground"/>
+                        <span className="font-semibold">{troopsCount.toLocaleString()}</span>
+                    </div>
+                     {isOutgoing && missionType !== 'REGRESO' && (
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm" disabled={isPending}>Cancelar</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>¿Cancelar misión?</AlertDialogTitle>
+                                    <AlertDialogDescription>La flota regresará inmediatamente.</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>No</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleCancel(mission.id)} disabled={isPending}>
+                                        {isPending ? <Loader2 className="animate-spin mr-2"/> : <X className="mr-2"/>}
+                                        Confirmar
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
 export function MissionDetailsView({ missions, incomingAttacks, troopConfigs }: MissionDetailsViewProps) {
-    
+    const isMobile = useIsMobile();
+
     const outgoingMissions = useMemo(() => missions.filter(m => m.tipoMision !== 'REGRESO'), [missions]);
     const returningMissions = useMemo(() => missions.filter(m => m.tipoMision === 'REGRESO'), [missions]);
     const allMovements = useMemo(() => [...outgoingMissions, ...incomingAttacks, ...returningMissions], [outgoingMissions, incomingAttacks, returningMissions]);
@@ -181,6 +255,18 @@ export function MissionDetailsView({ missions, incomingAttacks, troopConfigs }: 
             </TableBody>
         </Table>
     );
+    
+    const renderCards = (data: (ColaMisiones | IncomingAttack)[], type: 'outgoing' | 'incoming' | 'returning' | 'all') => (
+        <div className="space-y-4">
+            {data.length > 0 ? (
+                data.map(item => <MissionCard key={item.id} mission={item} troopConfigs={troopConfigs} type={type === 'all' ? ('userId' in item ? (item.tipoMision === 'REGRESO' ? 'returning' : 'outgoing') : 'incoming') : type} />)
+            ) : (
+                <div className="h-24 text-center flex items-center justify-center text-muted-foreground">No hay flotas en esta categoría.</div>
+            )}
+        </div>
+    );
+
+    const renderContent = isMobile ? renderCards : renderTable;
 
     return (
         <Tabs defaultValue="all" className="w-full mt-4">
@@ -190,10 +276,12 @@ export function MissionDetailsView({ missions, incomingAttacks, troopConfigs }: 
                 <TabsTrigger value="incoming">Enemigas ({incomingAttacks.length})</TabsTrigger>
                 <TabsTrigger value="returning">Regresando ({returningMissions.length})</TabsTrigger>
             </TabsList>
-            <TabsContent value="all">{renderTable(allMovements, 'all')}</TabsContent>
-            <TabsContent value="outgoing">{renderTable(outgoingMissions, 'outgoing')}</TabsContent>
-            <TabsContent value="incoming">{renderTable(incomingAttacks, 'incoming')}</TabsContent>
-            <TabsContent value="returning">{renderTable(returningMissions, 'returning')}</TabsContent>
+            <TabsContent value="all">{renderContent(allMovements, 'all')}</TabsContent>
+            <TabsContent value="outgoing">{renderContent(outgoingMissions, 'outgoing')}</TabsContent>
+            <TabsContent value="incoming">{renderContent(incomingAttacks, 'incoming')}</TabsContent>
+            <TabsContent value="returning">{renderContent(returningMissions, 'returning')}</TabsContent>
         </Tabs>
     )
 }
+
+    

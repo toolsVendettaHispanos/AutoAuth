@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useRouter } from "next/navigation";
@@ -28,7 +29,7 @@ function CountdownTimer({ label, endDate, onFinish }: {label: string, endDate: s
             const now = new Date().getTime();
             const difference = Math.floor((end - now) / 1000);
 
-            if (difference < -1) {
+            if (difference < 0) { // Changed from < -1 to < 0 to be more precise
                 setTimeLeft('00:00:00');
                 clearInterval(intervalId);
                 onFinish();
@@ -59,20 +60,20 @@ export function TrainingStatus({ trainings }: TrainingStatusProps) {
         router.refresh();
     };
 
+    if (trainings.length === 0) {
+        return <p className="text-muted-foreground text-center text-sm">No hay entrenamientos en cola.</p>
+    }
+
     return (
         <div className="bg-card text-card-foreground px-4 py-3 rounded-b-md space-y-2">
-            {trainings.length > 0 ? (
-                 trainings.map(queueItem => (
-                    <CountdownTimer 
-                        key={queueItem.id}
-                        label={`${queueItem.propiedad.nombre}: ${queueItem.entrenamiento.nombre} (Nvl ${queueItem.nivelDestino})`}
-                        endDate={new Date(queueItem.fechaFinalizacion).toISOString()}
-                        onFinish={handleRefresh}
-                     />
-                ))
-            ) : (
-                <p className="text-muted-foreground text-center text-sm">-</p>
-            )}
+            {trainings.map(queueItem => (
+                <CountdownTimer 
+                    key={queueItem.id}
+                    label={`${queueItem.propiedad.nombre}: ${queueItem.entrenamiento.nombre} (Nvl ${queueItem.nivelDestino})`}
+                    endDate={new Date(queueItem.fechaFinalizacion).toISOString()}
+                    onFinish={handleRefresh}
+                    />
+            ))}
         </div>
     );
 }
