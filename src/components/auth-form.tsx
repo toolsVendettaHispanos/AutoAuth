@@ -66,7 +66,7 @@ export function AuthForm() {
             startTransition(async () => {
                 const location = locationType === 'manual' 
                     ? manualLocation 
-                    : { ciudad: Math.floor(Math.random() * 100) + 1, barrio: Math.floor(Math.random() * 100) + 1, edificio: Math.floor(Math.random() * 255) + 1 };
+                    : { ciudad: Math.floor(Math.random() * 50) + 1, barrio: Math.floor(Math.random() * 50) + 1, edificio: Math.floor(Math.random() * 255) + 1 };
 
                 const result = await registerUser({
                     username,
@@ -85,6 +85,19 @@ export function AuthForm() {
             });
         }
     };
+    
+    const handleLocationChange = (field: 'ciudad' | 'barrio' | 'edificio', value: string) => {
+        const numValue = parseInt(value, 10);
+        let clampedValue = isNaN(numValue) ? 1 : numValue;
+
+        if (field === 'ciudad' || field === 'barrio') {
+            clampedValue = Math.max(1, Math.min(clampedValue, 50));
+        } else if (field === 'edificio') {
+            clampedValue = Math.max(1, Math.min(clampedValue, 255));
+        }
+        
+        setManualLocation(l => ({ ...l, [field]: clampedValue }));
+    }
 
     const renderLogin = () => (
         <form onSubmit={handleSubmit}>
@@ -173,15 +186,15 @@ export function AuthForm() {
                     <div className="grid grid-cols-3 gap-2 p-4 border rounded-md animate-fade-in">
                         <div className="space-y-1">
                             <Label htmlFor="ciudad" className="text-xs">Ciudad</Label>
-                            <Input id="ciudad" type="number" min="1" value={manualLocation.ciudad} onChange={(e) => setManualLocation(l => ({ ...l, ciudad: parseInt(e.target.value) || 1}))} />
+                            <Input id="ciudad" type="number" min="1" max="50" value={manualLocation.ciudad} onChange={(e) => handleLocationChange('ciudad', e.target.value)} />
                         </div>
                         <div className="space-y-1">
                             <Label htmlFor="barrio" className="text-xs">Barrio</Label>
-                            <Input id="barrio" type="number" min="1" value={manualLocation.barrio} onChange={(e) => setManualLocation(l => ({ ...l, barrio: parseInt(e.target.value) || 1}))} />
+                            <Input id="barrio" type="number" min="1" max="50" value={manualLocation.barrio} onChange={(e) => handleLocationChange('barrio', e.target.value)} />
                         </div>
                         <div className="space-y-1">
                             <Label htmlFor="edificio" className="text-xs">Edificio</Label>
-                            <Input id="edificio" type="number" min="1" value={manualLocation.edificio} onChange={(e) => setManualLocation(l => ({ ...l, edificio: parseInt(e.target.value) || 1}))} />
+                            <Input id="edificio" type="number" min="1" max="255" value={manualLocation.edificio} onChange={(e) => handleLocationChange('edificio', e.target.value)} />
                         </div>
                     </div>
                 )}
@@ -213,3 +226,5 @@ export function AuthForm() {
         </Card>
     );
 }
+
+    
