@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 interface UserInspectorViewProps {
     users: { id: string; name: string }[];
     selectedUserId?: string;
+    initialUserData: UserWithProgress | null;
 }
 
 function formatNumber(num: number | bigint | string): string {
@@ -64,26 +65,26 @@ function DataCard({ title, data, headers }: { title: string, data: (string | num
     )
 }
 
-export function UserInspectorView({ users, selectedUserId }: UserInspectorViewProps) {
+export function UserInspectorView({ users, selectedUserId, initialUserData }: UserInspectorViewProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const [userData, setUserData] = useState<UserWithProgress | null>(null);
+    const [userData, setUserData] = useState<UserWithProgress | null>(initialUserData);
+
+    useEffect(() => {
+        setUserData(initialUserData);
+    }, [initialUserData]);
 
     const handleUserSelect = (userId: string) => {
         router.push(`/admin/panel/inspector?userId=${userId}`);
     };
-
-    useEffect(() => {
-        if (selectedUserId) {
-            startTransition(async () => {
-                const freshData = await inspectUser(selectedUserId);
-                setUserData(freshData);
-            });
-        } else {
-            setUserData(null);
-        }
-    }, [selectedUserId]);
-
+    
+    const handleForceUpdate = () => {
+        if (!selectedUserId) return;
+        startTransition(async () => {
+            const freshData = await inspectUser(selectedUserId);
+            setUserData(freshData);
+        });
+    }
 
     const resourceData = userData?.propiedades.map(p => [
         p.nombre,
@@ -131,7 +132,7 @@ export function UserInspectorView({ users, selectedUserId }: UserInspectorViewPr
                             ))}
                         </SelectContent>
                     </Select>
-                     <Button onClick={() => selectedUserId && startTransition(async () => setUserData(await inspectUser(selectedUserId)))} disabled={isPending || !selectedUserId}>
+                     <Button onClick={handleForceUpdate} disabled={isPending || !selectedUserId}>
                         {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <RefreshCw className="mr-2 h-4 w-4"/>}
                         Forzar Actualización
                     </Button>
