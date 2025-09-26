@@ -10,7 +10,7 @@ import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { calcularPuntosPropiedad } from "@/lib/formulas/score-formulas";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -25,6 +25,11 @@ function formatPoints(points: number | null | undefined): string {
 
 export function ProfileView({ user }: ProfileViewProps) {
     const router = useRouter();
+    const [createdAt, setCreatedAt] = useState<string | null>(null);
+
+    useEffect(() => {
+        setCreatedAt(new Date(user.createdAt).toLocaleDateString('es-ES'));
+    }, [user.createdAt]);
 
     const propertiesWithPoints = useMemo(() => {
         if (!user.propiedades) return [];
@@ -102,7 +107,7 @@ export function ProfileView({ user }: ProfileViewProps) {
                             <Separator />
                              <div className="flex justify-between text-xs text-muted-foreground pt-2">
                                 <span>Miembro desde</span>
-                                <span>{new Date(user.createdAt).toLocaleDateString('es-ES')}</span>
+                                <span>{createdAt || '...'}</span>
                             </div>
                         </CardContent>
                     </Card>
