@@ -1,4 +1,5 @@
 
+
 import type { FullPropiedad } from "../types";
 import { EntrenamientoUsuario, ConfiguracionEntrenamiento } from "@prisma/client";
 
@@ -7,6 +8,7 @@ export function calcularPuntosHabitaciones(propiedades: FullPropiedad[]): number
 
   return propiedades.reduce((totalPuntos, propiedad) => {
     const puntosPropiedad = propiedad.habitaciones.reduce((subtotal, habitacion) => {
+      // Usa el nivel actual de la habitación, no el proyectado
       return subtotal + (habitacion.configuracionHabitacion.puntos * habitacion.nivel);
     }, 0);
     return totalPuntos + puntosPropiedad;
@@ -35,20 +37,17 @@ export function calcularPuntosPropiedad(propiedad: FullPropiedad): number {
 }
 
 export function calcularPuntosTropas(propiedades: FullPropiedad[]): number {
-  if (!propiedades) return 0;
+    if (!propiedades || propiedades.length === 0) return 0;
   
-  return propiedades.reduce((totalPropiedades, propiedad) => {
-    const puntosTropas = propiedad.TropaUsuario.reduce((totalTropas, tropa) => {
-      const puntos = tropa.configuracionTropa.puntos * tropa.cantidad;
-      return totalTropas + puntos;
+    return propiedades.reduce((totalGlobal, propiedad) => {
+        const puntosPropiedad = [...propiedad.TropaUsuario, ...propiedad.TropaSeguridadUsuario].reduce((totalLocal, tropa) => {
+            const puntos = tropa.configuracionTropa.puntos * tropa.cantidad;
+            return totalLocal + puntos;
+        }, 0);
+        return totalGlobal + puntosPropiedad;
     }, 0);
-    const puntosSeguridad = propiedad.TropaSeguridadUsuario.reduce((totalSeguridad, tropa) => {
-        const puntos = tropa.configuracionTropa.puntos * tropa.cantidad;
-        return totalSeguridad + puntos;
-    }, 0);
-    return totalPropiedades + puntosTropas + puntosSeguridad;
-  }, 0);
 }
+
 
 export function calcularPuntosEntrenamientos(entrenamientos: (EntrenamientoUsuario & { configuracionEntrenamiento: ConfiguracionEntrenamiento })[]): number {
   if (!entrenamientos) return 0;

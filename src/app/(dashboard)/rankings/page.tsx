@@ -31,14 +31,12 @@ function RankingsLoading() {
 
 const PAGE_SIZE = 100;
 
-async function RankingsContent({ searchParams }: { searchParams?: { type?: string, range?: string }}) {
+async function RankingsContent({ rankingType, range }: { rankingType: string, range: number }) {
     const user = await getSessionUser();
     if (!user) {
         redirect('/');
     }
 
-    const rankingType = searchParams?.type || '0';
-    const range = parseInt(searchParams?.range || '0', 10);
     const skip = range * PAGE_SIZE;
 
     const users = rankingType === '0' ? await getUsersForRanking(skip, PAGE_SIZE) : [];
@@ -61,6 +59,9 @@ export default function RankingsPage({
 }: {
     searchParams?: { type?: string, range?: string }
 }) {
+    const rankingType = searchParams?.type || '0';
+    const range = parseInt(searchParams?.range || '0', 10);
+
     return (
         <div className="main-view">
             <div className="flex flex-col sm:flex-row gap-4 justify-between sm:items-center">
@@ -72,7 +73,7 @@ export default function RankingsPage({
                 </Suspense>
             </div>
             <Suspense fallback={<RankingsLoading />}>
-                <RankingsContent searchParams={searchParams} />
+                <RankingsContent rankingType={rankingType} range={range} />
             </Suspense>
         </div>
     );

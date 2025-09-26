@@ -88,8 +88,8 @@ export async function iniciarReclutamiento(propiedadId: string, tropaId: string,
   
       return { success: `¡El reclutamiento de ${cantidad} x ${config.nombre} ha comenzado!` };
     } catch (error) {
-      console.error('Error durante la transacci\u00f3n de reclutamiento:', error);
-      return { error: 'Ocurri\u00f3 un error en el servidor al intentar reclutar.' };
+      console.error('Error durante la transacción de reclutamiento:', error);
+      return { error: 'Ocurrió un error en el servidor al intentar reclutar.' };
     }
 }
 
@@ -172,8 +172,8 @@ export async function iniciarEntrenamientoSeguridad(propiedadId: string, tropaId
   
       return { success: `¡El entrenamiento de ${cantidad} x ${config.nombre} ha comenzado!` };
     } catch (error) {
-      console.error('Error durante la transacci\u00f3n de entrenamiento de seguridad:', error);
-      return { error: 'Ocurri\u00f3 un error en el servidor al intentar entrenar la seguridad.' };
+      console.error('Error durante la transacción de entrenamiento de seguridad:', error);
+      return { error: 'Ocurrió un error en el servidor al intentar entrenar la seguridad.' };
     }
 }
 

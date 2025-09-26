@@ -1,12 +1,13 @@
 
-
-
 'use server';
 
 import { revalidatePath } from "next/cache";
 import prisma from "../prisma/prisma";
 import { ConfiguracionHabitacion, ConfiguracionTropa, ConfiguracionEntrenamiento, TipoTropa, TropaBonusContrincante } from "@prisma/client";
-import { verifyAdminSession } from "../auth-admin";
+import { verifyAdminSession } from "@/lib/auth-admin";
+import { actualizarEstadoCompletoDelJuego } from "./user.actions";
+import { getUserWithProgressByUsername } from "../data";
+import { cache } from "react";
 
 
 const parseNumber = (val: FormDataEntryValue | null) => Number(val) || 0;
@@ -16,6 +17,76 @@ const parseString = (val: FormDataEntryValue | null) => String(val || '');
 const parseNullString = (val: FormDataEntryValue | null) => val ? String(val) : null;
 const parseStringArray = (val: FormDataEntryValue | null) => parseString(val).split(',').map(s => s.trim()).filter(Boolean);
 
+
+export const getGlobalViewData = cache(async () => {
+    const isAdmin = await verifyAdminSession();
+    if (!isAdmin) return null;
+
+    const users = await prisma.user.findMany({
+        include: {
+            propiedades: {
+                include: {
+                    TropaUsuario: true,
+                    TropaSeguridadUsuario: true,
+                }
+            },
+            puntuacion: true,
+        }
+    });
+
+    const troopConfigs = await prisma.configuracionTropa.findMany();
+
+    const data = users.map(user => {
+        const totalResources = user.propiedades.reduce((acc, prop) => {
+            acc.armas += Number(prop.armas);
+            acc.municion += Number(prop.municion);
+            acc.alcohol += Number(prop.alcohol);
+            acc.dolares += Number(prop.dolares);
+            return acc;
+        }, { armas: 0, municion: 0, alcohol: 0, dolares: 0 });
+
+        const totalTroops = new Map<string, number>();
+        user.propiedades.forEach(prop => {
+            [...prop.TropaUsuario, ...prop.TropaSeguridadUsuario].forEach(t => {
+                totalTroops.set(t.configuracionTropaId, (totalTroops.get(t.configuracionTropaId) || 0) + t.cantidad);
+            });
+        });
+
+        return {
+            id: user.id,
+            name: user.name,
+            points: user.puntuacion?.puntosTotales || 0,
+            resources: totalResources,
+            troops: Object.fromEntries(totalTroops),
+        };
+    });
+
+    return { users: data, troopConfigs };
+});
+
+
+export async function inspectUser(userId: string) {
+    const isAdmin = await verifyAdminSession();
+    if (!isAdmin) return null;
+
+    const user = await prisma.user.findUnique({ where: { id: userId }});
+    if (!user) return null;
+
+    const userWithProgress = await getUserWithProgressByUsername(user.username);
+    if (!userWithProgress) return null;
+
+    const updatedUser = await actualizarEstadoCompletoDelJuego(userWithProgress);
+    
+    // Convert BigInt to string for serialization, handling null/undefined values
+    const serializableUser = JSON.parse(JSON.stringify(updatedUser, (key, value) => {
+        if (typeof value === 'bigint') {
+            return value.toString();
+        }
+        return value;
+    }));
+
+    return serializableUser;
+}
 
 // Room Config CRUD
 export async function saveRoomConfig(formData: FormData) {

@@ -1,13 +1,13 @@
-
 'use server'
 
 import prisma from "../prisma/prisma";
 import { runBattleSimulation } from "./simulation.actions";
 import { ColaMisiones, MessageCategory } from "@prisma/client";
-import { getTroopConfigurations } from "../data";
+import { getTroopConfigurations, getUserWithProgressByUsername } from "../data";
 import { calculateSafeStorage } from "../formulas/room-formulas";
 import { FullPropiedad, MisionTropas } from "../types";
 import type { BattleReport, ResourceCost, SimulationInput } from "../types/simulation.types";
+import { obtenerEstadoJuegoActualizado } from "./user.actions";
 
 export async function handleAttackMission(mision: ColaMisiones) {
     const atacante = await prisma.user.findUnique({ 
@@ -53,21 +53,10 @@ export async function handleAttackMission(mision: ColaMisiones) {
         });
         return;
     }
-
-    const defensor = await prisma.user.findUnique({
-        where: { id: propiedadDefensora.userId },
-        include: {
-            propiedades: {
-                include: {
-                    TropaUsuario: { include: { configuracionTropa: true } },
-                    TropaSeguridadUsuario: { include: { configuracionTropa: true } }
-                }
-            },
-            entrenamientos: true,
-        }
-    });
     
-    if (!defensor) {
+    // Obtener y actualizar el estado completo del defensor ANTES de la batalla
+    const defensorData = await getUserWithProgressByUsername(propiedadDefensora.userId);
+    if (!defensorData) {
         console.error("Defensor no encontrado para la propiedad:", propiedadDefensora.id);
          await prisma.colaMisiones.update({
             where: { id: mision.id },
@@ -78,7 +67,21 @@ export async function handleAttackMission(mision: ColaMisiones) {
         });
         return;
     }
+    const defensor = await obtenerEstadoJuegoActualizado(defensorData);
     
+    const propiedadDefensoraActualizada = defensor.propiedades.find(p => p.id === propiedadDefensora.id);
+    if (!propiedadDefensoraActualizada) {
+        // La propiedad ya no existe, la misión regresa
+        await prisma.colaMisiones.update({
+            where: { id: mision.id },
+            data: { 
+                tipoMision: 'REGRESO',
+                fechaRegreso: new Date(new Date().getTime() + mision.duracionViaje * 1000)
+            }
+        });
+        return;
+    }
+
     const attackerTroops = (mision.tropas as MisionTropas).map(t => ({ id: t.id, quantity: t.cantidad }));
 
     const attackerInput: SimulationInput = {
@@ -121,13 +124,13 @@ export async function handleAttackMission(mision: ColaMisiones) {
             return sum + ((config?.capacidad || 0) * troop.cantidad);
         }, 0);
 
-        const safeStorage = calculateSafeStorage(propiedadDefensora as FullPropiedad);
+        const safeStorage = calculateSafeStorage(propiedadDefensoraActualizada as FullPropiedad);
 
         const lootableResources: ResourceCost = {
-            armas: Math.max(0, Number(propiedadDefensora.armas) - safeStorage.armas),
-            municion: Math.max(0, Number(propiedadDefensora.municion) - safeStorage.municion),
-            dolares: Math.max(0, Number(propiedadDefensora.dolares) - safeStorage.dolares),
-            alcohol: Math.max(0, Number(propiedadDefensora.alcohol) - safeStorage.alcohol),
+            armas: Math.max(0, Number(propiedadDefensoraActualizada.armas) - safeStorage.armas),
+            municion: Math.max(0, Number(propiedadDefensoraActualizada.municion) - safeStorage.municion),
+            dolares: Math.max(0, Number(propiedadDefensoraActualizada.dolares) - safeStorage.dolares),
+            alcohol: Math.max(0, Number(propiedadDefensoraActualizada.alcohol) - safeStorage.alcohol),
         };
 
         const totalLootable = Object.values(lootableResources).reduce((sum, val) => sum + val, 0);
