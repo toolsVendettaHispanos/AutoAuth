@@ -19,12 +19,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  crons: [
-    {
-      path: '/api/cron',
-      schedule: '0 0 * * *',
-    },
-  ],
 };
 
 export default nextConfig;
