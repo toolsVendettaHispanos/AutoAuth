@@ -28,8 +28,14 @@ function ProfileLoading() {
     );
 }
 
-async function ProfilePageContent({ params }: PageProps<{ userId: string }>) {
+export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
+    const sessionUser = await getSessionUser();
+    if (!sessionUser) {
+        redirect('/');
+    }
+
     const { userId } = params;
+
     // Actualizar el estado del usuario del perfil que se está visitando
     const userToUpdate = await getUserWithProgressByUsername(userId);
     if (userToUpdate) {
@@ -47,22 +53,11 @@ async function ProfilePageContent({ params }: PageProps<{ userId: string }>) {
         );
     }
     
-    return <ProfileView user={userProfile} />;
-}
-
-
-export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
-    const sessionUser = await getSessionUser();
-    if (!sessionUser) {
-        redirect('/');
-    }
-    
     return (
         <div className="main-view">
             <Suspense fallback={<ProfileLoading />}>
-                <ProfilePageContent params={params} />
+                <ProfileView user={userProfile} />
             </Suspense>
         </div>
     );
 }
-
