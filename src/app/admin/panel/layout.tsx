@@ -4,7 +4,7 @@ import { verifyAdminSession } from "@/lib/auth-admin";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { logoutAdmin } from "@/lib/auth-admin";
+import { logoutAdmin } from "@/lib/actions/auth.actions";
 import { Home, List, Shield, Swords, UserSearch, Users, Bot, Globe } from "lucide-react";
 import Link from "next/link";
 import {
@@ -27,9 +27,9 @@ async function AdminSidebar() {
         { href: "/admin/panel/trainings", label: "Entrenamientos", icon: <Shield className="h-5 w-5" /> },
         { href: "/admin/panel/troops", label: "Tropas", icon: <Users className="h-5 w-5" /> },
         { href: "/admin/panel/bonus", label: "Matriz Bonus", icon: <Swords className="h-5 w-5" /> },
-        { href: "/admin/panel/ai", label: "AI", icon: <Bot className="h-5 w-5" /> },
         { href: "/admin/panel/inspector", label: "Inspector", icon: <UserSearch className="h-5 w-5" /> },
         { href: "/admin/panel/global-view", label: "Visión Global", icon: <Globe className="h-5 w-5" /> },
+        { href: "/admin/panel/ai", label: "AI", icon: <Bot className="h-5 w-5" /> },
     ];
 
     return (
@@ -100,5 +100,6 @@ export default async function AdminPanelLayout({
         </div>
     );
 }
+
 
 
