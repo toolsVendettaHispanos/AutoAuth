@@ -2,10 +2,12 @@
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getSessionUser } from "@/lib/auth";
-import { getUserProfileById } from "@/lib/data";
+import { getUserProfileById, getUserWithProgressByUsername } from "@/lib/data";
 import { redirect } from "next/navigation";
 import { ProfileView } from "@/components/dashboard/profile/profile-view";
 import { PageProps } from "@/lib/types";
+import { actualizarEstadoCompletoDelJuego } from "@/lib/actions/user.actions";
+import { UserWithProgress } from "@/lib/types";
 
 function ProfileLoading() {
     return (
@@ -29,6 +31,12 @@ export default async function ProfilePage({ params }: PageProps<{ userId: string
     const sessionUser = await getSessionUser();
     if (!sessionUser) {
         redirect('/');
+    }
+
+    // Actualizar el estado del usuario del perfil que se está visitando
+    const userToUpdate = await getUserWithProgressByUsername(params.userId);
+    if (userToUpdate) {
+        await actualizarEstadoCompletoDelJuego(userToUpdate as UserWithProgress);
     }
 
     const userProfile = await getUserProfileById(params.userId);
