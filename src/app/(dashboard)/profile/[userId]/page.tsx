@@ -28,7 +28,7 @@ function ProfileLoading() {
     );
 }
 
-async function ProfilePageContent({ params }: PageProps<{ userId: string }>) {
+export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
     const sessionUser = await getSessionUser();
     if (!sessionUser) {
         redirect('/');
@@ -51,14 +51,10 @@ async function ProfilePageContent({ params }: PageProps<{ userId: string }>) {
         );
     }
     
-    return <ProfileView user={userProfile} />;
-}
-
-export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
     return (
         <div className="main-view">
             <Suspense fallback={<ProfileLoading />}>
-                <ProfilePageContent params={params} />
+                <ProfileView user={userProfile} />
             </Suspense>
         </div>
     );
