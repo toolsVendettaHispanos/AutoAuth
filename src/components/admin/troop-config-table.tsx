@@ -1,6 +1,5 @@
 
 
-
 'use client';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
@@ -8,15 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Button } from "../ui/button";
 import { DeleteConfigButton } from "./delete-config-button";
 import { deleteTroopConfig } from "@/lib/actions/admin.actions";
-import { FullConfiguracionTropa } from "@/lib/data";
+import { FullConfiguracionTropa, FullConfiguracionEntrenamiento } from "@/lib/data";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
+import { TipoTropa } from "@prisma/client";
 
 interface TroopConfigTableProps {
     initialData: FullConfiguracionTropa[];
+    allTrainings: FullConfiguracionEntrenamiento[];
+    tiposTropa: TipoTropa[];
 }
 
-export function TroopConfigTable({ initialData }: TroopConfigTableProps) {
+export function TroopConfigTable({ initialData, allTrainings, tiposTropa }: TroopConfigTableProps) {
     
     return (
         <Card>
