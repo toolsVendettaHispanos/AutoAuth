@@ -1,6 +1,30 @@
+# Dependencias
 node_modules/
+
+# Archivos de caché y compilación de Next.js
 .next/
-prisma/datos/
-*.md
-*.py
-*.json
+.cache/
+out/
+
+# Archivos de entorno
+*.env*
+
+# Logs
+*.log
+
+# Metadatos del gestor de paquetes
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Configuraciones de herramientas
+tailwind.config.ts
+postcss.config.js
+next.config.ts
+
+# Configuración de despliegue
+apphosting.yaml
+
+# Metadatos de IDEs
+.vscode/
+.idea/
