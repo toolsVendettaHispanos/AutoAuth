@@ -1,10 +1,10 @@
 // src/app/api/cron/route.ts
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/prisma/prisma';
 import { actualizarEstadoCompletoDelJuego } from '@/lib/actions/user.actions';
 import type { UserWithProgress } from '@/lib/types';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new NextResponse('Unauthorized', {

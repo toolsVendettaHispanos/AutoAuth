@@ -39,7 +39,7 @@
         enable = true;
         previews = {
           web = {
-            command = [ "bun" "run" "dev" "--" "--port" "$PORT" "--hostname" "0.0.0.0" ];
+            command = [ "npm" "run" "dev" "--" "--port" "$PORT" "--hostname" "0.0.0.0" ];
             manager = "web";
           };
         };
