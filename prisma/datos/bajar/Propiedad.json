@@ -30,6 +30,36 @@
     "updatedAt": "2025-07-29T20:51:14.645Z"
   },
   {
+    "id": "1",
+    "userId": "1",
+    "nombre": "Propiedad Principal",
+    "ciudad": 1,
+    "barrio": 1,
+    "edificio": 1,
+    "armas": "8889657",
+    "municion": "3787444",
+    "alcohol": "15010000",
+    "dolares": "30010000",
+    "ultimaActualizacion": "2025-09-25T23:59:48.788Z",
+    "createdAt": "2025-07-29T04:34:25.822Z",
+    "updatedAt": "2025-09-25T23:59:49.045Z"
+  },
+  {
+    "id": "cme0al5d3001zc7lym7kcqi3e",
+    "userId": "1",
+    "nombre": "Colonia en 1:1",
+    "ciudad": 1,
+    "barrio": 1,
+    "edificio": 75,
+    "armas": "141323",
+    "municion": "310000",
+    "alcohol": "160000",
+    "dolares": "57175",
+    "ultimaActualizacion": "2025-09-25T23:59:48.911Z",
+    "createdAt": "2025-08-06T18:19:05.703Z",
+    "updatedAt": "2025-09-25T23:59:49.165Z"
+  },
+  {
     "id": "4",
     "userId": "4",
     "nombre": "Propiedad Principal",
@@ -45,33 +75,18 @@
     "updatedAt": "2025-08-06T20:40:39.860Z"
   },
   {
-    "id": "1",
-    "userId": "1",
+    "id": "cmg0222t7000faki866ta6eqx",
+    "userId": "cmg0222t6000eaki8bwnlziia",
     "nombre": "Propiedad Principal",
-    "ciudad": 1,
-    "barrio": 1,
-    "edificio": 1,
-    "armas": "13995443",
-    "municion": "14817156",
-    "alcohol": "15010000",
-    "dolares": "16750630",
-    "ultimaActualizacion": "2025-08-06T21:21:54.234Z",
-    "createdAt": "2025-07-29T04:34:25.822Z",
-    "updatedAt": "2025-08-06T21:21:54.384Z"
-  },
-  {
-    "id": "cme0al5d3001zc7lym7kcqi3e",
-    "userId": "1",
-    "nombre": "Colonia en 1:1",
-    "ciudad": 1,
-    "barrio": 1,
-    "edificio": 75,
-    "armas": "4388",
-    "municion": "106420",
-    "alcohol": "10028",
-    "dolares": "10028",
-    "ultimaActualizacion": "2025-08-06T21:21:54.235Z",
-    "createdAt": "2025-08-06T18:19:05.703Z",
-    "updatedAt": "2025-08-06T21:21:54.406Z"
+    "ciudad": 99,
+    "barrio": 21,
+    "edificio": 66,
+    "armas": "10000",
+    "municion": "10000",
+    "alcohol": "10000",
+    "dolares": "10000",
+    "ultimaActualizacion": "2025-09-25T23:39:43.675Z",
+    "createdAt": "2025-09-25T23:39:43.675Z",
+    "updatedAt": "2025-09-25T23:39:43.675Z"
   }
 ]

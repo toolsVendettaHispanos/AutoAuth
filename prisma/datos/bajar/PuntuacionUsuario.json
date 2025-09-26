@@ -38,13 +38,25 @@
   {
     "id": "cmdo1lt3y0002apnf3bnxxfmd",
     "userId": "1",
-    "puntosHabitaciones": 52100.9,
+    "puntosHabitaciones": 52313.52,
     "puntosTropas": 35216240,
-    "puntosEntrenamientos": 822.5,
-    "puntosTotales": 35269163.4,
+    "puntosEntrenamientos": 835.5,
+    "puntosTotales": 35269389.02,
     "puntosHonorAtacante": 279888,
     "puntosHonorDefensor": 0,
     "puntosHonorTotales": 279888,
-    "updatedAt": "2025-08-06T21:21:55.107Z"
+    "updatedAt": "2025-09-25T23:59:49.643Z"
+  },
+  {
+    "id": "cmg0222t7000gaki8oeqerc03",
+    "userId": "cmg0222t6000eaki8bwnlziia",
+    "puntosHabitaciones": 0,
+    "puntosTropas": 0,
+    "puntosEntrenamientos": 0,
+    "puntosTotales": 0,
+    "puntosHonorAtacante": 0,
+    "puntosHonorDefensor": 0,
+    "puntosHonorTotales": 0,
+    "updatedAt": "2025-09-25T23:39:43.675Z"
   }
 ]

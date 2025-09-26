@@ -16,7 +16,7 @@ export const modelNames = Prisma.dmmf.datamodel.models.map(model => model.name);
 export async function subirModelo(modelName: keyof typeof prisma) {
   console.log(`Subiendo datos para ${modelName}...`);
   try {
-    const filePath = path.join(process.cwd(), 'prisma', 'datos', 'subir', `${modelName}.json`);
+    const filePath = path.join(process.cwd(), 'prisma', 'datos', 'bajar', `${modelName}.json`);
     if (!fs.existsSync(filePath)) {
       console.log(`\u26a0\ufe0f No se encontr\u00f3 el archivo ${modelName}.json, omitiendo.`);
       return;

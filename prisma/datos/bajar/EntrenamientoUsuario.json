@@ -1,11 +1,6 @@
 [
   {
     "userId": "1",
-    "configuracionEntrenamientoId": "espionaje",
-    "nivel": 11
-  },
-  {
-    "userId": "1",
     "configuracionEntrenamientoId": "rutas",
     "nivel": 31
   },
@@ -16,7 +11,12 @@
   },
   {
     "userId": "1",
+    "configuracionEntrenamientoId": "espionaje",
+    "nivel": 12
+  },
+  {
+    "userId": "1",
     "configuracionEntrenamientoId": "encargos",
-    "nivel": 3
+    "nivel": 4
   }
 ]
