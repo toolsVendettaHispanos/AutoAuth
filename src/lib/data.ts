@@ -1,6 +1,5 @@
 
 
-
 "use server"
 
 import { Prisma, PrismaClient, ColaMisiones } from '@prisma/client/edge'
@@ -519,42 +518,47 @@ export const getUsers = cache(async () => {
 
 export const getUserProfileById = cache(async (userId: string): Promise<UserProfileData | null> => {
     try {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          puntuacion: true,
+          propiedades: {
             include: {
-                puntuacion: true,
-                propiedades: {
-                    include: {
-                        habitaciones: {
-                            include: {
-                                configuracionHabitacion: true,
-                            }
-                        },
-                        TropaUsuario: {
-                            include: {
-                                configuracionTropa: true,
-                            }
-                        },
-                        TropaSeguridadUsuario: {
-                             include: {
-                                configuracionTropa: true,
-                            }
-                        }
-                    }
+              habitaciones: {
+                include: {
+                  configuracionHabitacion: true,
                 },
-                familyMember: {
-                    include: {
-                        family: true
-                    }
-                }
+              },
+              TropaUsuario: {
+                include: {
+                  configuracionTropa: true,
+                },
+              },
+              TropaSeguridadUsuario: {
+                include: {
+                  configuracionTropa: true,
+                },
+              },
+            },
+          },
+          familyMember: {
+            include: {
+              family: true,
+            },
+          },
+          entrenamientos: {
+            include: {
+                configuracionEntrenamiento: true
             }
-        });
-        return user as unknown as UserProfileData;
-    } catch(e) {
-        console.error(`Error fetching profile for user ${userId}`, e);
-        return null;
+          }
+        },
+      });
+      return user as unknown as UserProfileData;
+    } catch (e) {
+      console.error(`Error fetching profile for user ${userId}`, e);
+      return null;
     }
-})
+  });
 
 export const getMaximumResourceCapacity = cache(async () => {
     const properties = await prisma.propiedad.findMany({

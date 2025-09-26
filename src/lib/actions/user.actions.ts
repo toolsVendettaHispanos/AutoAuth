@@ -505,6 +505,19 @@ export async function actualizarPuntuacionUsuario(user: UserWithProgress): Promi
   const puntosEntrenamientos = calcularPuntosEntrenamientos(user.entrenamientos);
   const puntosTotales = puntosHabitaciones + puntosTropas + puntosEntrenamientos;
 
+  const currentPoints = user.puntuacion;
+
+  if (
+    currentPoints &&
+    currentPoints.puntosHabitaciones === puntosHabitaciones &&
+    currentPoints.puntosTropas === puntosTropas &&
+    currentPoints.puntosEntrenamientos === puntosEntrenamientos &&
+    currentPoints.puntosTotales === puntosTotales
+  ) {
+    return user; // No changes, no need to update
+  }
+
+
   try {
     const puntuacionActualizada = await prisma.puntuacionUsuario.upsert({
       where: { userId: user.id },
@@ -533,4 +546,3 @@ export async function actualizarPuntuacionUsuario(user: UserWithProgress): Promi
     return user;
   }
 }
-
