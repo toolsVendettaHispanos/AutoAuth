@@ -1,11 +1,10 @@
 
 
-import { verifyAdminSession } from "@/lib/auth-admin";
+import { verifyAdminSession, logoutAdmin } from "@/lib/auth-admin";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { logoutAdmin } from "@/lib/actions/auth.actions";
-import { Home, List, Shield, Swords, UserSearch, Users, Bot, Globe } from "lucide-react";
+import { Home, List, Shield, Swords, UserSearch, Users, Bot, Globe, LogOut } from "lucide-react";
 import Link from "next/link";
 import {
   Tooltip,
@@ -65,7 +64,7 @@ async function AdminSidebar() {
             <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
                 <form action={handleLogout}>
                     <Button type="submit" variant="ghost" size="icon">
-                        <Users className="h-5 w-5" />
+                        <LogOut className="h-5 w-5" />
                         <span className="sr-only">Cerrar sesión</span>
                     </Button>
                 </form>
@@ -100,6 +99,7 @@ export default async function AdminPanelLayout({
         </div>
     );
 }
+
 
 
 
