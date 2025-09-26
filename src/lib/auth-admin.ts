@@ -9,7 +9,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'default_admin_password';
 
 export async function loginAdmin(password: string) {
     if (password === ADMIN_PASSWORD) {
-        cookies().set(ADMIN_COOKIE_NAME, 'true', {
+        (await cookies()).set(ADMIN_COOKIE_NAME, 'true', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24, // 24 hours
@@ -21,11 +21,11 @@ export async function loginAdmin(password: string) {
 }
 
 export async function logoutAdmin() {
-    cookies().delete(ADMIN_COOKIE_NAME);
+    (await cookies()).delete(ADMIN_COOKIE_NAME);
     redirect('/admin');
 }
 
 export async function verifyAdminSession(): Promise<boolean> {
-    const cookie = cookies().get(ADMIN_COOKIE_NAME);
+    const cookie = (await cookies()).get(ADMIN_COOKIE_NAME);
     return cookie?.value === 'true';
 }
