@@ -1,12 +1,15 @@
 
 
 
+
 'use server';
 
 import { revalidatePath } from "next/cache";
 import prisma from "../prisma/prisma";
 import { ConfiguracionHabitacion, ConfiguracionTropa, ConfiguracionEntrenamiento, TipoTropa, TropaBonusContrincante } from "@prisma/client";
 import { verifyAdminSession } from "../auth-admin";
+import { actualizarEstadoCompletoDelJuego } from "./user.actions";
+import { getUserWithProgressByUsername } from "../data";
 
 
 const parseNumber = (val: FormDataEntryValue | null) => Number(val) || 0;
@@ -16,6 +19,28 @@ const parseString = (val: FormDataEntryValue | null) => String(val || '');
 const parseNullString = (val: FormDataEntryValue | null) => val ? String(val) : null;
 const parseStringArray = (val: FormDataEntryValue | null) => parseString(val).split(',').map(s => s.trim()).filter(Boolean);
 
+
+export async function inspectUser(userId: string) {
+    const isAdmin = await verifyAdminSession();
+    if (!isAdmin) return null;
+
+    const user = await prisma.user.findUnique({ where: { id: userId }});
+    if (!user) return null;
+
+    const userWithProgress = await getUserWithProgressByUsername(user.username);
+    if (!userWithProgress) return null;
+
+    const updatedUser = await actualizarEstadoCompletoDelJuego(userWithProgress);
+    
+    // Convert BigInt to string for serialization
+    const serializableUser = JSON.parse(JSON.stringify(updatedUser, (key, value) =>
+        typeof value === 'bigint'
+            ? value.toString()
+            : value 
+    ));
+
+    return serializableUser;
+}
 
 // Room Config CRUD
 export async function saveRoomConfig(formData: FormData) {
