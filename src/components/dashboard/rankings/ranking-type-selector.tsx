@@ -17,7 +17,6 @@ const ranges = [
     { value: '1', label: '101-200' },
     { value: '2', label: '201-300' },
     { value: '3', label: '301-400' },
-    { value: '4', label: '401-500' },
 ];
 
 export function RankingTypeSelector() {
@@ -55,7 +54,7 @@ export function RankingTypeSelector() {
             </Tabs>
              {!isBattleRanking && (
                 <Tabs value={currentRange} onValueChange={(value) => handleValueChange('range', value)} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5">
+                    <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
                         {ranges.map(range => (
                             <TabsTrigger key={range.value} value={range.value}>{range.label}</TabsTrigger>
                         ))}
