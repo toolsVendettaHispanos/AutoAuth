@@ -1,5 +1,4 @@
 
-
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getSessionUser } from "@/lib/auth";
@@ -28,19 +27,14 @@ function ProfileLoading() {
     );
 }
 
-export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
-    const sessionUser = await getSessionUser();
-    if (!sessionUser) {
-        redirect('/');
-    }
-
+async function ProfilePageContent({ userId }: { userId: string }) {
     // Actualizar el estado del usuario del perfil que se está visitando
-    const userToUpdate = await getUserWithProgressByUsername(params.userId);
+    const userToUpdate = await getUserWithProgressByUsername(userId);
     if (userToUpdate) {
         await actualizarEstadoCompletoDelJuego(userToUpdate as UserWithProgress);
     }
 
-    const userProfile = await getUserProfileById(params.userId);
+    const userProfile = await getUserProfileById(userId);
 
     if (!userProfile) {
         return (
@@ -51,10 +45,20 @@ export default async function ProfilePage({ params }: PageProps<{ userId: string
         );
     }
     
+    return <ProfileView user={userProfile} />;
+}
+
+
+export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
+    const sessionUser = await getSessionUser();
+    if (!sessionUser) {
+        redirect('/');
+    }
+    
     return (
         <div className="main-view">
             <Suspense fallback={<ProfileLoading />}>
-                <ProfileView user={userProfile} />
+                <ProfilePageContent userId={params.userId} />
             </Suspense>
         </div>
     );
