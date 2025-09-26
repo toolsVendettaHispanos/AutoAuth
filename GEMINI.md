@@ -1,64 +1,72 @@
-# Guía de Colaboración para Asistentes de IA de Google (Proyecto AutoAuth)
+# 🚀 Guía de Inicio Rápido del Proyecto: AutoAuth
 
-## ¡Bienvenido, Asistente de IA!
+¡Bienvenido a AutoAuth! Esta guía está diseñada para ayudarte a entender la estructura, las tecnologías y los procesos clave del proyecto de manera rápida y eficiente.
 
-Este documento sirve como una guía central para colaborar en el desarrollo del proyecto "AutoAuth". Tu objetivo es ayudar a los desarrolladores a construir, mejorar y mantener la aplicación siguiendo las directrices y la arquitectura establecidas.
+## 1. 🏗️ Pila Tecnológica (Tech Stack)
 
-## Resumen del Proyecto
+Este proyecto está construido con un conjunto de tecnologías modernas y robustas:
 
--   **Nombre:** AutoAuth
--   **Propósito:** Una aplicación de juego de estrategia y gestión de imperios criminales, con un enfoque en la autenticación automática, gestión de recursos, tropas y familias (clanes).
--   **Stack Tecnológico:**
-    -   **Framework:** Next.js con App Router
-    -   **Lenguaje:** TypeScript
-    -   **UI:** React, ShadCN UI, Tailwind CSS
-    -   **Base de Datos:** Prisma con PostgreSQL
-    -   **Autenticación:** Sistema de sesión basado en cookies
-    -   **IA Generativa:** Genkit (si se implementa)
+-   **Framework Principal:** [Next.js](https://nextjs.org/) (usando App Router)
+-   **Lenguaje:** [TypeScript](https://www.typescriptlang.org/)
+-   **UI Framework:** [React](https://reactjs.org/)
+-   **Estilos CSS:** [Tailwind CSS](https://tailwindcss.com/)
+-   **Componentes UI:** [ShadCN/UI](https://ui.shadcn.com/) - Una colección de componentes reutilizables construidos sobre Radix UI y Tailwind CSS.
+-   **ORM y Base de Datos:** [Prisma](https://www.prisma.io/) - ORM de próxima generación para Node.js y TypeScript.
+-   **Inteligencia Artificial:** [Genkit (Firebase)](https://firebase.google.com/docs/genkit) - Un framework para construir flujos de IA.
+-   **Iconos:** [Lucide React](https://lucide.dev/)
+-   **Gráficas y Diagramas:** [Recharts](https://recharts.org/)
+-   **Autenticación:** Solución personalizada (ver `src/lib/auth.ts` y `src/lib/actions/auth.actions.ts`).
 
-## Flujo de Trabajo y Colaboración
+## 2. 📂 Estructura del Proyecto
 
-1.  **Analizar la Solicitud del Usuario:** Lee atentamente la petición del desarrollador. Identifica los archivos afectados y el objetivo principal del cambio (ej. "arreglar un bug", "añadir una nueva función", "mejorar el estilo").
-2.  **Consultar el Código Existente:** Antes de proponer cambios, revisa los archivos relevantes proporcionados en el contexto para entender la lógica actual, los tipos de datos y la arquitectura.
-3.  **Adherirse a las Directrices:** Es crucial seguir las directrices de codificación establecidas en este documento y en el prompt inicial. Esto incluye:
-    -   Uso de componentes de ShadCN.
-    -   Estilo de código (TypeScript, Server Components, etc.).
-    -   Manejo de errores y estado.
-    -   Estructura de la base de datos (schema de Prisma).
-4.  **Generar un Plan de Cambios (XML):** Tu respuesta principal para modificaciones de código debe ser siempre un bloque `<changes>`.
-    -   **Descripción:** Proporciona un resumen claro y conciso de los cambios que vas a realizar.
-    -   **Contenido Completo:** Cada bloque `<change>` debe contener el contenido **completo y final** del archivo. No uses diffs ni fragmentos de código.
-    -   **Precisión de Rutas:** Asegúrate de que las rutas de los archivos (`<file>`) sean absolutas y correctas.
-5.  **Comunicación Clara:** Explica tus cambios de forma sencilla antes de presentar el bloque XML. Si una solicitud es ambigua, haz preguntas para clarificar los requisitos.
+La organización del código está pensada para ser escalable y mantenible.
 
-## Directrices de Codificación Clave
+-   `prisma/`: Contiene el esquema de la base de datos (`schema.prisma`) y scripts para gestionar los datos (migraciones, seeding, etc.).
+    -   `script/`: Scripts para realizar operaciones CRUD sobre la base de datos, como `subir.ts` y `bajar.ts`.
+-   `src/app/`: El corazón de la aplicación, siguiendo la convención de Next.js App Router.
+    -   `layout.tsx`: El layout raíz que envuelve toda la aplicación.
+    -   `globals.css`: Estilos globales y configuración de Tailwind CSS.
+    -   `(dashboard)/`: Un [grupo de rutas](https://nextjs.org/docs/app/building-your-application/routing/route-groups) que contiene todas las páginas protegidas de la aplicación.
+        -   `layout.tsx`: El layout específico para el panel de control, que incluye la barra lateral y la barra de recursos.
+        -   `overview/page.tsx`: La página principal o "Visión General" después de iniciar sesión.
+        -   `[ruta]/page.tsx`: Cada subcarpeta representa una ruta de la aplicación (ej: `/rooms`, `/missions`, `/family`, etc.).
+    -   `page.tsx` y `login/page.tsx`: Las páginas de inicio y de login.
+    -   `api/`: Rutas de API para funcionalidades del backend.
+-   `src/components/`: Componentes de React reutilizables.
+    -   `ui/`: Componentes base generados por ShadCN (Button, Card, Input, etc.).
+    -   `dashboard/`: Componentes específicos para las diferentes secciones del panel de control.
+    -   `admin/`: Componentes para el panel de administración.
+-   `src/lib/`: Lógica central, acciones de servidor y utilidades.
+    -   `actions/`: [Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations) de Next.js para interactuar con el servidor (ej: crear familia, enviar misión).
+    -   `auth.ts`: Lógica para gestionar la sesión del usuario.
+    -   `constants.ts`: Constantes globales utilizadas en toda la aplicación.
+    -   `data.ts`: Funciones para acceder a la base de datos utilizando Prisma.
+    -   `formulas/`: Lógica de negocio y cálculos del juego (puntos, costos, tiempos, etc.).
+    -   `types/`: Definiciones de tipos y interfaces de TypeScript.
+    -   `utils.ts`: Funciones de utilidad reutilizables.
+-   `src/ai/`: Contiene la configuración y los flujos de Genkit para las funcionalidades de IA.
+-   `public/`: Archivos estáticos como imágenes y fuentes.
 
-### Backend (Server Actions & Lógica de Juego)
+## 3. ⚙️ Scripts Esenciales
 
--   **Separación de Lógica:** Mantén la lógica de negocio (cálculos de fórmulas, validaciones complejas) en el directorio `src/lib/formulas/` o `src/lib/actions/`.
--   **Interacciones con la Base de Datos:** Centraliza todas las consultas a la base de datos en `src/lib/data.ts` y las mutaciones en `src/lib/actions/`.
--   **Inmutabilidad:** Evita mutar el estado directamente. Utiliza los métodos de Prisma (`increment`, `decrement`) o crea nuevos objetos/arrays cuando sea necesario.
--   **Server Actions:** Utiliza Server Actions de Next.js para todas las mutaciones de datos que se originan desde el cliente. Esto simplifica el código y mejora la seguridad.
--   **Validación:** Valida siempre los datos de entrada en las Server Actions para asegurar la integridad y prevenir errores.
+Puedes ejecutar los siguientes comandos desde la raíz del proyecto:
 
-### Frontend (Componentes de React)
+-   `npm run dev`: Inicia el servidor de desarrollo en modo de recarga rápida.
+-   `npm run build`: Compila la aplicación para producción.
+-   `npm run start`: Inicia un servidor de producción (requiere una compilación previa con `npm run build`).
+-   `npm run lint`: Ejecuta ESLint para analizar el código en busca de problemas.
+-   `npm run prisma:generate`: Genera el cliente de Prisma basado en tu `schema.prisma`.
+-   `npm run prisma:migrate`: Aplica las migraciones de la base de datos.
+-   `npm run prisma:studio`: Abre la interfaz de Prisma Studio para visualizar y editar los datos de tu base de datos.
 
--   **Componentes de Servidor por Defecto:** Prefiere los Componentes de Servidor de React (`async function Component()`) para obtener datos y renderizar la UI inicial.
--   **Interactividad con `"use client"`:** Solo añade la directiva `"use client"` a los componentes que necesiten interactividad (hooks como `useState`, `useEffect`, o manejadores de eventos).
--   **Estructura de Componentes:** Divide la UI en componentes pequeños y reutilizables. Sigue la estructura de directorios existente en `src/components/dashboard/`.
--   **Estilos con Tailwind CSS y ShadCN:** Utiliza las clases de utilidad de Tailwind CSS para el estilo. Prefiere los componentes de ShadCN (`Button`, `Card`, `Table`, etc.) sobre la creación de componentes personalizados desde cero.
--   **Responsividad:** Asegúrate de que todos los componentes de la interfaz de usuario sean responsivos y se vean bien tanto en dispositivos móviles como en escritorio.
+## 4. 🔑 Variables de Entorno
 
-### Manejo de Estado y Datos
+El proyecto requiere un archivo `.env.local` en la raíz para almacenar las variables de entorno. Este archivo **no debe ser versionado** en Git.
 
--   **Contexto de React:** Utiliza `React.Context` para gestionar el estado global que es compartido por muchos componentes, como la propiedad seleccionada (`PropertyProvider`).
--   **Obtención de Datos:** En los Componentes de Servidor, obtén los datos directamente llamando a las funciones de `src/lib/data.ts`.
--   **Revalidación de Datos:** Después de una mutación exitosa en una Server Action, utiliza `revalidatePath()` para asegurar que los datos en el cliente se actualicen.
+Crea un archivo `.env.local` y añade las siguientes variables, basándote en el archivo `.env.example` si existe:
 
-## Consideraciones Adicionales
-
--   **No Añadir Comentarios al Código:** A menos que sea estrictamente necesario para explicar un algoritmo muy complejo, evita añadir comentarios al código.
--   **Archivo `.aiexclude`:** Respeta las reglas de este archivo. Los archivos y directorios listados en él no deben ser procesados ni incluidos en tus respuestas para optimizar el contexto.
--   **Seguridad:** Nunca expongas claves secretas o información sensible en el lado del cliente. Toda la lógica sensible y las credenciales deben permanecer en el servidor.
-
-¡Gracias por tu colaboración! Siguiendo estas directrices, ayudaremos a construir una aplicación robusta, mantenible y de alta calidad.
+```env
+DATABASE_URL="postgresql://..."
+ADMIN_PASSWORD="tu_contraseña_de_admin"
+# Otras variables que puedan ser necesarias
+```
