@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  crons: [
+    {
+      path: '/api/cron',
+      schedule: '*/5 * * * *',
+    },
+  ],
 };
 
 export default nextConfig;
