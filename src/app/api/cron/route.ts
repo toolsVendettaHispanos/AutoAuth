@@ -5,8 +5,10 @@ import { actualizarEstadoCompletoDelJuego } from '@/lib/actions/user.actions';
 import type { UserWithProgress } from '@/lib/types';
 
 export async function GET(request: Request) {
-  const authHeader = request.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const { searchParams } = new URL(request.url)
+  const cronSecret = searchParams.get('cron_secret')
+  
+  if (cronSecret !== process.env.CRON_SECRET) {
     return new NextResponse('Unauthorized', {
       status: 401,
     });
