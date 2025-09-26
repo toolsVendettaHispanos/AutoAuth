@@ -2,6 +2,7 @@
 
 # Dependency directories
 node_modules/
+prompts/
 
 # Next.js build and cache folders
 .next/
@@ -35,5 +36,4 @@ pnpm-lock.yaml
 *.py
 *.pyc
 __pycache__/
-*.json
-*.md
+
