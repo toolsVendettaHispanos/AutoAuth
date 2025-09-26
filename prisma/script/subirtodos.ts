@@ -5,7 +5,7 @@ import { subirModelo } from './subir';
 const prisma = new PrismaClient();
 
 // El orden es CRUCIAL para satisfacer las restricciones de clave externa.
-// Las tablas sin dependencias van primero, las que dependen de otras van despu\u00e9s.
+// Las tablas sin dependencias van primero, las que dependen de otras van después.
 const UPLOAD_ORDER = [
   // Configuraciones base
   'ConfiguracionHabitacion',
@@ -24,7 +24,7 @@ const UPLOAD_ORDER = [
   'Propiedad',
   'PuntuacionUsuario',
   
-  // Tablas de uni\u00f3n y datos dependientes
+  // Tablas de unión y datos dependientes
   'HabitacionUsuario',
   'EntrenamientoUsuario',
   'TropaUsuario',
@@ -51,7 +51,7 @@ const UPLOAD_ORDER = [
 ];
 
 async function main() {
-  console.log('\ud83d\ude80 Iniciando la subida de todos los datos a la base de datos...');
+  console.log('🚀 Iniciando la subida de todos los datos a la base de datos...');
   
   try {
     // Borramos los datos en orden inverso para evitar problemas de foreign keys
@@ -61,16 +61,16 @@ async function main() {
       // @ts-ignore
       await prisma[modelName].deleteMany({});
     }
-    console.log('\u2705 Base de datos limpiada.');
+    console.log('✅ Base de datos limpiada.');
 
     // Subimos los datos en el orden correcto
     console.log('\n--- Subiendo datos en el orden correcto ---');
     for (const modelName of UPLOAD_ORDER) {
       await subirModelo(modelName as keyof typeof prisma);
     }
-    console.log('\n\ud83c\udf89 \u00a1Todos los datos han sido subidos exitosamente!');
+    console.log('\n🎉 ¡Todos los datos han sido subidos exitosamente!');
   } catch (error) {
-    console.error('\n\ud83d\uded1 El proceso de subida de datos se detuvo debido a un error.');
+    console.error('\n🛑 El proceso de subida de datos se detuvo debido a un error.');
     process.exit(1);
   }
 }
