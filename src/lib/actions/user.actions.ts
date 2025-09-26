@@ -12,7 +12,7 @@ import { getUserWithProgressByUsername } from "../data";
 import { handleAttackMission } from "./brawl.actions"; 
 import { handleEspionageMission } from "./espionage.actions";
 import { ResourceCost } from "../types";
-import { Prisma } from "@prisma/client/edge";
+import { Prisma } from "@prisma/client";
 
 interface UserSettings {
     name?: string;
@@ -388,26 +388,45 @@ export async function verificarYFinalizarEntrenamientos(user: UserWithProgress):
 
 
 export async function verificarYFinalizarMisiones(user: UserWithProgress): Promise<UserWithProgress> {
-    if (!user.misiones || user.misiones.length === 0) return user;
-
     const ahora = new Date();
     let seHizoUnCambio = false;
+    
+    const misiones = await prisma.colaMisiones.findMany({ where: { userId: user.id }});
+    if (!misiones || misiones.length === 0) return user;
 
-    for (const mision of [...user.misiones]) { // Create a shallow copy to iterate over, as the original array might be modified
+    for (const mision of misiones) {
         const fechaLlegada = new Date(mision.fechaLlegada);
 
         if (ahora >= fechaLlegada && mision.tipoMision !== 'REGRESO') {
             seHizoUnCambio = true;
             if (mision.tipoMision === 'ATAQUE') {
-                await Promise.all([
-                    handleAttackMission(mision),
-                    prisma.incomingAttack.deleteMany({ where: { missionId: mision.id } }),
-                ]);
+                const defensorProp = await prisma.propiedad.findUnique({
+                    where: { ciudad_barrio_edificio: { ciudad: mision.destinoCiudad, barrio: mision.destinoBarrio, edificio: mision.destinoEdificio }},
+                    include: { user: { include: { propiedades: true, entrenamientos: true, puntuacion: true }}}
+                });
+                if (defensorProp && defensorProp.user) {
+                    const defensor = await getUserWithProgressByUsername(defensorProp.user.username);
+                    if (defensor) {
+                        const defensorActualizado = await obtenerEstadoJuegoActualizado(defensor);
+                        await handleAttackMission(mision);
+                    }
+                } else {
+                    // Si no hay defensor, la misión regresa
+                    await prisma.colaMisiones.update({ where: { id: mision.id }, data: { tipoMision: 'REGRESO', fechaRegreso: new Date(new Date().getTime() + mision.duracionViaje * 1000) }});
+                }
             } else if (mision.tipoMision === 'ESPIONAJE') {
                  await Promise.all([
                     handleEspionageMission(mision),
                     prisma.incomingAttack.deleteMany({ where: { missionId: mision.id } }),
                 ]);
+            } else {
+                 await prisma.colaMisiones.update({
+                    where: { id: mision.id },
+                    data: {
+                        tipoMision: 'REGRESO',
+                        fechaRegreso: new Date(fechaLlegada.getTime() + mision.duracionViaje * 1000)
+                    }
+                });
             }
         }
         
@@ -463,10 +482,8 @@ export async function verificarYFinalizarMisiones(user: UserWithProgress): Promi
                 await prisma.colaMisiones.delete({ where: { id: mision.id } });
             } catch (error) {
                 if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-                    // Record not found, it was likely already processed and deleted.
                     console.log(`Mission ${mision.id} already deleted, skipping.`);
                 } else {
-                    // Re-throw other errors
                     throw error;
                 }
             }
@@ -516,3 +533,4 @@ export async function actualizarPuntuacionUsuario(user: UserWithProgress): Promi
     return user;
   }
 }
+

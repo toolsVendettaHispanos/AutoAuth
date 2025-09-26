@@ -37,11 +37,13 @@ export default async function ProfilePage({ params }: PageProps<{ userId: string
     const { userId } = params;
 
     // Actualizar el estado del usuario del perfil que se está visitando
+    // Esto es crucial para que los datos que se muestran (y que otros ven) sean precisos.
     const userToUpdate = await getUserWithProgressByUsername(userId);
     if (userToUpdate) {
         await actualizarEstadoCompletoDelJuego(userToUpdate as UserWithProgress);
     }
 
+    // Volver a obtener el perfil del usuario después de la actualización
     const userProfile = await getUserProfileById(userId);
 
     if (!userProfile) {
