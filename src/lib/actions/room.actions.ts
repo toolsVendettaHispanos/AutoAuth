@@ -103,8 +103,8 @@ export async function iniciarAmpliacion(propiedadId: string, habitacionId: strin
   
       return { success: `¡${config.nombre} añadido a la cola de construcción!` };
     } catch (error) {
-      console.error('Error durante la transacci\\u00f3n de ampliaci\\u00f3n:', error);
-      return { error: 'Ocurri\\u00f3 un error en el servidor al intentar ampliar.' };
+      console.error('Error durante la transacción de ampliación:', error);
+      return { error: 'Ocurrió un error en el servidor al intentar ampliar.' };
     }
 }
 
@@ -163,7 +163,7 @@ export async function cancelarConstruccion(colaId: string) {
         revalidatePath('/overview');
         revalidatePath('/(dashboard)/layout', 'layout');
 
-        return { success: `La construcci\u00f3n de ${configHabitacion.nombre} ha sido cancelada.` };
+        return { success: `La construcción de ${configHabitacion.nombre} ha sido cancelada.` };
     } catch (error) {
         console.error('Error al cancelar la construcción:', error);
         return { error: 'No se pudo cancelar la construcción.' };
