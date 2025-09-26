@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -21,7 +22,7 @@ const nextConfig: NextConfig = {
   crons: [
     {
       path: '/api/cron',
-      schedule: '*/5 * * * *',
+      schedule: '0 0 * * *',
     },
   ],
 };
