@@ -1,4 +1,5 @@
 
+
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getSessionUser } from "@/lib/auth";
@@ -27,7 +28,7 @@ function ProfileLoading() {
     );
 }
 
-export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
+async function ProfilePageContent({ params }: PageProps<{ userId: string }>) {
     const sessionUser = await getSessionUser();
     if (!sessionUser) {
         redirect('/');
@@ -50,10 +51,14 @@ export default async function ProfilePage({ params }: PageProps<{ userId: string
         );
     }
     
+    return <ProfileView user={userProfile} />;
+}
+
+export default async function ProfilePage({ params }: PageProps<{ userId: string }>) {
     return (
         <div className="main-view">
             <Suspense fallback={<ProfileLoading />}>
-                <ProfileView user={userProfile} />
+                <ProfilePageContent params={params} />
             </Suspense>
         </div>
     );
