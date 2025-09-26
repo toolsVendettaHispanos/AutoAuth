@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useTransition, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,12 +17,24 @@ interface UserInspectorViewProps {
     selectedUserId?: string;
 }
 
-function formatNumber(num: number | bigint): string {
+function formatNumber(num: number | bigint | string): string {
     if (num === undefined || num === null) return '0';
     return Number(num).toLocaleString('de-DE');
 }
 
 function DataCard({ title, data, headers }: { title: string, data: (string | number)[][], headers: string[] }) {
+    if (data.length === 0) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>{title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-sm text-muted-foreground text-center py-4">No hay datos disponibles.</p>
+                </CardContent>
+            </Card>
+        )
+    }
     return (
         <Card>
             <CardHeader>
@@ -40,7 +52,7 @@ function DataCard({ title, data, headers }: { title: string, data: (string | num
                             <TableRow key={i}>
                                 {row.map((cell, j) => (
                                     <TableCell key={j} className={j > 0 ? 'font-mono text-right' : 'font-medium'}>
-                                        {typeof cell === 'number' ? formatNumber(cell) : cell}
+                                        {typeof cell === 'number' || typeof cell === 'bigint' ? formatNumber(cell) : cell}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -61,21 +73,17 @@ export function UserInspectorView({ users, selectedUserId }: UserInspectorViewPr
         router.push(`/admin/panel/inspector?userId=${userId}`);
     };
 
-    const handleRefresh = (userId: string) => {
-        startTransition(async () => {
-            const freshData = await inspectUser(userId);
-            setUserData(freshData);
-        });
-    }
-
     useEffect(() => {
         if (selectedUserId) {
-            handleRefresh(selectedUserId);
+            startTransition(async () => {
+                const freshData = await inspectUser(selectedUserId);
+                setUserData(freshData);
+            });
         } else {
             setUserData(null);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedUserId]);
+
 
     const resourceData = userData?.propiedades.map(p => [
         p.nombre,
@@ -101,7 +109,7 @@ export function UserInspectorView({ users, selectedUserId }: UserInspectorViewPr
         const total = userData?.propiedades.reduce((sum, p) => {
             const tu = p.TropaUsuario.find(t => t.configuracionTropaId === config.id)?.cantidad || 0;
             const tsu = p.TropaSeguridadUsuario.find(t => t.configuracionTropaId === config.id)?.cantidad || 0;
-            return sum + tu + tsu;
+            return sum + Number(tu) + Number(tsu);
         }, 0) || 0;
         return [config.nombre, total];
     });
@@ -123,19 +131,19 @@ export function UserInspectorView({ users, selectedUserId }: UserInspectorViewPr
                             ))}
                         </SelectContent>
                     </Select>
-                     <Button onClick={() => selectedUserId && handleRefresh(selectedUserId)} disabled={isPending || !selectedUserId}>
+                     <Button onClick={() => selectedUserId && startTransition(async () => setUserData(await inspectUser(selectedUserId)))} disabled={isPending || !selectedUserId}>
                         {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <RefreshCw className="mr-2 h-4 w-4"/>}
                         Forzar Actualización
                     </Button>
                 </div>
             </CardHeader>
             <CardContent>
-                {isPending && !userData && (
+                {isPending && (
                      <div className="flex justify-center items-center p-8">
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
                     </div>
                 )}
-                {userData && (
+                {userData && !isPending && (
                     <div className="space-y-6 animate-fade-in">
                         <DataCard title={`Recursos (${userData.propiedades.length} propiedades)`} headers={['Propiedad', 'Armas', 'Munición', 'Alcohol', 'Dólares']} data={resourceData} />
                         <Separator />
@@ -146,7 +154,7 @@ export function UserInspectorView({ users, selectedUserId }: UserInspectorViewPr
                         </div>
                     </div>
                 )}
-                 {!userData && !isPending && (
+                 {!selectedUserId && !isPending && (
                     <div className="text-center text-muted-foreground p-8">
                         <p>Selecciona un jugador para empezar la inspección.</p>
                     </div>

@@ -29,12 +29,17 @@ export async function inspectUser(userId: string) {
 
     const updatedUser = await actualizarEstadoCompletoDelJuego(userWithProgress);
     
-    // Convert BigInt to string for serialization
-    const serializableUser = JSON.parse(JSON.stringify(updatedUser, (key, value) =>
-        typeof value === 'bigint'
-            ? value.toString()
-            : value 
-    ));
+    // Convert BigInt to string for serialization, handling null/undefined values
+    const serializableUser = JSON.parse(JSON.stringify(updatedUser, (key, value) => {
+        if (typeof value === 'bigint') {
+            return value.toString();
+        }
+        // Ensure nullish values are preserved correctly
+        if (value === null || value === undefined) {
+            return value;
+        }
+        return value;
+    }));
 
     return serializableUser;
 }
